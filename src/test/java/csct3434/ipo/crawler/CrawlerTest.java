@@ -23,7 +23,7 @@ class CrawlerTest {
     @Autowired Crawler crawler;
 
     @Test
-    public void getCrawlerDtoListFromPage_테스트() {
+    public void getCrawlerDtoListFromPage() {
         //given
         int pageNumber = 1;
 
@@ -39,7 +39,7 @@ class CrawlerTest {
     }
 
     @Test
-    public void getIPOListFromPage_테스트() throws Exception
+    public void getIPOListFromPage() throws Exception
     {
         //given
         int pageNumber = 1;
@@ -56,7 +56,7 @@ class CrawlerTest {
     }
 
     @Test
-    public void updateIPOListUntil_테스트() throws Exception
+    public void updateIPOListUntil() throws Exception
     {
         //given
         int until = 2023;
