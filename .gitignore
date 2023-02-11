@@ -2,4 +2,4 @@ ApiConfig
 .idea
 .gradle
 build
-config
+config/*
