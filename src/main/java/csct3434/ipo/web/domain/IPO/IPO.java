@@ -1,5 +1,6 @@
-package csct3434.ipo.web.domain;
+package csct3434.ipo.web.domain.IPO;
 
+import csct3434.ipo.web.domain.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

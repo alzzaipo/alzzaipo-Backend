@@ -1,19 +1,15 @@
 package csct3434.ipo.crawler;
 
-import csct3434.ipo.web.domain.IPO;
-import csct3434.ipo.web.domain.IPORepository;
-import org.assertj.core.api.Assertions;
+import csct3434.ipo.web.domain.IPO.IPO;
+import csct3434.ipo.web.domain.IPO.IPORepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest

@@ -1,4 +1,4 @@
-package csct3434.ipo.web.domain;
+package csct3434.ipo.web.domain.IPO;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

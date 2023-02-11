@@ -1,6 +1,6 @@
 package csct3434.ipo.service;
 
-import csct3434.ipo.web.domain.IPO;
+import csct3434.ipo.web.domain.IPO.IPO;
 import csct3434.ipo.web.dto.IPOAnalyzeRequestDto;
 import csct3434.ipo.web.dto.IPOAnalyzeResponseDto;
 import org.junit.jupiter.api.Test;
