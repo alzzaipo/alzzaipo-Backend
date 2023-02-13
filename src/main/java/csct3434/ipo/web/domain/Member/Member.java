@@ -1,22 +1,31 @@
 package csct3434.ipo.web.domain.Member;
 
 import csct3434.ipo.web.domain.BaseTimeEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import csct3434.ipo.web.domain.Portfolio.Portfolio;
+import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.sound.sampled.Port;
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
 @NoArgsConstructor
 @Entity
 public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue
-    Long id;
+    @Column(name = "member_id")
+    private Long id;
 
-    String nickname;
+    private String nickname;
 
-    String email;
+    private String email;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Portfolio> portfolios = new ArrayList<>();
 
     @Builder
     public Member(String nickname, String email) {
@@ -24,4 +33,12 @@ public class Member extends BaseTimeEntity {
         this.email = email;
     }
 
+    public void addPortfolio(Portfolio portfolio) {
+        this.portfolios.add(portfolio);
+        portfolio.setMember(this);
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

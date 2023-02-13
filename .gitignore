@@ -1,5 +1,4 @@
-ApiConfig
+src/main/java/csct3434/ipo/config/
 .idea
 .gradle
 build
-config/*
