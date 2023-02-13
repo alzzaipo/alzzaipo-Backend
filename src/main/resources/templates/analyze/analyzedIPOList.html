@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <div>
+        <h3 th:text="|평균 수익률 : ${averageProfitRate}|"></h3>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>종목명</th>
+                <th>희망공모가(원)</th>
+                <th>최종공모가(원)</th>
+                <th>기관경쟁률</th>
+                <th>의무보유확약(%)</th>
+                <th>주관사</th>
+                <th>상장일</th>
+                <th>시초가</th>
+                <th>수익률</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="responseDto : ${responseDtoList}">
+                <td th:text="|${responseDto.stockName}(${responseDto.stockCode})|"></td>
+                <td th:text="${responseDto.expectedOfferingPriceMin}+ '~' + ${responseDto.expectedOfferingPriceMax}"></td>
+                <td th:text="${responseDto.fixedOfferingPrice}"></td>
+                <td th:text="${responseDto.competitionRate} + ':1'"></td>
+                <td th:text="${responseDto.lockupRate}"></td>
+                <td th:text="${responseDto.agents}"></td>
+                <td th:text="${responseDto.listedDate}"></td>
+                <td th:text="${responseDto.initialMarketPrice}"></td>
+                <td th:text="${responseDto.profitRate}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:replace="fragments/footer :: footer" />
+</div>
+</body>
+</html>

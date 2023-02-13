@@ -55,6 +55,9 @@ public class IPO extends BaseTimeEntity {
     // 상장일 시초가
     private int initialMarketPrice;
 
+    // 수익률
+    private int profitRate;
+
     // 종목 코드
     @Column(unique = true, nullable = false)
     private int stockCode;
@@ -76,26 +79,11 @@ public class IPO extends BaseTimeEntity {
         this.listedDate = listedDate;
         this.initialMarketPrice = initialMarketPrice;
         this.stockCode = stockCode;
-    }
 
-    public int getProfit() {
-        return initialMarketPrice - fixedOfferingPrice;
-    }
-
-    public int getProfitRate() {
-        return (int)((double)getProfit() / (double)fixedOfferingPrice * 100);
-    }
-
-    @Override
-    public String toString() {
-        return "IPO{" +
-                "id=" + id +
-                ", stockName='" + stockName + '\'' +
-                ", competitionRate=" + competitionRate +
-                ", lockupRate=" + lockupRate +
-                ", listedDate=" + listedDate +
-                ", initialMarketPrice=" + initialMarketPrice +
-                ", stockCode=" + stockCode +
-                '}';
+        if(initialMarketPrice > 0) {
+            this.profitRate = (int)((double)(initialMarketPrice - fixedOfferingPrice) / (double)fixedOfferingPrice * 100);
+        } else {
+            this.profitRate = 0;
+        }
     }
 }

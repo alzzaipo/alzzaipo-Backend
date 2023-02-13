@@ -30,7 +30,7 @@ class IPORepositoryTest {
     }
 
     @Test
-    public void 조회_by_아이디() throws Exception
+    public void 조회() throws Exception
     {
         //given
         IPO ipo = IPO.builder()
