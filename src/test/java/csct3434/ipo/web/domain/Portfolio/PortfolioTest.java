@@ -1,9 +1,9 @@
 package csct3434.ipo.web.domain.Portfolio;
 
+import csct3434.ipo.service.MemberService;
 import csct3434.ipo.web.domain.IPO.IPO;
 import csct3434.ipo.web.domain.IPO.IPORepository;
 import csct3434.ipo.web.domain.Member.Member;
-import csct3434.ipo.web.domain.Member.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,13 +17,13 @@ class PortfolioTest {
 
     private final IPORepository ipoRepository;
     private final PortfolioRepository portfolioRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @Autowired
-    public PortfolioTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, MemberRepository memberRepository) {
+    public PortfolioTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, MemberService memberService) {
         this.ipoRepository = ipoRepository;
         this.portfolioRepository = portfolioRepository;
-        this.memberRepository = memberRepository;
+        this.memberService = memberService;
     }
 
     @Test
@@ -39,7 +39,7 @@ class PortfolioTest {
         Portfolio portfolio = Portfolio.createPortfolio(member, ipo, 10, 200000);
 
         ipoRepository.save(ipo);
-        memberRepository.save(member);
+        memberService.save(member);
         Portfolio savedPortfolio = portfolioRepository.save(portfolio);
 
         //when
