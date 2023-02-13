@@ -1,5 +1,7 @@
 package csct3434.ipo.web.domain;
 
+import csct3434.ipo.web.domain.IPO.IPO;
+import csct3434.ipo.web.domain.IPO.IPORepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class IPORepositoryTest {
 
-    @Autowired IPORepository ipoRepository;
+    @Autowired
+    IPORepository ipoRepository;
 
     @Test
     public void 저장() throws Exception

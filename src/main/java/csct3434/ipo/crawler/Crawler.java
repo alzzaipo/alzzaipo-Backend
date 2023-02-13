@@ -2,7 +2,7 @@ package csct3434.ipo.crawler;
 
 import csct3434.ipo.api.InitialMarketPriceApi;
 import csct3434.ipo.service.IPOService;
-import csct3434.ipo.web.domain.IPO;
+import csct3434.ipo.web.domain.IPO.IPO;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
