@@ -45,7 +45,7 @@ public class KakaoLoginService {
         Member member = registerKakaoUserIfNeed(kakaoUserInfo);
 
         session.setAttribute(SessionConfig.accessToken, accessToken);
-        session.setAttribute(SessionConfig.email, member.getEmail());
+        session.setAttribute(SessionConfig.memberId, member.getId());
     }
 
 
@@ -118,9 +118,10 @@ public class KakaoLoginService {
         String nickname = kakaoUserInfo.getNickname();
         String email = kakaoUserInfo.getEmail();
 
-        Member member = memberService.findByEmail(email);
-
-        if(member == null) {
+        Member member = null;
+        try {
+            member = memberService.findMemberByEmail(email);
+        } catch(IllegalStateException e) {
             member = Member.builder()
                     .nickname(nickname)
                     .email(email)

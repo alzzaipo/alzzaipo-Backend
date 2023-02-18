@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}" />
+<body>
+<div class="container">
+    <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
+    <form th:action="@{/portfolio/new}" th:object="${portfolioSaveRequestDto}" method="post">
+        <input type="hidden" th:field="*{memberId}"/>
+        <div>
+            <label for="stockCode">Stock Code:</label>
+            <select id="stockCode" name="stockCode"
+                    th:field="*{stockCode}" required>
+                <option th:each="ipo : ${ipoList}"
+                        th:value="${ipo.stockCode}"
+                        th:text="${ipo.stockName}"></option>
+            </select>
+        </div>
+        <div>
+            <label for="sharesCnt">Shares Count:</label>
+            <input type="number" id="sharesCnt" name="sharesCnt"
+                   th:field="*{sharesCnt}" required/>
+        </div>
+        <div>
+            <label for="profit">Profit:</label>
+            <input type="number" id="profit" name="profit"
+                   th:field="*{profit}" required/>
+        </div>
+        <div>
+            <label for="agents">Agents:</label>
+            <input type="text" id="agents" name="agents"
+                   th:field="*{agents}" required/>
+        </div>
+        <div>
+            <label for="memo">Memo:</label>
+            <textarea id="memo" name="memo"
+                      th:field="*{memo}" rows="5" cols="50"></textarea>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+</body>
+<div th:replace="~{fragments/footer :: footer}" />
+</html>

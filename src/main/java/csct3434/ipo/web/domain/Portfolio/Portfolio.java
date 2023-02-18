@@ -3,9 +3,11 @@ package csct3434.ipo.web.domain.Portfolio;
 import csct3434.ipo.web.domain.BaseTimeEntity;
 import csct3434.ipo.web.domain.IPO.IPO;
 import csct3434.ipo.web.domain.Member.Member;
+import csct3434.ipo.web.dto.PortfolioListDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Getter
 @NoArgsConstructor
@@ -29,6 +31,9 @@ public class Portfolio extends BaseTimeEntity {
 
     private int profitRate;
 
+    @Column(columnDefinition = "TEXT")
+    private String memo;
+
     public static Portfolio createPortfolio(Member member, IPO ipo, int sharesCnt, int profit) {
         Portfolio portfolio = new Portfolio();
 
@@ -37,8 +42,6 @@ public class Portfolio extends BaseTimeEntity {
         portfolio.sharesCnt = sharesCnt;
         portfolio.profit = profit;
         portfolio.profitRate = calcInitialProfitRateOf(portfolio);
-
-        member.addPortfolio(portfolio);
 
         return portfolio;
     }
@@ -71,5 +74,23 @@ public class Portfolio extends BaseTimeEntity {
 
     public void setMember(Member member) {
         this.member = member;
+    }
+
+    @Transactional(readOnly = true)
+    public PortfolioListDto toDto() {
+        PortfolioListDto portfolioListDto = PortfolioListDto.builder()
+                .stockName(this.ipo.getStockName())
+                .subscribeStartDate(this.ipo.getSubscribeStartDate())
+                .subscribeEndDate(this.ipo.getSubscribeEndDate())
+                .listedDate(this.ipo.getListedDate())
+                .fixedOfferingPrice(this.ipo.getFixedOfferingPrice())
+                .agents(this.ipo.getAgents())
+                .sharesCnt(this.sharesCnt)
+                .profit(this.profit)
+                .profit(this.profitRate)
+                .memo(this.memo)
+                .build();
+
+        return portfolioListDto;
     }
 }

@@ -28,8 +28,8 @@ public class KakaoLoginController {
         kakaoLoginService.kakaoLogin(code, session);
 
         String sessionAccessToken = (String)session.getAttribute(SessionConfig.accessToken);
-        String sessionMemberEmail = (String) session.getAttribute(SessionConfig.email);
-        log.info("session established - email:" + sessionMemberEmail + " / accessToken:" + sessionAccessToken);
+        Long sessionMemberId = (Long) session.getAttribute(SessionConfig.memberId);
+        log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
 
         return "index";
     }
