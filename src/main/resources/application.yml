@@ -4,6 +4,10 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  mvc:
+    hidden-method:
+      filter:
+        enabled: true
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect

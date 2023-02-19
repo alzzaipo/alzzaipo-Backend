@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.engine.internal.CascadePoint;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sound.sampled.Port;
@@ -25,7 +26,7 @@ public class Member extends BaseTimeEntity {
 
     private String email;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Portfolio> portfolios = new ArrayList<>();
 
     @Builder

@@ -35,7 +35,14 @@ class PortfolioRepositoryTest {
 
         Member member = Member.builder().build();
 
-        Portfolio portfolio = Portfolio.createPortfolio(member, ipo, 10, 200000);
+        Portfolio portfolio = Portfolio.builder()
+                .member(member)
+                .ipo(ipo)
+                .sharesCnt(2)
+                .profit(15000)
+                .agents("KB증권")
+                .memo("테스트")
+                .build();
 
         ipoRepository.save(ipo);
         memberRepository.save(member);

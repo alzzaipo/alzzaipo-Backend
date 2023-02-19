@@ -5,6 +5,7 @@ import csct3434.ipo.web.domain.IPO.IPO;
 import csct3434.ipo.web.domain.Member.Member;
 import csct3434.ipo.web.dto.PortfolioListDto;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,7 @@ public class Portfolio extends BaseTimeEntity {
     @Column(name = "portfolio_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -31,19 +32,20 @@ public class Portfolio extends BaseTimeEntity {
 
     private int profitRate;
 
+    private String agents;
+
     @Column(columnDefinition = "TEXT")
     private String memo;
 
-    public static Portfolio createPortfolio(Member member, IPO ipo, int sharesCnt, int profit) {
-        Portfolio portfolio = new Portfolio();
-
-        portfolio.member = member;
-        portfolio.ipo = ipo;
-        portfolio.sharesCnt = sharesCnt;
-        portfolio.profit = profit;
-        portfolio.profitRate = calcInitialProfitRateOf(portfolio);
-
-        return portfolio;
+    @Builder
+    public Portfolio(Member member, IPO ipo, int sharesCnt, int profit, String agents, String memo) {
+        this.member = member;
+        this.ipo = ipo;
+        this.sharesCnt = sharesCnt;
+        this.profit = profit;
+        this.agents = agents;
+        this.memo = memo;
+        this.profitRate = calcProfitRate();
     }
 
     public void changeAllocatedSharesCnt(int sharesCnt) {
@@ -60,26 +62,23 @@ public class Portfolio extends BaseTimeEntity {
         int profitPerShare = this.profit / this.sharesCnt;
         int fixedOfferingPrice = this.ipo.getFixedOfferingPrice();
 
-        return ((profitPerShare - fixedOfferingPrice) * 100 / fixedOfferingPrice);
-    }
-
-    private static int calcInitialProfitRateOf(Portfolio portfolio) {
-        int profit = portfolio.getProfit();
-        int sharesCnt = portfolio.getSharesCnt();
-        int profitPerShare = profit / sharesCnt;
-        int fixedOfferingPrice = portfolio.getIpo().getFixedOfferingPrice();
-
-        return ((profitPerShare - fixedOfferingPrice) * 100 / fixedOfferingPrice);
+        return (profitPerShare * 100) / fixedOfferingPrice;
     }
 
     public void setMember(Member member) {
         this.member = member;
     }
 
+    public void changeId(Long id) {
+        this.id = id;
+    }
+
     @Transactional(readOnly = true)
     public PortfolioListDto toDto() {
         PortfolioListDto portfolioListDto = PortfolioListDto.builder()
+                .portfolioId(this.id)
                 .stockName(this.ipo.getStockName())
+                .stockCode(this.ipo.getStockCode())
                 .subscribeStartDate(this.ipo.getSubscribeStartDate())
                 .subscribeEndDate(this.ipo.getSubscribeEndDate())
                 .listedDate(this.ipo.getListedDate())
@@ -87,7 +86,7 @@ public class Portfolio extends BaseTimeEntity {
                 .agents(this.ipo.getAgents())
                 .sharesCnt(this.sharesCnt)
                 .profit(this.profit)
-                .profit(this.profitRate)
+                .profitRate(this.profitRate)
                 .memo(this.memo)
                 .build();
 

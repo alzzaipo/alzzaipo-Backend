@@ -8,6 +8,8 @@ import java.time.LocalDate;
 @Getter
 public class PortfolioListDto {
 
+    private Long portfolioId;
+
     private String stockName;
 
     private int stockCode;
@@ -31,9 +33,10 @@ public class PortfolioListDto {
     private String memo;
 
     @Builder
-    public PortfolioListDto(String stockName, int stockCode, LocalDate subscribeStartDate, LocalDate subscribeEndDate,
+    public PortfolioListDto(Long portfolioId, String stockName, int stockCode, LocalDate subscribeStartDate, LocalDate subscribeEndDate,
                             LocalDate listedDate, int fixedOfferingPrice, String agents,
                             int sharesCnt, int profit, int profitRate, String memo) {
+        this.portfolioId = portfolioId;
         this.stockName = stockName;
         this.stockCode = stockCode;
         this.subscribeStartDate = subscribeStartDate;

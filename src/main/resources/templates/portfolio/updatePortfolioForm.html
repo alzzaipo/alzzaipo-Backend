@@ -4,31 +4,29 @@
 <body>
 <div class="container">
     <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
-    <form th:action="@{/portfolio/new}" th:object="${portfolioSaveRequestDto}" method="post">
+    <form th:action="@{/portfolio/{id}/edit (id=${portfolioSaveRequestDto.portfolioId})}" th:object="${portfolioSaveRequestDto}" method="POST">
+        <input type="hidden" name="_method" VALUE="PUT">
+        <input type="hidden" th:field="*{portfolioId}"/>
         <input type="hidden" th:field="*{memberId}"/>
         <div>
             <label for="stockCode">Stock Code:</label>
-            <select id="stockCode" name="stockCode"
-                    th:field="*{stockCode}" required>
-                <option th:each="ipo : ${ipoList}"
-                        th:value="${ipo.stockCode}"
-                        th:text="${ipo.stockName}"></option>
-            </select>
+            <input type="text" id="stockCode" name="stockCode"
+                   th:field="*{stockCode}" readonly />
         </div>
         <div>
             <label for="sharesCnt">Shares Count:</label>
             <input type="number" id="sharesCnt" name="sharesCnt"
-                   th:field="*{sharesCnt}" required/>
+                   th:field="*{sharesCnt}"/>
         </div>
         <div>
             <label for="profit">Profit:</label>
             <input type="number" id="profit" name="profit"
-                   th:field="*{profit}" required/>
+                   th:field="*{profit}"/>
         </div>
         <div>
             <label for="agents">Agents:</label>
             <input type="text" id="agents" name="agents"
-                   th:field="*{agents}" required/>
+                   th:field="*{agents}"/>
         </div>
         <div>
             <label for="memo">Memo:</label>
