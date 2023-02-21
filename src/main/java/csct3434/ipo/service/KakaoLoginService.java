@@ -125,4 +125,20 @@ public class KakaoLoginService {
         return member;
     }
 
+    public void kakaoLogout(HttpSession session) throws JsonProcessingException {
+        String accessToken = (String) session.getAttribute(SessionConfig.accessToken);
+
+        // HTTP Header
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/x-www-form-urlencoded");
+        headers.add("Authorization", "Bearer " + accessToken);
+
+        // HTTP Request Entity
+        HttpEntity<LinkedMultiValueMap<String, String>> requestEntity = new HttpEntity<>(headers);
+
+        // HTTP POST Request
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange("https://kapi.kakao.com/v1/user/logout", HttpMethod.POST, requestEntity, String.class);
+    }
+
 }

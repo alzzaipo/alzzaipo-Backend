@@ -3,6 +3,7 @@ package csct3434.ipo.web.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import csct3434.ipo.config.SessionConfig;
 import csct3434.ipo.service.KakaoLoginService;
+import csct3434.ipo.web.domain.Member.Member;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,5 +33,19 @@ public class KakaoLoginController {
         log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
 
         return "index";
+    }
+
+    @GetMapping("/logout")
+    public String kakaoLogout(HttpSession session) throws JsonProcessingException {
+        // 액세스 토큰 및 리프레시 토큰 만료 요청
+        kakaoLoginService.kakaoLogout(session);
+
+        // 사용자 세션 무효화
+        if(session != null) {
+            log.info("Kakao User Logout. memberId=" + session.getAttribute(SessionConfig.memberId));
+            session.invalidate();
+        }
+
+        return "/index";
     }
 }
