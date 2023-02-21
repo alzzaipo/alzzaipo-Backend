@@ -24,6 +24,7 @@ public class Member extends BaseTimeEntity {
 
     private String nickname;
 
+    @Column(unique = true)
     private String email;
 
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})

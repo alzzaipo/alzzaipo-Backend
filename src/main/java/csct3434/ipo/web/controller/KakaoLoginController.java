@@ -3,7 +3,6 @@ package csct3434.ipo.web.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import csct3434.ipo.config.SessionConfig;
 import csct3434.ipo.service.KakaoLoginService;
-import csct3434.ipo.web.domain.Member.Member;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

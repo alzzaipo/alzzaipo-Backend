@@ -3,7 +3,6 @@ package csct3434.ipo.web.controller;
 import csct3434.ipo.config.SessionConfig;
 import csct3434.ipo.config.SessionManager;
 import csct3434.ipo.service.IPOService;
-import csct3434.ipo.service.MemberService;
 import csct3434.ipo.service.PortfolioService;
 import csct3434.ipo.web.domain.Portfolio.Portfolio;
 import csct3434.ipo.web.dto.PortfolioListDto;
