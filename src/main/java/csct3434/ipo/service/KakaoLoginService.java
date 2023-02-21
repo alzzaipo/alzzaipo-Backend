@@ -6,12 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import csct3434.ipo.config.KakaoLoginConfig;
 import csct3434.ipo.config.SessionConfig;
 import csct3434.ipo.web.domain.Member.Member;
-import csct3434.ipo.web.domain.Member.MemberRepository;
 import csct3434.ipo.web.dto.KakaoUserInfoDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -21,29 +19,34 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class KakaoService {
+public class KakaoLoginService {
 
     private final String restApiKey = KakaoLoginConfig.getRestAPIKey();
     private final String redirectURI = KakaoLoginConfig.getRedirectURI();
     private final String clientSecret = KakaoLoginConfig.getClientSecret();
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     public String getAuthCodeRequestUrl() {
         return "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + restApiKey + "&redirect_uri=" + redirectURI;
     }
 
     public void kakaoLogin(String code, HttpSession session) throws JsonProcessingException {
+        log.info("kakaoLogin() - code:" + code);
+
         // 인가 코드로 액세스 토큰 요청
         String accessToken = getAccessToken(code);
+        log.info("kakaoLogin() - accessToken:" + accessToken);
 
         // 액세스 토큰으로 카카오 사용자 정보 요청
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
+        log.info("kakaoLogin() - nickname:" + kakaoUserInfo.getNickname() + " / email:" + kakaoUserInfo.getEmail());
 
         // 카카오 사용자 정보로 회원 등록여부 조회, 없으면 디비에 새로 등록
         Member member = registerKakaoUserIfNeed(kakaoUserInfo);
 
         session.setAttribute(SessionConfig.accessToken, accessToken);
-        session.setAttribute(SessionConfig.email, member.getEmail());
+        session.setAttribute(SessionConfig.memberId, member.getId());
+        session.setAttribute(SessionConfig.nickname, member.getNickname());
     }
 
 
@@ -115,20 +118,11 @@ public class KakaoService {
     private Member registerKakaoUserIfNeed(KakaoUserInfoDto kakaoUserInfo) {
         String nickname = kakaoUserInfo.getNickname();
         String email = kakaoUserInfo.getEmail();
-        Member member = memberRepository.findByEmail(email)
-                .orElse(null);
 
-        if(member == null) {
-            member = Member.builder()
-                    .nickname(nickname)
-                    .email(email)
-                    .build();
-
-            memberRepository.save(member);
-        }
+        Member member = memberService.findMemberByEmail(email)
+                .orElseGet(() -> memberService.save(new Member(nickname, email)));
 
         return member;
     }
-
 
 }

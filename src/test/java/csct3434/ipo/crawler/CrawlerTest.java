@@ -45,7 +45,7 @@ class CrawlerTest {
 
         //then
         for (IPO ipo : ipoList) {
-            System.out.println("ipo = " + ipo);
+            System.out.println("ipo = " + ipo.getStockName());
         }
 
         assertThat(ipoList.size()).isEqualTo(20);

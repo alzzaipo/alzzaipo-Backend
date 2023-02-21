@@ -20,7 +20,7 @@ public class IPO extends BaseTimeEntity {
     @GeneratedValue
     private Long id;
 
-    //종목명
+    // 종목명
     private String stockName;
 
     // 희망공모가 하단(원)
@@ -45,10 +45,10 @@ public class IPO extends BaseTimeEntity {
     private String agents;
 
     // 청약 시작일
-    LocalDate subscribeStartDate;
+    private LocalDate subscribeStartDate;
 
     // 청약 종료일
-    LocalDate subscribeEndDate;
+    private LocalDate subscribeEndDate;
 
     // 상장일
     private LocalDate listedDate;

@@ -4,6 +4,7 @@ import csct3434.ipo.web.domain.IPO.IPO;
 import csct3434.ipo.web.domain.IPO.IPORepository;
 import csct3434.ipo.web.dto.IPOAnalyzeRequestDto;
 import csct3434.ipo.web.dto.IPOAnalyzeResponseDto;
+import csct3434.ipo.web.dto.IPOListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,10 @@ public class IPOService {
     private final IPORepository ipoRepository;
 
     public IPO findByStockCode(int stockCode) {
-        return ipoRepository.findByStockCode(stockCode);
+        IPO ipo = ipoRepository.findByStockCode(stockCode)
+                .orElseThrow(() -> new IllegalArgumentException("해당 IPO가 없습니다. stockCode=" + stockCode));
+
+        return ipo;
     }
 
     public void save(IPO ipo) {
@@ -74,5 +78,16 @@ public class IPOService {
         }
 
         return sum / responseDtoList.size();
+    }
+
+    public List<IPOListResponseDto> getAllDtoList() {
+        List<IPO> all = findAll();
+
+        List<IPOListResponseDto> result = new ArrayList<>();
+        for (IPO ipo : all) {
+            result.add(new IPOListResponseDto(ipo.getStockName(), ipo.getStockCode()));
+        }
+
+        return result;
     }
 }

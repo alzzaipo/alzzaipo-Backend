@@ -1,7 +1,5 @@
-package csct3434.ipo.web.domain;
+package csct3434.ipo.web.domain.IPO;
 
-import csct3434.ipo.web.domain.IPO.IPO;
-import csct3434.ipo.web.domain.IPO.IPORepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
 @Transactional
+@SpringBootTest
 class IPORepositoryTest {
 
     @Autowired
