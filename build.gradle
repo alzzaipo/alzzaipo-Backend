@@ -25,7 +25,7 @@ dependencies {
 	implementation 'org.jsoup:jsoup:1.15.3'
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 	implementation 'org.springframework.boot:spring-boot-devtools'
-	implementation 'mysql:mysql-connector-java'
+	runtimeOnly 'com.h2database:h2'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
