@@ -61,8 +61,9 @@ public class Portfolio extends BaseTimeEntity {
     private int calcProfitRate() {
         int profitPerShare = this.profit / this.sharesCnt;
         int fixedOfferingPrice = this.ipo.getFixedOfferingPrice();
+        int netProfit = profitPerShare - fixedOfferingPrice;
 
-        return (profitPerShare * 100) / fixedOfferingPrice;
+        return (netProfit * 100) / fixedOfferingPrice;
     }
 
     public void setMember(Member member) {

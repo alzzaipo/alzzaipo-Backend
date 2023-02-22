@@ -28,7 +28,7 @@ public class IPOService {
     }
 
     public void save(IPO ipo) {
-        if(ipoRepository.findByStockCode(ipo.getStockCode()) == null) {
+        if(ipoRepository.findByStockCode(ipo.getStockCode()).isEmpty()) {
             ipoRepository.save(ipo);
         }
     }
