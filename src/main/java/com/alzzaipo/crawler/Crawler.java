@@ -24,7 +24,7 @@ public class Crawler {
 
     // 작년 공모주 정보를 데이터베이스에 저장
     @Transactional
-    public void updateIPOListUntil(int year) {
+    public void updateIPOListForm(int year) {
         int pageNumber = 1;
         boolean stopFlag = false;
 
