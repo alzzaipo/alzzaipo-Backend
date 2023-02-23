@@ -1,15 +1,16 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.config.KakaoLoginConfig;
+import com.alzzaipo.config.SessionConfig;
 import com.alzzaipo.web.domain.Member.Member;
 import com.alzzaipo.web.dto.KakaoUserInfoDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.alzzaipo.config.SessionConfig;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,14 +18,28 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class KakaoLoginService {
 
-    private final String restApiKey = KakaoLoginConfig.getRestAPIKey();
-    private final String redirectURI = KakaoLoginConfig.getRedirectURI();
-    private final String clientSecret = KakaoLoginConfig.getClientSecret();
+    private final Environment env;
     private final MemberService memberService;
+    private String restApiKey;
+    private String clientSecret;
+    private String redirectURI;
+
+    @Autowired
+    public KakaoLoginService(Environment env, MemberService memberService) {
+        this.env = env;
+        this.memberService = memberService;
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        this.restApiKey = env.getProperty("kakaoRestAPIKey");
+        this.clientSecret = env.getProperty("kakaoClientSecret");
+        this.redirectURI = env.getProperty("kakaoRedirectURI");
+    }
+
 
     public String getAuthCodeRequestUrl() {
         return "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + restApiKey + "&redirect_uri=" + redirectURI;

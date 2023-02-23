@@ -50,7 +50,7 @@ class IPOServiceTest {
     {
         //given
         IPO ipo1 = IPO.builder()
-                .stockName("회사1")
+                .stockName("stock1")
                 .stockCode(123)
                 .listedDate(LocalDate.of(2022, 2, 4))
                 .competitionRate(1000)
@@ -58,7 +58,7 @@ class IPOServiceTest {
                 .build();
 
         IPO ipo2 = IPO.builder()
-                .stockName("회사2")
+                .stockName("stock2")
                 .stockCode(124)
                 .listedDate(LocalDate.of(2023, 2, 4))
                 .competitionRate(1000)
@@ -66,7 +66,7 @@ class IPOServiceTest {
                 .build();
 
         IPO ipo3 = IPO.builder()
-                .stockName("회사3")
+                .stockName("stock3")
                 .stockCode(125)
                 .listedDate(LocalDate.of(2023, 2, 10))
                 .competitionRate(5)
@@ -88,6 +88,7 @@ class IPOServiceTest {
         List<IPOAnalyzeResponseDto> result = ipoService.analyze(requestDto);
 
         //then
+        assertThat(result.size()).isSameAs(1);
         assertThat(result.get(0).getStockCode()).isSameAs(ipo2.getStockCode());
     }
 

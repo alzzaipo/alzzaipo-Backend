@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: ${database.url}
+    username: ${database.username}
+    password: ${database.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  mvc:
+    hidden-method:
+      filter:
+        enabled: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: info
