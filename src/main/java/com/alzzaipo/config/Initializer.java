@@ -19,7 +19,7 @@ public class Initializer {
         String answer = System.getenv("CRAWLER_CODE");
 
         if(code.equals(answer)) {
-            crawler.updateIPOListUntil(year);
+            crawler.updateIPOListFrom(year);
         }
 
         return "index";
