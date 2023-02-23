@@ -1,4 +1,12 @@
 spring:
+  profiles:
+    active: local
+
+---
+
+spring:
+  profiles: local
+
   datasource:
     url: jdbc:h2:tcp://localhost/~/ipo
     username: sa
@@ -17,9 +25,41 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        #        show_sql: true
         format_sql: true
 
-logging.level:
-  org.hibernate.SQL: debug
-#  org.hibernate.type: trace
+  logging:
+    level:
+      org:
+        hibernate:
+          SQL: debug
+
+---
+
+
+spring:
+  profiles: prod
+  datasource:
+    url: ${RDS_URL}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  mvc:
+    hidden-method:
+      filter:
+        enabled: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+
+  logging:
+    level:
+      org:
+        hibernate:
+          SQL: info

@@ -1,6 +1,6 @@
 package com.alzzaipo.api;
 
-import com.alzzaipo.config.ApiConfig;
+import com.alzzaipo.config.StockPriceApiConfig;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,7 +18,7 @@ public class InitialMarketPriceApi {
     public static int getInitialMarketPrice(int stockCode, LocalDate listedDate) {
 
         int initialMarketPrice = 0;
-        String serviceKey = ApiConfig.getServiceKey();  /* ApiConfig : 인증키가 저장된 클래스 */
+        String serviceKey = StockPriceApiConfig.getServiceKey();  /* ApiConfig : 인증키가 저장된 클래스 */
         String strListedDate = listedDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
         if(!listedDate.isBefore(LocalDate.now())) {
