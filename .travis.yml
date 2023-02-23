@@ -17,6 +17,9 @@ before_deploy:
   - zip -r alzzaipo
   - mkdir -p deploy
   - mv alzzaipo.zip deploy/alzzaipo.zip
+  
+before_install:
+  - chmod +x gradlew
 
 deploy:
   - provider: s3
