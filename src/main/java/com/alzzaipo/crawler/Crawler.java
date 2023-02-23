@@ -23,24 +23,26 @@ public class Crawler {
 
     // 작년 공모주 정보를 데이터베이스에 저장
     @Transactional
-    public void updateIPOListFrom(int year) {
+    public void updateIPOListFrom(int from) {
         int pageNumber = 1;
         boolean stopFlag = false;
 
         try {
-
             while (true) {
                 List<IPO> ipoList = getIPOListFromPage(pageNumber);
 
                 for (IPO ipo : ipoList) {
-                    if (ipo.getListedDate().getYear() >= year) {
+                    if (ipo.getSubscribeStartDate().getYear() >= from) {
                         ipoService.save(ipo);
                     } else {
-                        stopFlag = true;
-                        break;
+                        if(ipo.getSubscribeStartDate().getYear() == 1000) {
+                            continue;
+                        } else {
+                            stopFlag = true;
+                            break;
+                        }
                     }
                 }
-
                 if (stopFlag) {
                     break;
                 } else {
@@ -50,7 +52,6 @@ public class Crawler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public List<IPO> getIPOListFromPage(int pageNumber) {
@@ -98,46 +99,92 @@ public class Crawler {
     private CrawlerDto createCrawlerDto(Element ipoRawData) throws Exception {
 
         // 종목명
-        String stockName = ipoRawData.child(0).text();
+        String stockName = "조회불가" ;
+        String rawData = ipoRawData.child(0).text();
+        if(rawData != null && !rawData.isEmpty()) {
+            stockName = rawData;
+        }
 
-        // 희망공모가 하단
-        int expectedOfferingPriceMin = Integer.valueOf(ipoRawData.child(2).text().split("~")[0].replace(",", ""));
+        // 희망공모가 하단, 상단
+        int expectedOfferingPriceMin = -1, expectedOfferingPriceMax = -1;
+        rawData = ipoRawData.child(2).text();
 
-        // 희망공모가 상단
-        int expectedOfferingPriceMax = Integer.valueOf(ipoRawData.child(2).text().split("~")[1].replace(",", ""));
+        if (rawData != null && !rawData.isEmpty()) {
+            String[] offeringPrices = rawData.split("~");
+            if(offeringPrices.length > 0) {
+                expectedOfferingPriceMin = Integer.parseInt(offeringPrices[0].replace(",", ""));
+            }
+
+            if(offeringPrices.length > 1) {
+                expectedOfferingPriceMax = Integer.parseInt(offeringPrices[1].replace(",", ""));
+            }
+        }
+
 
         // 최종공모가
-        int fixedOfferingPrice = Integer.valueOf(ipoRawData.child(3).text().replace(",", ""));
+        int fixedOfferingPrice = -1;
+        rawData = ipoRawData.child(3).text();
+        if (rawData != null && !rawData.isEmpty()) {
+            fixedOfferingPrice = Integer.parseInt(rawData.replace(",", ""));
+        }
 
         // 공모금액
-        int totalAmount = Integer.valueOf(ipoRawData.child(4).text().replace(",", ""));
+        int totalAmount = -1;
+        rawData = ipoRawData.child(4).text();
+        if (rawData != null && !rawData.isEmpty()) {
+            totalAmount = Integer.parseInt(rawData.replace(",", ""));
+        }
 
         // 기관경쟁률
-        int competitionRate = getCleanRate(ipoRawData.child(5).text());
+        int competitionRate = -1;
+        rawData = ipoRawData.child(5).text();
+        if (rawData != null && !rawData.isEmpty()) {
+            competitionRate = getCleanRate(rawData);
+        }
 
         // 의무보유확약비율
-        int lockupRate = getCleanRate(ipoRawData.child(6).text());
+        int lockupRate = -1;
+        rawData = ipoRawData.child(6).text();
+        if (rawData != null && !rawData.isEmpty()) {
+            lockupRate = getCleanRate(rawData);
+        }
 
-        // 주관사
-        String agents = ipoRawData.child(7).text();
+        // 주간사
+        String agents = "조회불가";
+        rawData = ipoRawData.child(7).text();
+        if(rawData != null && !rawData.isEmpty()) {
+            agents = rawData;
+        }
+
 
 
         /* 상세 페이지에서 추가 청약정보를 가져옵니다 */
         String newUrl = "http://www.ipo38.co.kr/ipo/" + ipoRawData.child(0).child(0).attr("href").substring(2);
-        List<String> additionalData = getAdditionalIPOData(newUrl);
-
-        // 청약 시작일
+        List<String> additionalData = getAdditionalIPOData(newUrl);     // 조회불가 시, "error" 반환
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-        LocalDate subscribeStartDate = LocalDate.parse(additionalData.get(0), formatter);
 
-        // 청약 종료일
-        LocalDate subscribeEndDate = LocalDate.parse(additionalData.get(1), formatter);
 
-        // 상장일
-        LocalDate listedDate = LocalDate.parse(additionalData.get(2), formatter);
+        /* 청약 시작일, 종료일*/
+        LocalDate subscribeStartDate = LocalDate.of(1000,1,1);
+        LocalDate subscribeEndDate = LocalDate.of(1000,1,1);
+        if(!additionalData.get(0).equals("error")) {
+            subscribeStartDate = LocalDate.parse(additionalData.get(0), formatter);
+        }
+        if(!additionalData.get(1).equals("error")) {
+            subscribeEndDate = LocalDate.parse(additionalData.get(1), formatter);
+        }
 
-        // 종목코드
-        int stockCode = Integer.valueOf(additionalData.get(3));
+        /* 상장일 */
+        LocalDate listedDate = LocalDate.of(1000,1,1);
+        if(!additionalData.get(2).equals("error")) {
+            listedDate = LocalDate.parse(additionalData.get(2), formatter);
+        }
+
+        /* 종목코드 */
+        int stockCode = -1;
+        if(!additionalData.get(3).equals("error")) {
+            stockCode = Integer.parseInt(additionalData.get(3));
+        }
 
         CrawlerDto crawlerDto = CrawlerDto.builder()
                 .stockName(stockName)
@@ -176,24 +223,39 @@ public class Crawler {
         try {
             Document document = Jsoup.connect(url).get();
 
+            /* 청약시작일, 청약종료일*/
+            String subscribeStartDate = "error", subscribeEndDate = "error";
             String subscribeDate = document.select(subscribeDateSelector1).text();
-            if (subscribeDate.isEmpty()) {
+
+            if(subscribeDate == null && subscribeDate.isEmpty()) {
                 subscribeDate = document.select(subscribeDateSelector2).text();
             }
-
-            // 청약 시작일
-            String subscribeStartDate = subscribeDate.replace(" ", "").split("~")[0];
-            // 청약 종료일
-            String subscribeEndDate = subscribeDate.replace(" ", "").split("~")[1];
-
-            // 상장일
-            String listedDate = document.select(listedDateSelector1).text(); /* 상장일 */
-            if (listedDate.isEmpty()) {
-                listedDate = document.select(listedDateSelector2).text();
+            if(subscribeDate != null && !subscribeDate.isEmpty()) {
+                String[] subscribeDates = subscribeDate.replace(" ", "").split("~");
+                if(subscribeDates.length > 0) {
+                    subscribeStartDate = subscribeDates[0];
+                }
+                if(subscribeDates.length > 1) {
+                    subscribeEndDate = subscribeDates[1];
+                }
             }
 
-            // 종목 코드
-            String stockCode = document.select(stockCodeSelector).text();
+            /* 상장일 */
+            String listedDate = "error";
+            String rawData = document.select(listedDateSelector1).text();
+            if (rawData == null || rawData.isEmpty()) {
+                rawData = document.select(listedDateSelector2).text();
+            }
+            if(rawData != null && !rawData.isEmpty()) {
+                listedDate = rawData;
+            }
+
+            /* 종목 코드 */
+            String stockCode = "error";
+            rawData = document.select(stockCodeSelector).text();
+            if(rawData != null && !rawData.isEmpty()) {
+                stockCode = rawData;
+            }
 
             result.add(subscribeStartDate);
             result.add(subscribeEndDate);
@@ -207,21 +269,18 @@ public class Crawler {
         return result;
     }
 
-    // '####.##:1' 형식에서 소수점 아래를 제외한 정보를 int로 반환 / 정보가 없는 경우 0을 반환
+    // '####.##:1' 형식에서 소수점 아래를 제거한 정수 부분을 int로 반환 / 정보가 없는 경우 0을 반환
     private int getCleanRate(String rawData) {
-        String rate;
+        String rate = "0";
 
-        if(rawData.matches(".*[0-9].*")) {
-            if (rawData.contains(".")) {
-                rate = rawData.split("\\.")[0].replace(",", "");
-            } else {
-                rate = rawData.split(":")[0].replace(",", "");
+        if (rawData.matches(".*[0-9].*")) {
+            String[] parts = rawData.split("[.:]");
+            if (parts.length > 0) {
+                rate = parts[0].replace(",", "");
             }
-        } else {
-            rate = "0";
         }
 
-        return Integer.valueOf(rate);
+        return Integer.parseInt(rate);
     }
 
     private IPO createIPO(CrawlerDto crawlerDto, int initialMarketPrice) {

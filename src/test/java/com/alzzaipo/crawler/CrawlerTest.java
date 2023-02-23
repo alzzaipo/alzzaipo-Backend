@@ -1,7 +1,7 @@
 package com.alzzaipo.crawler;
 
+import com.alzzaipo.service.IPOService;
 import com.alzzaipo.web.domain.IPO.IPO;
-import com.alzzaipo.web.domain.IPO.IPORepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,13 +11,17 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
 @SpringBootTest
 class CrawlerTest {
 
+    private final IPOService ipoService;
+    private final Crawler crawler;
+
     @Autowired
-    IPORepository ipoRepository;
-    @Autowired Crawler crawler;
+    public CrawlerTest(IPOService ipoService, Crawler crawler) {
+        this.ipoService = ipoService;
+        this.crawler = crawler;
+    }
 
     @Test
     public void getCrawlerDtoListFromPage() {
@@ -52,17 +56,18 @@ class CrawlerTest {
         assertThat(ipoList.size()).isEqualTo(20);
     }
 
+    @Transactional
     @Test
-    public void updateIPOListUntil() throws Exception
+    public void updateIPOListFrom() throws Exception
     {
         //given
-        int until = 2023;
+        int from = 2023;
 
         //when
-        crawler.updateIPOListFrom(until);
+        crawler.updateIPOListFrom(from);
 
         //then
-        List<IPO> findAllList = ipoRepository.findAll();
+        List<IPO> findAllList = ipoService.findAll();
         assertThat(findAllList.size()).isGreaterThan(0);
         System.out.println(findAllList.size());
     }

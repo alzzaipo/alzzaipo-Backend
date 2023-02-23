@@ -1,6 +1,7 @@
 package com.alzzaipo.crawler;
 
 import com.alzzaipo.config.StockPriceApiConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,13 +14,19 @@ import java.io.BufferedReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+@Slf4j
 public class InitialMarketPriceApi {
 
     public static int getInitialMarketPrice(int stockCode, LocalDate listedDate) {
 
-        int initialMarketPrice = 0;
+        int initialMarketPrice = -1;
         String serviceKey = StockPriceApiConfig.getServiceKey();
         String strListedDate = listedDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+        if(serviceKey == null || serviceKey.isEmpty()) {
+            log.error("StockPriceAPIKey is empty");
+            return -1;
+        }
 
         if(!listedDate.isBefore(LocalDate.now())) {
             return 0;
