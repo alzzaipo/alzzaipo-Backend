@@ -1,6 +1,5 @@
 package com.alzzaipo.crawler;
 
-import com.alzzaipo.api.InitialMarketPriceApi;
 import com.alzzaipo.service.IPOService;
 import com.alzzaipo.web.domain.IPO.IPO;
 import lombok.RequiredArgsConstructor;

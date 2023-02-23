@@ -59,7 +59,7 @@ class CrawlerTest {
         int until = 2023;
 
         //when
-        crawler.updateIPOListUntil(until);
+        crawler.updateIPOListFrom(until);
 
         //then
         List<IPO> findAllList = ipoRepository.findAll();
