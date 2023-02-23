@@ -1,6 +1,5 @@
 package com.alzzaipo.crawler;
 
-import com.alzzaipo.api.InitialMarketPriceApi;
 import com.alzzaipo.service.IPOService;
 import com.alzzaipo.web.domain.IPO.IPO;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class Crawler {
 
     // 작년 공모주 정보를 데이터베이스에 저장
     @Transactional
-    public void updateIPOListUntil(int year) {
+    public void updateIPOListFrom(int year) {
         int pageNumber = 1;
         boolean stopFlag = false;
 

@@ -1,5 +1,6 @@
 package com.alzzaipo.api;
 
+import com.alzzaipo.crawler.InitialMarketPriceApi;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
