@@ -1,10 +1,13 @@
 package com.alzzaipo.crawler;
 
-import com.alzzaipo.config.StockPriceApiConfig;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -15,16 +18,24 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
+@Component
 public class InitialMarketPriceApi {
 
-    public static int getInitialMarketPrice(int stockCode, LocalDate listedDate) {
+    private final Environment env;
+
+    @Autowired
+    public InitialMarketPriceApi(Environment env) {
+        this.env = env;
+    }
+
+    public int getInitialMarketPrice(int stockCode, LocalDate listedDate) {
 
         int initialMarketPrice = -1;
-        String serviceKey = StockPriceApiConfig.getServiceKey();
+        String serviceKey = env.getProperty("stockPriceAPIKey");
         String strListedDate = listedDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
         if(serviceKey == null || serviceKey.isEmpty()) {
-            log.error("StockPriceAPIKey is empty");
+            log.error("stockPriceAPIKey is empty");
             return -1;
         }
 

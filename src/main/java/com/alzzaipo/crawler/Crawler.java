@@ -15,11 +15,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 @RequiredArgsConstructor
+@Component
 public class Crawler {
 
     private final IPOService ipoService;
+    private final InitialMarketPriceApi initialMarketPriceApi;
 
     // 작년 공모주 정보를 데이터베이스에 저장
     @Transactional
@@ -60,7 +61,7 @@ public class Crawler {
         List<CrawlerDto> crawlerDtoList = getCrawlerDtoListFromPage(pageNumber);
 
         for (CrawlerDto crawlerDto : crawlerDtoList) {
-            int initialMarketPrice = InitialMarketPriceApi.getInitialMarketPrice(crawlerDto.getStockCode(), crawlerDto.getListedDate());
+            int initialMarketPrice = initialMarketPriceApi.getInitialMarketPrice(crawlerDto.getStockCode(), crawlerDto.getListedDate());
             IPO ipo = createIPO(crawlerDto, initialMarketPrice);
             ipoList.add(ipo);
         }

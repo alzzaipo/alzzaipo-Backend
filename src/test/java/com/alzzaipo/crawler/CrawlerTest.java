@@ -11,6 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 @SpringBootTest
 class CrawlerTest {
 
@@ -56,7 +57,6 @@ class CrawlerTest {
         assertThat(ipoList.size()).isEqualTo(20);
     }
 
-    @Transactional
     @Test
     public void updateIPOListFrom() throws Exception
     {
