@@ -1,6 +1,4 @@
-src/main/java/com/alzzaipo/config/
 .idea
 .gradle
 build
-application.yml
 etc/
