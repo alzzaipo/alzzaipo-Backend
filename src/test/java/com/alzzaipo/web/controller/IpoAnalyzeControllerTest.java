@@ -1,6 +1,6 @@
 package com.alzzaipo.web.controller;
 
-import com.alzzaipo.web.dto.IPOAnalyzeRequestDto;
+import com.alzzaipo.web.dto.IpoAnalyzeRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureMockMvc
 @RequiredArgsConstructor
 @SpringBootTest
-class AnalyzeControllerTest {
+class IpoAnalyzeControllerTest {
 
     private final MockMvc mockMvc;
 
@@ -47,7 +47,7 @@ class AnalyzeControllerTest {
     @Test
     public void 분석_결과_페이지() throws Exception
     {
-        IPOAnalyzeRequestDto requestDto = IPOAnalyzeRequestDto.builder()
+        IpoAnalyzeRequestDto requestDto = IpoAnalyzeRequestDto.builder()
                 .to(2023)
                 .from(2023)
                 .competitionRate(1000)

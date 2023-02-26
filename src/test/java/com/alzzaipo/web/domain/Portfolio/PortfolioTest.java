@@ -40,7 +40,7 @@ class PortfolioTest {
                 .member(member)
                 .ipo(ipo)
                 .sharesCnt(10)
-                .profit(200000)
+                .profit(47000)
                 .agents("KB증권")
                 .memo("테스트")
                 .build();
@@ -51,12 +51,12 @@ class PortfolioTest {
 
         //when
         int initialProfitRate = savedPortfolio.getProfitRate();
-        int changedProfit = savedPortfolio.changeProfit(150000);
+        int changedProfit = savedPortfolio.changeProfit(40000);
         int changedProfitRate = savedPortfolio.getProfitRate();
 
         //then
-        assertThat(initialProfitRate).isEqualTo(100);
-        assertThat(changedProfit).isEqualTo(150000);
-        assertThat(changedProfitRate).isEqualTo(50);
+        assertThat(initialProfitRate).isEqualTo(47);
+        assertThat(changedProfit).isEqualTo(40000);
+        assertThat(changedProfitRate).isEqualTo(40);
     }
 }

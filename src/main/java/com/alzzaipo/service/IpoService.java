@@ -1,10 +1,10 @@
 package com.alzzaipo.service;
 
 import com.alzzaipo.web.domain.IPO.IPO;
-import com.alzzaipo.web.dto.IPOAnalyzeRequestDto;
-import com.alzzaipo.web.dto.IPOListResponseDto;
+import com.alzzaipo.web.dto.IpoAnalyzeRequestDto;
+import com.alzzaipo.web.dto.IpoListResponseDto;
 import com.alzzaipo.web.domain.IPO.IPORepository;
-import com.alzzaipo.web.dto.IPOAnalyzeResponseDto;
+import com.alzzaipo.web.dto.IpoAnalyzeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class IPOService {
+public class IpoService {
 
     private final IPORepository ipoRepository;
 
@@ -37,14 +37,14 @@ public class IPOService {
         return ipo;
     }
 
-    public List<IPOAnalyzeResponseDto> analyze(IPOAnalyzeRequestDto requestDto) {
-        List<IPOAnalyzeResponseDto> resposeDtoList = new ArrayList<>();
+    public List<IpoAnalyzeResponseDto> analyze(IpoAnalyzeRequestDto requestDto) {
+        List<IpoAnalyzeResponseDto> resposeDtoList = new ArrayList<>();
         LocalDate from = LocalDate.of(requestDto.getFrom(), 1, 1);
         LocalDate to = LocalDate.of(requestDto.getTo(), 12, 31);
         List<IPO> ipoList = ipoRepository.analyze(from, to, requestDto.getCompetitionRate(), requestDto.getLockupRate());
 
         for (IPO ipo : ipoList) {
-            IPOAnalyzeResponseDto responseDto = IPOAnalyzeResponseDto.builder()
+            IpoAnalyzeResponseDto responseDto = IpoAnalyzeResponseDto.builder()
                     .stockName(ipo.getStockName())
                     .stockCode(ipo.getStockCode())
                     .expectedOfferingPriceMin(ipo.getExpectedOfferingPriceMin())
@@ -65,10 +65,10 @@ public class IPOService {
         return resposeDtoList;
     }
 
-    public int getAverageProfitRateFromIPOAnalyzeResponseDto(List<IPOAnalyzeResponseDto> responseDtoList) {
+    public int getAverageProfitRateFromIPOAnalyzeResponseDto(List<IpoAnalyzeResponseDto> responseDtoList) {
 
         int sum = 0;
-        for (IPOAnalyzeResponseDto responseDto : responseDtoList) {
+        for (IpoAnalyzeResponseDto responseDto : responseDtoList) {
             sum += responseDto.getProfitRate();
         }
 
@@ -79,12 +79,12 @@ public class IPOService {
         return sum / responseDtoList.size();
     }
 
-    public List<IPOListResponseDto> getAllDtoList() {
+    public List<IpoListResponseDto> getAllDtoList() {
         List<IPO> all = findAll();
 
-        List<IPOListResponseDto> result = new ArrayList<>();
+        List<IpoListResponseDto> result = new ArrayList<>();
         for (IPO ipo : all) {
-            result.add(new IPOListResponseDto(ipo.getStockName(), ipo.getStockCode()));
+            result.add(new IpoListResponseDto(ipo.getStockName(), ipo.getStockCode()));
         }
 
         return result;

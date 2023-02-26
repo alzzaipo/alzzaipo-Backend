@@ -2,9 +2,11 @@ package com.alzzaipo.web.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@NoArgsConstructor
 @Getter
 public class PortfolioListDto {
 

@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class IPOAnalyzeResponseDto {
+public class IpoAnalyzeResponseDto {
 
     //종목명
     private String stockName;
@@ -46,7 +46,7 @@ public class IPOAnalyzeResponseDto {
 
 
     @Builder
-    public IPOAnalyzeResponseDto(String stockName, int stockCode, int expectedOfferingPriceMin, int expectedOfferingPriceMax,
+    public IpoAnalyzeResponseDto(String stockName, int stockCode, int expectedOfferingPriceMin, int expectedOfferingPriceMax,
                                  int fixedOfferingPrice, int totalAmount, int competitionRate, int lockupRate,
                                  String agents, LocalDate listedDate, int initialMarketPrice, int profitRate) {
         this.stockName = stockName;
@@ -61,23 +61,5 @@ public class IPOAnalyzeResponseDto {
         this.listedDate = listedDate;
         this.initialMarketPrice = initialMarketPrice;
         this.profitRate = profitRate;
-    }
-
-    @Override
-    public String toString() {
-        return "IPOAnalyzeResponseDto{" +
-                "stockName='" + stockName + '\'' +
-                ", stockCode=" + stockCode +
-                ", expectedOfferingPriceMin=" + expectedOfferingPriceMin +
-                ", expectedOfferingPriceMax=" + expectedOfferingPriceMax +
-                ", fixedOfferingPrice=" + fixedOfferingPrice +
-                ", totalAmount=" + totalAmount +
-                ", competitionRate=" + competitionRate +
-                ", lockupRate=" + lockupRate +
-                ", agents='" + agents + '\'' +
-                ", listedDate=" + listedDate +
-                ", initialMarketPrice=" + initialMarketPrice +
-                ", profitRate=" + profitRate +
-                '}';
     }
 }

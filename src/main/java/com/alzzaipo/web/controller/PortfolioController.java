@@ -1,10 +1,10 @@
 package com.alzzaipo.web.controller;
 
-import com.alzzaipo.service.IPOService;
-import com.alzzaipo.web.domain.Portfolio.Portfolio;
 import com.alzzaipo.config.SessionConfig;
 import com.alzzaipo.config.SessionManager;
+import com.alzzaipo.service.IpoService;
 import com.alzzaipo.service.PortfolioService;
+import com.alzzaipo.web.domain.Portfolio.Portfolio;
 import com.alzzaipo.web.dto.PortfolioListDto;
 import com.alzzaipo.web.dto.PortfolioSaveRequestDto;
 import jakarta.servlet.http.HttpSession;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public class PortfolioController {
 
     private final SessionManager sessionManager;
-    private final IPOService ipoService;
+    private final IpoService ipoService;
     private final PortfolioService portfolioService;
 
     @GetMapping("/portfolio")
@@ -49,8 +49,6 @@ public class PortfolioController {
         }
 
         PortfolioSaveRequestDto portfolioSaveRequestDto = new PortfolioSaveRequestDto();
-        Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
-        portfolioSaveRequestDto.setMemberId(memberId);
 
         model.addAttribute("portfolioSaveRequestDto", portfolioSaveRequestDto);
         model.addAttribute("ipoList", ipoService.getAllDtoList());
@@ -58,7 +56,17 @@ public class PortfolioController {
     }
 
     @PostMapping("/portfolio/new")
-    public String create(PortfolioSaveRequestDto portfolioSaveRequestDto) {
+    public String create(HttpSession session, PortfolioSaveRequestDto portfolioSaveRequestDto) {
+
+        if(!sessionManager.verifySession(session)) {
+            return "login";
+        }
+
+        Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
+        if(memberId != portfolioSaveRequestDto.getMemberId()) {
+            return "index";
+        }
+
         portfolioService.createPortfolio(portfolioSaveRequestDto);
 
         return "redirect:/portfolio";
