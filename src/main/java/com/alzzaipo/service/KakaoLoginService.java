@@ -40,7 +40,6 @@ public class KakaoLoginService {
         this.redirectURI = env.getProperty("kakaoRedirectURI");
     }
 
-
     public String getAuthCodeRequestUrl() {
         return "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + restApiKey + "&redirect_uri=" + redirectURI;
     }
