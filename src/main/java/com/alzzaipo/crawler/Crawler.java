@@ -1,6 +1,6 @@
 package com.alzzaipo.crawler;
 
-import com.alzzaipo.service.IPOService;
+import com.alzzaipo.service.IpoService;
 import com.alzzaipo.web.domain.IPO.IPO;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 public class Crawler {
 
-    private final IPOService ipoService;
+    private final IpoService ipoService;
     private final InitialMarketPriceApi initialMarketPriceApi;
 
     // 작년 공모주 정보를 데이터베이스에 저장

@@ -1,6 +1,6 @@
 package com.alzzaipo.crawler;
 
-import com.alzzaipo.service.IPOService;
+import com.alzzaipo.service.IpoService;
 import com.alzzaipo.web.domain.IPO.IPO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class CrawlerTest {
 
-    private final IPOService ipoService;
+    private final IpoService ipoService;
     private final Crawler crawler;
 
     @Autowired
-    public CrawlerTest(IPOService ipoService, Crawler crawler) {
+    public CrawlerTest(IpoService ipoService, Crawler crawler) {
         this.ipoService = ipoService;
         this.crawler = crawler;
     }

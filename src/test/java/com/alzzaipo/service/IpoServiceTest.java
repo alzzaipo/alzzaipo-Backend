@@ -1,8 +1,8 @@
 package com.alzzaipo.service;
 
 import com.alzzaipo.web.domain.IPO.IPO;
-import com.alzzaipo.web.dto.IPOAnalyzeRequestDto;
-import com.alzzaipo.web.dto.IPOAnalyzeResponseDto;
+import com.alzzaipo.web.dto.IpoAnalyzeRequestDto;
+import com.alzzaipo.web.dto.IpoAnalyzeResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,10 +15,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-class IPOServiceTest {
+class IpoServiceTest {
 
     @Autowired
-    IPOService ipoService;
+    IpoService ipoService;
 
     @Test
     public void 종목코드_중복_처리() throws Exception
@@ -77,7 +77,7 @@ class IPOServiceTest {
         ipoService.save(ipo2);
         ipoService.save(ipo3);
 
-        IPOAnalyzeRequestDto requestDto = IPOAnalyzeRequestDto.builder()
+        IpoAnalyzeRequestDto requestDto = IpoAnalyzeRequestDto.builder()
                 .from(2023)
                 .to(2023)
                 .competitionRate(100)
@@ -85,7 +85,7 @@ class IPOServiceTest {
                 .build();
 
         //when
-        List<IPOAnalyzeResponseDto> result = ipoService.analyze(requestDto);
+        List<IpoAnalyzeResponseDto> result = ipoService.analyze(requestDto);
 
         //then
         assertThat(result.size()).isSameAs(1);

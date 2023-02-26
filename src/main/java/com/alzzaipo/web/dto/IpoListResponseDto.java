@@ -3,11 +3,11 @@ package com.alzzaipo.web.dto;
 import lombok.Getter;
 
 @Getter
-public class IPOListResponseDto {
+public class IpoListResponseDto {
     private String stockName;
     private int stockCode;
 
-    public IPOListResponseDto(String stockName, int stockCode) {
+    public IpoListResponseDto(String stockName, int stockCode) {
         this.stockName = stockName;
         this.stockCode = stockCode;
     }

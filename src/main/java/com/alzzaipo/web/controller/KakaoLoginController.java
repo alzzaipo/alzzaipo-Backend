@@ -45,6 +45,6 @@ public class KakaoLoginController {
             session.invalidate();
         }
 
-        return "/index";
+        return "index";
     }
 }
