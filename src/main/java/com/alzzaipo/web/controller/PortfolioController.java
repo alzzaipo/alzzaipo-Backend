@@ -63,9 +63,7 @@ public class PortfolioController {
         }
 
         Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
-        if(memberId != portfolioSaveRequestDto.getMemberId()) {
-            return "index";
-        }
+        portfolioSaveRequestDto.setMemberId(memberId);
 
         portfolioService.createPortfolio(portfolioSaveRequestDto);
 

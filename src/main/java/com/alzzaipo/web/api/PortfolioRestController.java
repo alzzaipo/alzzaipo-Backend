@@ -3,22 +3,17 @@ package com.alzzaipo.web.api;
 import com.alzzaipo.config.SessionConfig;
 import com.alzzaipo.config.SessionManager;
 import com.alzzaipo.service.PortfolioService;
-import com.alzzaipo.web.domain.Portfolio.Portfolio;
 import com.alzzaipo.web.dto.PortfolioListDto;
 import com.alzzaipo.web.dto.PortfolioSaveRequestDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Session;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,10 +46,7 @@ public class PortfolioRestController {
         }
 
         Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
-
-        if(memberId != portfolioSaveRequestDto.getMemberId()) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Invalid Request");
-        }
+        portfolioSaveRequestDto.setMemberId(memberId);
 
         portfolioService.createPortfolio(portfolioSaveRequestDto);
 
