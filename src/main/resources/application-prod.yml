@@ -30,4 +30,12 @@ server:
     enabled: true
     key-store-type: PKCS12
     key-store: classpath:keystore.p12
-    key-store-password: pswd4CERT132! # 인증서 암호
+    key-store-password: ${keyStorePassword}
+  servlet:
+    session:
+      cookie:
+        same-site: none
+        secure: true
+        path: /
+        http-only: false
+        domain: alzzaipo.com
