@@ -28,7 +28,7 @@ public class KakaoLoginController {
     }
 
     @GetMapping("/kakao_callback")
-    public ResponseEntity kakaoLogin(@RequestParam("code") String code, HttpSession session, HttpServletResponse response) throws JsonProcessingException {
+    public String kakaoLogin(@RequestParam("code") String code, HttpSession session, HttpServletResponse response) throws JsonProcessingException {
         kakaoLoginService.kakaoLogin(code, session);
 
         String sessionAccessToken = (String)session.getAttribute(SessionConfig.accessToken);
@@ -43,7 +43,7 @@ public class KakaoLoginController {
 
         log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
 
-        return new ResponseEntity<>("access Token", HttpStatus.OK);
+        return "redirect:/";
     }
 
     @GetMapping("/logout")
