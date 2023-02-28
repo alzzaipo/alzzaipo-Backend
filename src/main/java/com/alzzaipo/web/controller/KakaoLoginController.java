@@ -34,15 +34,13 @@ public class KakaoLoginController {
         String sessionAccessToken = (String)session.getAttribute(SessionConfig.accessToken);
         Long sessionMemberId = (Long) session.getAttribute(SessionConfig.memberId);
 
-        Cookie cookie = new Cookie("refreshToken", "This_is_test_refreshToken!!");
+        Cookie cookie = new Cookie("teststest", "This_is_test_refreshToken!!");
         cookie.setMaxAge(7 * 24 * 60 * 60);
-        cookie.setDomain("localhost");
         cookie.setSecure(true);
         cookie.setHttpOnly(false);
         cookie.setPath("/");
         response.addCookie(cookie);
-        log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
-        log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
+
         log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
 
         return new ResponseEntity<>("access Token", HttpStatus.OK);
