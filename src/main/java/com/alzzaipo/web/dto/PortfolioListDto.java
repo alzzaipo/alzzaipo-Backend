@@ -3,11 +3,13 @@ package com.alzzaipo.web.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
+@Setter
 public class PortfolioListDto {
 
     private Long portfolioId;

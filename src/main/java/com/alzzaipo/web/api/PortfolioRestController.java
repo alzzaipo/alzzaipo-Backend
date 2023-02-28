@@ -30,7 +30,9 @@ public class PortfolioRestController {
     public ResponseEntity<List<PortfolioListDto>> getUserPortfolios(HttpSession session) {
         if(!sessionManager.verifySession(session)) {
             ArrayList<PortfolioListDto> error = new ArrayList<>();
-            error.add(new PortfolioListDto());
+            PortfolioListDto portfolio = new PortfolioListDto();
+            portfolio.setMemo("응 에러야");
+            error.add(portfolio);
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(error);
         }
 
