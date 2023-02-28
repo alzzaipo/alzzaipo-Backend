@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,12 +35,20 @@ public class KakaoLoginController {
         String sessionAccessToken = (String)session.getAttribute(SessionConfig.accessToken);
         Long sessionMemberId = (Long) session.getAttribute(SessionConfig.memberId);
 
-        Cookie cookie = new Cookie("teststest", "This_is_test_refreshToken!!");
+        ResponseCookie.ResponseCookieBuilder cookie = ResponseCookie.from("none", "none")
+                .path("/")
+                .sameSite("none")
+                .httpOnly(false)
+                .maxAge(7 * 24 * 60 * 60)
+                .secure(true);
+
+
+/*        Cookie cookie = new Cookie("teststest", "This_is_test_refreshToken!!");
         cookie.setMaxAge(7 * 24 * 60 * 60);
         cookie.setSecure(true);
         cookie.setHttpOnly(false);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        cookie.setPath("/");*/
+        response.addHeader("Set-Cookie", cookie.toString());
 
         log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
 
