@@ -42,6 +42,8 @@ public class KakaoLoginController {
         cookie.setAttribute("JSESSIONID", session.getId());
         response.addCookie(cookie);
         log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
+        log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
+        log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
 
         return new ResponseEntity<>("access Token", HttpStatus.OK);
     }
