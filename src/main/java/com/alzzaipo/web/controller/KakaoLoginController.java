@@ -36,10 +36,10 @@ public class KakaoLoginController {
 
         Cookie cookie = new Cookie("refreshToken", "This_is_test_refreshToken!!");
         cookie.setMaxAge(7 * 24 * 60 * 60);
+        cookie.setDomain("localhost");
         cookie.setSecure(true);
-        cookie.setHttpOnly(true);
+        cookie.setHttpOnly(false);
         cookie.setPath("/");
-        cookie.setAttribute("JSESSIONID", session.getId());
         response.addCookie(cookie);
         log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
         log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
