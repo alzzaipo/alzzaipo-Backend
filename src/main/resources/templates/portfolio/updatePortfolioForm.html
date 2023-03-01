@@ -7,7 +7,6 @@
     <form th:action="@{/portfolio/{id}/edit (id=${portfolioSaveRequestDto.portfolioId})}" th:object="${portfolioSaveRequestDto}" method="POST">
         <input type="hidden" name="_method" VALUE="PUT">
         <input type="hidden" th:field="*{portfolioId}"/>
-        <input type="hidden" th:field="*{memberId}"/>
         <div>
             <label for="stockCode">Stock Code:</label>
             <input type="text" id="stockCode" name="stockCode"

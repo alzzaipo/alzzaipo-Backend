@@ -6,7 +6,6 @@
     <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
     <form th:action="@{/portfolio/new}" th:object="${portfolioSaveRequestDto}" method="post">
         <input type="hidden" th:field="*{portfolioId}"/>
-        <input type="hidden" th:field="*{memberId}"/>
         <div>
             <label for="stockCode">Stock Code:</label>
             <select id="stockCode" name="stockCode"
