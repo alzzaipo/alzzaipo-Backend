@@ -32,10 +32,6 @@ public class PortfolioRestController {
         Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
         List<PortfolioListDto> memberPortfolios = portfolioService.getMemberPortfolioListDtos(memberId);
 
-        if(memberPortfolios.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ArrayList<>());
-        }
-
         return ResponseEntity.ok(memberPortfolios);
     }
 
