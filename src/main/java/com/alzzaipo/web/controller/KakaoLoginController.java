@@ -28,10 +28,9 @@ public class KakaoLoginController {
     public String kakaoLogin(@RequestParam("code") String code, HttpSession session, HttpServletRequest request) throws JsonProcessingException {
         kakaoLoginService.kakaoLogin(code, session);
 
-        String sessionAccessToken = (String)session.getAttribute(SessionConfig.accessToken);
         Long sessionMemberId = (Long) session.getAttribute(SessionConfig.memberId);
 
-        log.info("session established - memberId:" + sessionMemberId + " / accessToken:" + sessionAccessToken);
+        log.info("session established - memberId:" + sessionMemberId);
 
         String referer = request.getHeader("Referer");
         if (referer != null && referer.contains("://")) {

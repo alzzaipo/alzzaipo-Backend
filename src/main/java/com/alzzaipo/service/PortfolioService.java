@@ -42,17 +42,17 @@ public class PortfolioService {
 
     public Portfolio findPortfolioById(Long id) {
         Portfolio portfolio = portfolioRepository.findById(id)
-                .orElse(new Portfolio());
+                .orElseGet(() -> new Portfolio());
 
         return portfolio;
     }
 
     public Boolean createMemberPortfolio(Long memberId, PortfolioSaveRequestDto saveRequestDto) {
         IPO ipo = ipoRepository.findByStockCode(saveRequestDto.getStockCode())
-                .orElse(new IPO());
+                .orElseGet(() -> new IPO());
 
         Member member = memberRepository.findById(memberId)
-                .orElse(new Member());
+                .orElseGet(() -> new Member());
 
         if(ipo.getId() == null) {
             log.warn("invalid IPO");
@@ -87,10 +87,10 @@ public class PortfolioService {
         }
 
         IPO ipo = ipoRepository.findByStockCode(portfolioSaveRequestDto.getStockCode())
-                .orElse(new IPO());
+                .orElseGet(() -> new IPO());
 
         Member member = memberRepository.findById(memberId)
-                .orElse(new Member());
+                .orElseGet(() -> new Member());
 
         if(ipo.getId() == null) {
             log.warn("Invalid IPO");
@@ -135,7 +135,7 @@ public class PortfolioService {
     public List<PortfolioListDto> getMemberPortfolioListDtos(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElse(new Member());
+                .orElseGet(() -> new Member());
 
         if(member.getId() != null) {
             log.warn("Invalid memberId");
