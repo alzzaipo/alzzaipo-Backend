@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,100 +30,126 @@ public class PortfolioService {
     private final IPORepository ipoRepository;
     private final MemberRepository memberRepository;
 
-    public Portfolio findPortfolioById(Long id) {
-        Portfolio portfolio = portfolioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 Portfolio가 없습니다. id=" + id));
-
-        return portfolio;
-    }
-
-    public void delete(Portfolio portfolio) {
-        portfolioRepository.delete(portfolio);
-    }
-
     public Portfolio save(Portfolio portfolio) {
         if(portfolio.getId() != null) {
             return em.merge(portfolio);
-        } else {
-            em.persist(portfolio);
         }
+        else {
+            em.persist(portfolio);
+            return portfolio;
+        }
+    }
+
+    public Portfolio findPortfolioById(Long id) {
+        Portfolio portfolio = portfolioRepository.findById(id)
+                .orElse(new Portfolio());
 
         return portfolio;
     }
 
-    public Portfolio createPortfolio(PortfolioSaveRequestDto requestDto) {
-        IPO ipo = ipoRepository.findByStockCode(requestDto.getStockCode())
-                .orElseThrow(() -> new IllegalArgumentException("해당 IPO가 없습니다. stockCode=" + requestDto.getStockCode()));
+    public Boolean createMemberPortfolio(Long memberId, PortfolioSaveRequestDto saveRequestDto) {
+        IPO ipo = ipoRepository.findByStockCode(saveRequestDto.getStockCode())
+                .orElse(new IPO());
 
-        Member member = memberRepository.findById(requestDto.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 Member가 없습니다. memberId=" + requestDto.getMemberId()));
+        Member member = memberRepository.findById(memberId)
+                .orElse(new Member());
 
-        Portfolio portfolio = Portfolio.builder()
-                .member(member)
-                .ipo(ipo)
-                .sharesCnt(requestDto.getSharesCnt())
-                .profit(requestDto.getProfit())
-                .agents(requestDto.getAgents())
-                .memo(requestDto.getMemo())
-                .build();
+        if(ipo.getId() == null) {
+            log.warn("invalid IPO");
+            return false;
+        }
+        else if(member.getId() == null) {
+            log.warn("invalid memberId");
+            return false;
+        }
+        else {
+            Portfolio portfolio = Portfolio.builder()
+                    .member(member)
+                    .ipo(ipo)
+                    .sharesCnt(saveRequestDto.getSharesCnt())
+                    .profit(saveRequestDto.getProfit())
+                    .agents(saveRequestDto.getAgents())
+                    .memo(saveRequestDto.getMemo())
+                    .build();
 
-        member.addPortfolio(portfolio);
+            member.addPortfolio(portfolio);
 
-        return portfolioRepository.save(portfolio);
+            portfolioRepository.save(portfolio);
+
+            return true;
+        }
+    }
+
+    public Boolean updateMemberPortfolio(Long memberId, PortfolioSaveRequestDto portfolioSaveRequestDto) {
+        if(portfolioSaveRequestDto == null) {
+            log.error("PortfolioSaveRequestDto is null");
+            return false;
+        }
+
+        IPO ipo = ipoRepository.findByStockCode(portfolioSaveRequestDto.getStockCode())
+                .orElse(new IPO());
+
+        Member member = memberRepository.findById(memberId)
+                .orElse(new Member());
+
+        if(ipo.getId() == null) {
+            log.warn("Invalid IPO");
+            return false;
+        }
+        else if(member.getId() == null) {
+            log.warn("Invalid memberId");
+            return false;
+        }
+        else {
+            Portfolio portfolio = Portfolio.builder()
+                    .member(member)
+                    .ipo(ipo)
+                    .sharesCnt(portfolioSaveRequestDto.getSharesCnt())
+                    .profit(portfolioSaveRequestDto.getProfit())
+                    .agents(portfolioSaveRequestDto.getAgents())
+                    .memo(portfolioSaveRequestDto.getMemo())
+                    .build();
+
+            portfolio.changeId(portfolioSaveRequestDto.getPortfolioId());
+            save(portfolio);
+            return true;
+        }
+    }
+
+    public boolean deleteMemberPortfolio(Long memberId, Portfolio portfolio) {
+        if(portfolio.getId() == null) {
+            log.warn("invalid portfolioId");
+            return false;
+        }
+        else if(memberId == portfolio.getMember().getId()) {
+            log.warn("memberId not match with portfolio owner - memberId:" + memberId + " ownerId:" + portfolio.getMember().getId());
+            return false;
+        }
+        else {
+            portfolioRepository.delete(portfolio);
+            return true;
+        }
     }
 
     @Transactional(readOnly = true)
-    public List<PortfolioListDto> getPortfolioListDtosByMemberId(Long memberId) {
+    public List<PortfolioListDto> getMemberPortfolioListDtos(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 Member를 찾을 수 없습니다. id=" + memberId));
+                .orElse(new Member());
 
-        return member.getPortfolios().stream()
-                .map(Portfolio::toDto)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<Portfolio> getPortfolioListByMemberId(Long memberId) {
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 Member를 찾을 수 없습니다. id=" + memberId));
-
-        return member.getPortfolios();
+        if(member.getId() != null) {
+            log.warn("Invalid memberId");
+            return new ArrayList<>();
+        }
+        else {
+            return member.getPortfolios().stream()
+                    .map(Portfolio::toDto)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Transactional(readOnly = true)
     public Optional<PortfolioSaveRequestDto> getPortfolioSaveRequestDto(Long portfolioId) {
         return portfolioRepository.getPortfolioSaveRequestDto(portfolioId);
-    }
-
-    public Portfolio fromSaveRequestDtoToEntity(PortfolioSaveRequestDto portfolioSaveRequestDto) {
-        if(portfolioSaveRequestDto == null) {
-            log.error("PortfolioSaveRequestDto is null");
-            return null;
-        }
-
-        Optional<IPO> ipo = ipoRepository.findByStockCode(portfolioSaveRequestDto.getStockCode());
-        if(ipo.isEmpty()) {
-            return null;
-        }
-
-        Optional<Member> member = memberRepository.findById(portfolioSaveRequestDto.getMemberId());
-        if(member.isEmpty()){
-            return null;
-        }
-
-        Portfolio portfolio = Portfolio.builder()
-                .member(member.get())
-                .ipo(ipo.get())
-                .sharesCnt(portfolioSaveRequestDto.getSharesCnt())
-                .profit(portfolioSaveRequestDto.getProfit())
-                .agents(portfolioSaveRequestDto.getAgents())
-                .memo(portfolioSaveRequestDto.getMemo())
-                .build();
-        
-        portfolio.changeId(portfolioSaveRequestDto.getPortfolioId());
-        System.out.println("portfolio.getId() = " + portfolio.getId());
-        return portfolio;
     }
 }
