@@ -34,8 +34,7 @@ public class PortfolioService {
         if(portfolio.getId() == null) {
             em.persist(portfolio);
             return portfolio;
-        }
-        else {
+        }  else {
             return em.merge(portfolio);
         }
     }
