@@ -31,12 +31,12 @@ public class PortfolioService {
     private final MemberRepository memberRepository;
 
     public Portfolio save(Portfolio portfolio) {
-        if(portfolio.getId() != null) {
-            return em.merge(portfolio);
-        }
-        else {
+        if(portfolio.getId() == null) {
             em.persist(portfolio);
             return portfolio;
+        }
+        else {
+            return em.merge(portfolio);
         }
     }
 
@@ -137,7 +137,7 @@ public class PortfolioService {
         Member member = memberRepository.findById(memberId)
                 .orElseGet(() -> new Member());
 
-        if(member.getId() != null) {
+        if(member.getId() == null) {
             log.warn("Invalid memberId");
             return new ArrayList<>();
         }
