@@ -43,6 +43,7 @@ public class PortfolioController {
 
     @GetMapping("/portfolio/new")
     public String createPortfolioForm(HttpSession session, Model model) {
+        System.out.println("called");
 
         if(!sessionManager.verifySession(session)) {
             return "login";
