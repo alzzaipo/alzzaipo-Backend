@@ -26,6 +26,7 @@ public class KakaoLoginService {
     private String restApiKey;
     private String clientSecret;
     private String redirectURI;
+    private String adminKey;
 
     @Autowired
     public KakaoLoginService(Environment env, MemberService memberService) {
@@ -38,6 +39,7 @@ public class KakaoLoginService {
         this.restApiKey = env.getProperty("kakaoRestAPIKey");
         this.clientSecret = env.getProperty("kakaoClientSecret");
         this.redirectURI = env.getProperty("kakaoRedirectURI");
+        this.adminKey = env.getProperty("kakaoAdminKey");
     }
 
     public String getAuthCodeRequestUrl() {
@@ -45,22 +47,25 @@ public class KakaoLoginService {
     }
 
     public void kakaoLogin(String code, HttpSession session) throws JsonProcessingException {
-        log.info("kakaoLogin() - code:" + code);
+        if(code == null || code.equals("")) {
+            log.error("Null Authorize Code - Code:" + code);
+        }
 
         // 인가 코드로 액세스 토큰 요청
         String accessToken = getAccessToken(code);
-        log.info("kakaoLogin() - accessToken:" + accessToken);
+        if(accessToken == null || accessToken.equals("")) {
+            log.info("Null AccessToken - accessToken:" + accessToken);
+        }
 
         // 액세스 토큰으로 카카오 사용자 정보 요청
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
-        log.info("kakaoLogin() - nickname:" + kakaoUserInfo.getNickname() + " / email:" + kakaoUserInfo.getEmail());
 
         // 카카오 사용자 정보로 회원 등록여부 조회, 없으면 디비에 새로 등록
         Member member = registerKakaoUserIfNeed(kakaoUserInfo);
 
-        session.setAttribute(SessionConfig.accessToken, accessToken);
         session.setAttribute(SessionConfig.memberId, member.getId());
         session.setAttribute(SessionConfig.nickname, member.getNickname());
+        session.setAttribute(SessionConfig.kakaoAccountId, kakaoUserInfo.getKakaoAccountId());
     }
 
 
@@ -114,13 +119,13 @@ public class KakaoLoginService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
 
-        long id = jsonNode.get("id").asLong();
+        long kakaoAccountId = jsonNode.get("id").asLong();
         String email = jsonNode.get("kakao_account").get("email").asText();
         String nickname = jsonNode.get("kakao_account").get("profile").get("nickname").asText();
 
         // Kakao User Info -> KakaoUserInfoDto
         KakaoUserInfoDto kakaoUserInfo = KakaoUserInfoDto.builder()
-                .id(id)
+                .kakaoAccountId(kakaoAccountId)
                 .email(email)
                 .nickname(nickname)
                 .build();
@@ -136,23 +141,32 @@ public class KakaoLoginService {
         Member member = memberService.findMemberByEmail(email)
                 .orElseGet(() -> memberService.save(new Member(nickname, email)));
 
+        if(member.getId() == null) {
+            log.info("New Member Registered - nickname:" + nickname + " email:" + email);
+        }
+
         return member;
     }
 
     public void kakaoLogout(HttpSession session) throws JsonProcessingException {
-        String accessToken = (String) session.getAttribute(SessionConfig.accessToken);
+        Long kakaoAccountId = (Long) session.getAttribute(SessionConfig.kakaoAccountId);
 
         // HTTP Header
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/x-www-form-urlencoded");
-        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Authorization", "KakaoAK " + adminKey);
+
+        // HTTP Body
+        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("target_id_type", "user_id");
+        body.add("target_id", String.valueOf(kakaoAccountId));
 
         // HTTP Request Entity
-        HttpEntity<LinkedMultiValueMap<String, String>> requestEntity = new HttpEntity<>(headers);
+        HttpEntity<LinkedMultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
 
         // HTTP POST Request
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange("https://kapi.kakao.com/v1/user/logout", HttpMethod.POST, requestEntity, String.class);
+        restTemplate.exchange("https://kapi.kakao.com/v1/user/logout", HttpMethod.POST, requestEntity, String.class);
     }
 
 }

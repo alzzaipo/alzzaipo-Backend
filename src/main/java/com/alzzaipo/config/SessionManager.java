@@ -9,12 +9,8 @@ import org.springframework.stereotype.Component;
 public class SessionManager {
 
     public Boolean verifySession(HttpSession session) {
-        String accessToken = (String) session.getAttribute(SessionConfig.accessToken);
+        Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
 
-        if(accessToken == null || accessToken.equals("")) {
-            return false;
-        }
-
-        return true;
+        return (memberId != null && memberId != 0);
     }
 }
