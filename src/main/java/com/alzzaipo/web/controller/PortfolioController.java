@@ -28,7 +28,6 @@ public class PortfolioController {
 
     @GetMapping("/portfolio")
     public String getMemberPortfolios(HttpSession session, Model model) {
-
         if(!sessionManager.verifySession(session)) {
             return "login";
         }
