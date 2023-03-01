@@ -1,5 +1,8 @@
 package com.alzzaipo.web.dto;
 
+import lombok.Getter;
+
+@Getter
 public class LoginStatusDto {
     Boolean status;
     String nickname;
