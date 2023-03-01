@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
 
-    @Query("SELECT new com.alzzaipo.web.dto.PortfolioSaveRequestDto(p.id, p.member.id, p.ipo.stockCode, p.sharesCnt, p.profit, p.agents, p.memo)" +
+    @Query("SELECT new com.alzzaipo.web.dto.PortfolioSaveRequestDto(p.id, p.ipo.stockCode, p.sharesCnt, p.profit, p.agents, p.memo)" +
             "FROM Portfolio p WHERE p.id = :portfolioId")
     public Optional<PortfolioSaveRequestDto> getPortfolioSaveRequestDto(Long portfolioId);
 }

@@ -55,11 +55,11 @@ public class PortfolioService {
                 .orElseGet(() -> new Member());
 
         if(ipo.getId() == null) {
-            log.warn("invalid IPO");
+            log.warn("Invalid IPO");
             return false;
         }
         else if(member.getId() == null) {
-            log.warn("invalid memberId");
+            log.warn("Invalid memberId");
             return false;
         }
         else {

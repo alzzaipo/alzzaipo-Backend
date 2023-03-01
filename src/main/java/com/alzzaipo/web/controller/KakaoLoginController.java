@@ -28,9 +28,8 @@ public class KakaoLoginController {
     public String kakaoLogin(@RequestParam("code") String code, HttpSession session, HttpServletRequest request) throws JsonProcessingException {
         kakaoLoginService.kakaoLogin(code, session);
 
+        String redirectURL = "/";
         Long sessionMemberId = (Long) session.getAttribute(SessionConfig.memberId);
-
-        log.info("session established - memberId:" + sessionMemberId);
 
         String referer = request.getHeader("Referer");
         if (referer != null && referer.contains("://")) {
@@ -41,11 +40,12 @@ public class KakaoLoginController {
 
             if(!domain.contains("alzzaipo.com")) {
                 log.info("X-site domain has connected : " + URL);
-                return "redirect:" + URL;
+                redirectURL = URL;
             }
         }
 
-        return "redirect:/";
+        log.info("session established - memberId:" + sessionMemberId);
+        return "redirect:" + redirectURL;
     }
 
     @GetMapping("/logout")

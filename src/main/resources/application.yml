@@ -8,20 +8,20 @@ spring:
   config:
     activate:
       on-profile: local
-    import: application-config.yml
+    import: application-local-config.yml
 
 ---
 spring:
   config:
     activate:
       on-profile: prod
-    import: application-config.yml
+    import: application-prod-config.yml
 ---
 spring:
   config:
     activate:
       on-profile: test
-    import: application-config.yml
+    import: application-local-config.yml
 
 
 
