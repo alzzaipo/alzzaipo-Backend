@@ -15,6 +15,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
@@ -89,7 +90,12 @@ public class KakaoLoginService {
 
         // HTTP POST Request
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange("https://kauth.kakao.com/oauth/token", HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> response = null;
+        try {
+            response = restTemplate.exchange("https://kauth.kakao.com/oauth/token", HttpMethod.POST, requestEntity, String.class);
+        } catch (HttpClientErrorException e) {
+            e.printStackTrace();
+        }
 
         // HTTP Response (JSON) -> Access Token
         String responseBody = response.getBody();
