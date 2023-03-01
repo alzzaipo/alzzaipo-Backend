@@ -9,10 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,30 +26,48 @@ public class PortfolioRestController {
     @GetMapping("/getUserPortfolios")
     public ResponseEntity<List<PortfolioListDto>> getUserPortfolios(HttpSession session) {
         if(!sessionManager.verifySession(session)) {
-            ArrayList<PortfolioListDto> error = new ArrayList<>();
-            PortfolioListDto portfolio = new PortfolioListDto();
-            portfolio.setMemo("응 에러야");
-            error.add(portfolio);
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(error);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ArrayList<>());
         }
 
         Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
-        List<PortfolioListDto> userPortfolios = portfolioService.getPortfolioListDtosByMemberId(memberId);
-        return ResponseEntity.ok(userPortfolios);
+        List<PortfolioListDto> memberPortfolios = portfolioService.getMemberPortfolioListDtos(memberId);
+
+        if(memberPortfolios.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ArrayList<>());
+        }
+
+        return ResponseEntity.ok(memberPortfolios);
     }
 
     @PostMapping("/createUserPortfolio")
-    public ResponseEntity<String> createUserPortfolio(HttpSession session, PortfolioSaveRequestDto portfolioSaveRequestDto) {
+    public ResponseEntity createUserPortfolio(HttpSession session, PortfolioSaveRequestDto portfolioSaveRequestDto) {
         if(!sessionManager.verifySession(session)) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Not a Member");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
-        portfolioSaveRequestDto.setMemberId(memberId);
+        Boolean success = portfolioService.createMemberPortfolio(memberId, portfolioSaveRequestDto);
 
-        portfolioService.createPortfolio(portfolioSaveRequestDto);
-
-        return ResponseEntity.ok("Success");
+        if(success) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
+    @PutMapping("updateUserPortfolio")
+    public ResponseEntity updateUserPortfolio(HttpSession session, PortfolioSaveRequestDto portfolioSaveRequestDto) {
+        if(!sessionManager.verifySession(session)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
+        Boolean success = portfolioService.updateMemberPortfolio(memberId, portfolioSaveRequestDto);
+
+        if(success) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

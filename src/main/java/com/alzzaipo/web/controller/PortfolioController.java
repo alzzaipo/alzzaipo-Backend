@@ -27,22 +27,22 @@ public class PortfolioController {
     private final PortfolioService portfolioService;
 
     @GetMapping("/portfolio")
-    public String showPortfolioList(HttpSession session, Model model) {
+    public String getMemberPortfolios(HttpSession session, Model model) {
 
         if(!sessionManager.verifySession(session)) {
             return "login";
         }
 
-        Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
+        Long memberId = getMemberId(session);
 
-        List<PortfolioListDto> portfolioListDtos = portfolioService.getPortfolioListDtosByMemberId(memberId);
+        List<PortfolioListDto> portfolioListDtos = portfolioService.getMemberPortfolioListDtos(memberId);
 
         model.addAttribute("portfolioListDtos", portfolioListDtos);
         return "portfolio/showPortfolioList";
     }
 
     @GetMapping("/portfolio/new")
-    public String createForm(HttpSession session, Model model) {
+    public String createPortfolioForm(HttpSession session, Model model) {
 
         if(!sessionManager.verifySession(session)) {
             return "login";
@@ -62,10 +62,9 @@ public class PortfolioController {
             return "login";
         }
 
-        Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
-        portfolioSaveRequestDto.setMemberId(memberId);
+        Long memberId = getMemberId(session);
 
-        portfolioService.createPortfolio(portfolioSaveRequestDto);
+        portfolioService.createMemberPortfolio(memberId, portfolioSaveRequestDto);
 
         return "redirect:/portfolio";
     }
@@ -84,24 +83,25 @@ public class PortfolioController {
     }
 
     @PutMapping("portfolio/{portfolioId}/edit")
-    public String update(PortfolioSaveRequestDto portfolioSaveRequestDto) {
-        Portfolio portfolio = portfolioService.fromSaveRequestDtoToEntity(portfolioSaveRequestDto);
-        System.out.println("portfolio = " + portfolio.getId());
+    public String update(HttpSession session ,PortfolioSaveRequestDto portfolioSaveRequestDto) {
+        Long memberId = getMemberId(session);
 
-        if(portfolio != null) {
-            portfolioService.save(portfolio);
-        } else {
-            log.error("Portfolio Update Failed. portfolioId=" + portfolioSaveRequestDto.getPortfolioId());
-        }
+        portfolioService.updateMemberPortfolio(memberId, portfolioSaveRequestDto);
 
         return "redirect:/portfolio";
     }
 
     @DeleteMapping("portfolio/{portfolioId}/remove")
-    public String delete(@PathVariable("portfolioId") Long portfolioId) {
+    public String delete(HttpSession session, @PathVariable("portfolioId") Long portfolioId) {
+        Long memberId = getMemberId(session);
         Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
-        portfolioService.delete(portfolio);
+        portfolioService.deleteMemberPortfolio(memberId, portfolio);
         return "redirect:/portfolio";
+    }
+
+    private Long getMemberId(HttpSession session) {
+        Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
+        return memberId;
     }
 
 }

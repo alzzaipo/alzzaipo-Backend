@@ -10,7 +10,6 @@ import lombok.Setter;
 public class PortfolioSaveRequestDto {
 
     private Long portfolioId;
-    private Long memberId;
     private int stockCode;
     private int sharesCnt;
     private int profit;
@@ -18,8 +17,7 @@ public class PortfolioSaveRequestDto {
     private String memo;
 
     @Builder
-    public PortfolioSaveRequestDto(Long memberId, int stockCode, int sharesCnt, int profit, String agents, String memo) {
-        this.memberId = memberId;
+    public PortfolioSaveRequestDto(int stockCode, int sharesCnt, int profit, String agents, String memo) {
         this.stockCode = stockCode;
         this.sharesCnt = sharesCnt;
         this.profit = profit;
@@ -27,9 +25,9 @@ public class PortfolioSaveRequestDto {
         this.memo = memo;
     }
 
-    public PortfolioSaveRequestDto(Long portfolioId, Long memberId, int stockCode, int sharesCnt, int profit, String agents, String memo) {
+    @Builder
+    public PortfolioSaveRequestDto(Long portfolioId, int stockCode, int sharesCnt, int profit, String agents, String memo) {
         this.portfolioId = portfolioId;
-        this.memberId = memberId;
         this.stockCode = stockCode;
         this.sharesCnt = sharesCnt;
         this.profit = profit;
