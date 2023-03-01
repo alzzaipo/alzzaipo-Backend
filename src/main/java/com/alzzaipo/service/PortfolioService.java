@@ -118,11 +118,11 @@ public class PortfolioService {
 
     public boolean deleteMemberPortfolio(Long memberId, Portfolio portfolio) {
         if(portfolio.getId() == null) {
-            log.warn("invalid portfolioId");
+            log.warn("Invalid portfolioId");
             return false;
         }
-        else if(memberId == portfolio.getMember().getId()) {
-            log.warn("memberId not match with portfolio owner - memberId:" + memberId + " ownerId:" + portfolio.getMember().getId());
+        else if(memberId != portfolio.getMember().getId()) {
+            log.warn("MemberId not match with portfolio owner - memberId:" + memberId + " ownerId:" + portfolio.getMember().getId());
             return false;
         }
         else {
