@@ -6,8 +6,9 @@ import com.alzzaipo.web.domain.Member.Member;
 import com.alzzaipo.web.domain.Member.MemberRepository;
 import com.alzzaipo.web.domain.Portfolio.Portfolio;
 import com.alzzaipo.web.domain.Portfolio.PortfolioRepository;
-import com.alzzaipo.web.dto.PortfolioSaveRequestDto;
+import com.alzzaipo.web.dto.PortfolioCreateRequestDto;
 import com.alzzaipo.web.dto.PortfolioListDto;
+import com.alzzaipo.web.dto.PortfolioUpdateDto;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,8 +48,8 @@ public class PortfolioService {
         return portfolio;
     }
 
-    public Boolean createMemberPortfolio(Long memberId, PortfolioSaveRequestDto saveRequestDto) {
-        IPO ipo = ipoRepository.findByStockCode(saveRequestDto.getStockCode())
+    public Boolean createMemberPortfolio(Long memberId, PortfolioCreateRequestDto createRequestDto) {
+        IPO ipo = ipoRepository.findByStockCode(createRequestDto.getStockCode())
                 .orElseGet(() -> new IPO());
 
         Member member = memberRepository.findById(memberId)
@@ -66,27 +67,30 @@ public class PortfolioService {
             Portfolio portfolio = Portfolio.builder()
                     .member(member)
                     .ipo(ipo)
-                    .sharesCnt(saveRequestDto.getSharesCnt())
-                    .profit(saveRequestDto.getProfit())
-                    .agents(saveRequestDto.getAgents())
-                    .memo(saveRequestDto.getMemo())
+                    .sharesCnt(createRequestDto.getSharesCnt())
+                    .profit(createRequestDto.getProfit())
+                    .agents(createRequestDto.getAgents())
+                    .memo(createRequestDto.getMemo())
                     .build();
 
             member.addPortfolio(portfolio);
-
             portfolioRepository.save(portfolio);
-
             return true;
         }
     }
 
-    public Boolean updateMemberPortfolio(Long memberId, PortfolioSaveRequestDto portfolioSaveRequestDto) {
-        if(portfolioSaveRequestDto == null) {
+    public Boolean updateMemberPortfolio(Long memberId, PortfolioUpdateDto portfolioUpdateDto) {
+        if(portfolioUpdateDto == null) {
             log.error("PortfolioSaveRequestDto is null");
             return false;
         }
 
-        IPO ipo = ipoRepository.findByStockCode(portfolioSaveRequestDto.getStockCode())
+        if(portfolioRepository.findById(portfolioUpdateDto.getPortfolioId()).isEmpty()) {
+            log.error("Invalid PortfolioId - portfolioUpdateDto.getPortfolioId()" + portfolioUpdateDto.getPortfolioId());
+            return false;
+        }
+
+        IPO ipo = ipoRepository.findByStockCode(portfolioUpdateDto.getStockCode())
                 .orElseGet(() -> new IPO());
 
         Member member = memberRepository.findById(memberId)
@@ -104,36 +108,37 @@ public class PortfolioService {
             Portfolio portfolio = Portfolio.builder()
                     .member(member)
                     .ipo(ipo)
-                    .sharesCnt(portfolioSaveRequestDto.getSharesCnt())
-                    .profit(portfolioSaveRequestDto.getProfit())
-                    .agents(portfolioSaveRequestDto.getAgents())
-                    .memo(portfolioSaveRequestDto.getMemo())
+                    .sharesCnt(portfolioUpdateDto.getSharesCnt())
+                    .profit(portfolioUpdateDto.getProfit())
+                    .agents(portfolioUpdateDto.getAgents())
+                    .memo(portfolioUpdateDto.getMemo())
                     .build();
 
-            portfolio.changeId(portfolioSaveRequestDto.getPortfolioId());
+            portfolio.changeId(portfolioUpdateDto.getPortfolioId());
             save(portfolio);
             return true;
         }
     }
 
-    public boolean deleteMemberPortfolio(Long memberId, Portfolio portfolio) {
+    public boolean deleteMemberPortfolio(Long memberId, Long portfolioId) {
+        Portfolio portfolio = findPortfolioById(portfolioId);
+
         if(portfolio.getId() == null) {
             log.warn("Invalid portfolioId");
             return false;
         }
-        else if(memberId != portfolio.getMember().getId()) {
-            log.warn("MemberId not match with portfolio owner - memberId:" + memberId + " ownerId:" + portfolio.getMember().getId());
-            return false;
-        }
-        else {
+        else if(memberId.equals(portfolio.getMember().getId())) {
             portfolioRepository.delete(portfolio);
             return true;
+        }
+        else {
+            log.warn("MemberId not match with portfolio owner - memberId:" + memberId + " ownerId:" + portfolio.getMember().getId());
+            return false;
         }
     }
 
     @Transactional(readOnly = true)
     public List<PortfolioListDto> getMemberPortfolioListDtos(Long memberId) {
-
         Member member = memberRepository.findById(memberId)
                 .orElseGet(() -> new Member());
 
@@ -149,7 +154,7 @@ public class PortfolioService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<PortfolioSaveRequestDto> getPortfolioSaveRequestDto(Long portfolioId) {
-        return portfolioRepository.getPortfolioSaveRequestDto(portfolioId);
+    public Optional<PortfolioUpdateDto> getPortfolioUpdateDto(Long portfolioId) {
+        return portfolioRepository.getPortfolioUpdateDto(portfolioId);
     }
 }
