@@ -1,6 +1,5 @@
-package com.alzzaipo.config;
+package com.alzzaipo.crawler;
 
-import com.alzzaipo.crawler.Crawler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
-public class Initializer {
+public class CrawlerController {
 
     private final Crawler crawler;
     private final Environment env;
@@ -24,6 +23,6 @@ public class Initializer {
             crawler.updateIPOListFrom(year);
         }
 
-        return "index";
+        return "redirect:/";
     }
 }

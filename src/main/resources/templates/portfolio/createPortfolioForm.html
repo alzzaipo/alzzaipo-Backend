@@ -4,8 +4,7 @@
 <body>
 <div class="container">
     <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
-    <form th:action="@{/portfolio/new}" th:object="${portfolioSaveRequestDto}" method="post">
-        <input type="hidden" th:field="*{portfolioId}"/>
+    <form th:action="@{/portfolio/new}" th:object="${portfolioCreateRequestDto}" method="post">
         <div>
             <label for="stockCode">Stock Code:</label>
             <select id="stockCode" name="stockCode"

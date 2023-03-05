@@ -4,9 +4,9 @@ import com.alzzaipo.config.SessionConfig;
 import com.alzzaipo.config.SessionManager;
 import com.alzzaipo.service.IpoService;
 import com.alzzaipo.service.PortfolioService;
-import com.alzzaipo.web.domain.Portfolio.Portfolio;
+import com.alzzaipo.web.dto.PortfolioCreateRequestDto;
 import com.alzzaipo.web.dto.PortfolioListDto;
-import com.alzzaipo.web.dto.PortfolioSaveRequestDto;
+import com.alzzaipo.web.dto.PortfolioUpdateDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,60 +42,54 @@ public class PortfolioController {
 
     @GetMapping("/portfolio/new")
     public String createPortfolioForm(HttpSession session, Model model) {
-        System.out.println("called");
 
         if(!sessionManager.verifySession(session)) {
             return "login";
         }
 
-        PortfolioSaveRequestDto portfolioSaveRequestDto = new PortfolioSaveRequestDto();
+        PortfolioCreateRequestDto portfolioCreateRequestDto = new PortfolioCreateRequestDto();
 
-        model.addAttribute("portfolioSaveRequestDto", portfolioSaveRequestDto);
+        model.addAttribute("portfolioCreateRequestDto", portfolioCreateRequestDto);
         model.addAttribute("ipoList", ipoService.getAllDtoList());
         return "portfolio/createPortfolioForm";
     }
 
     @PostMapping("/portfolio/new")
-    public String create(HttpSession session, PortfolioSaveRequestDto portfolioSaveRequestDto) {
+    public String create(HttpSession session, PortfolioCreateRequestDto portfolioCreateRequestDto) {
 
         if(!sessionManager.verifySession(session)) {
             return "login";
         }
 
         Long memberId = getMemberId(session);
-
-        portfolioService.createMemberPortfolio(memberId, portfolioSaveRequestDto);
-
+        portfolioService.createMemberPortfolio(memberId, portfolioCreateRequestDto);
         return "redirect:/portfolio";
     }
 
     @GetMapping("portfolio/{portfolioId}/edit")
     public String updateForm(@PathVariable("portfolioId") Long portfolioId, Model model) {
-        Optional<PortfolioSaveRequestDto> portfolioSaveRequestDto = portfolioService.getPortfolioSaveRequestDto(portfolioId);
+        Optional<PortfolioUpdateDto> portfolioUpdateDto = portfolioService.getPortfolioUpdateDto(portfolioId);
 
-        if(portfolioSaveRequestDto.isEmpty()) {
+        if(portfolioUpdateDto.isEmpty()) {
             log.error("해당하는 포트폴리오를 찾지 못했습니다. portfolioId=" + portfolioId);
             return "/portfolio/showPortfolioList";
         }
 
-        model.addAttribute("portfolioSaveRequestDto", portfolioSaveRequestDto.get());
+        model.addAttribute("portfolioUpdateDto", portfolioUpdateDto.get());
         return "portfolio/updatePortfolioForm";
     }
 
     @PutMapping("portfolio/{portfolioId}/edit")
-    public String update(HttpSession session ,PortfolioSaveRequestDto portfolioSaveRequestDto) {
+    public String update(HttpSession session, PortfolioUpdateDto portfolioUpdateDto) {
         Long memberId = getMemberId(session);
-
-        portfolioService.updateMemberPortfolio(memberId, portfolioSaveRequestDto);
-
+        portfolioService.updateMemberPortfolio(memberId, portfolioUpdateDto);
         return "redirect:/portfolio";
     }
 
     @DeleteMapping("portfolio/{portfolioId}/remove")
     public String delete(HttpSession session, @PathVariable("portfolioId") Long portfolioId) {
         Long memberId = getMemberId(session);
-        Portfolio portfolio = portfolioService.findPortfolioById(portfolioId);
-        portfolioService.deleteMemberPortfolio(memberId, portfolio);
+        portfolioService.deleteMemberPortfolio(memberId, portfolioId);
         return "redirect:/portfolio";
     }
 
