@@ -11,6 +11,6 @@ public class SessionManager {
     public Boolean verifySession(HttpSession session) {
         Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
 
-        return (memberId != null && memberId != 0);
+        return (memberId != null && !memberId.equals(0));
     }
 }
