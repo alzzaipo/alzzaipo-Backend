@@ -13,22 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/ipo")
 @RestController
 public class IpoRestController {
 
     private final IpoService ipoService;
 
-    @GetMapping("/getIpoAnalyzeResult")
-    public ResponseEntity<List<IpoAnalyzeResponseDto>> getIpoAnalyzeResult(IpoAnalyzeRequestDto ipoAnalyzeRequestDto) {
-        List<IpoAnalyzeResponseDto> responseDtoList = ipoService.analyze(ipoAnalyzeRequestDto);
-        return ResponseEntity.ok(responseDtoList);
-    }
-
-    @GetMapping("/getIpoList")
+    @GetMapping("/list")
     public ResponseEntity<List<IpoListResponseDto>> getIpoList() {
         List<IpoListResponseDto> ipoList = ipoService.getAllDtoList();
         return ResponseEntity.ok(ipoList);
+    }
+
+    @GetMapping("/analyze")
+    public ResponseEntity<List<IpoAnalyzeResponseDto>> getIpoAnalyzeResult(IpoAnalyzeRequestDto ipoAnalyzeRequestDto) {
+        List<IpoAnalyzeResponseDto> responseDtoList = ipoService.analyze(ipoAnalyzeRequestDto);
+        return ResponseEntity.ok(responseDtoList);
     }
 
 }

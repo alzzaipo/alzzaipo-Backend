@@ -15,7 +15,7 @@ public class LoginRestController {
 
     private final SessionManager sessionManager;
 
-    @GetMapping("/api/getLoginStatus")
+    @GetMapping("/api/login/status")
     public ResponseEntity<LoginStatusDto> getLoginStatus(HttpSession session) {
         if(sessionManager.verifySession(session)) {
             return ResponseEntity.ok(new LoginStatusDto(true, (String)session.getAttribute(SessionConfig.nickname)));
