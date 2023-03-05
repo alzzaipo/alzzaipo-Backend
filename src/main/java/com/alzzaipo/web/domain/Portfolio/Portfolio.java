@@ -59,19 +59,20 @@ public class Portfolio extends BaseTimeEntity {
     }
 
     private int calcProfitRate() {
-        int profitPerShare = this.profit / this.sharesCnt;
-        int fixedOfferingPrice = this.ipo.getFixedOfferingPrice();
+        if(this.sharesCnt != 0) {
+            int profitPerShare = this.profit / this.sharesCnt;
+            int fixedOfferingPrice = this.ipo.getFixedOfferingPrice();
+            return (profitPerShare * 100) / fixedOfferingPrice;
+        }
 
-        return (profitPerShare * 100) / fixedOfferingPrice;
+        return 0;
     }
 
     public void setMember(Member member) {
         this.member = member;
     }
 
-    public void changeId(Long id) {
-        this.id = id;
-    }
+    public void changeId(Long id) { this.id = id; }
 
     @Transactional(readOnly = true)
     public PortfolioListDto toDto() {
@@ -83,7 +84,7 @@ public class Portfolio extends BaseTimeEntity {
                 .subscribeEndDate(this.ipo.getSubscribeEndDate())
                 .listedDate(this.ipo.getListedDate())
                 .fixedOfferingPrice(this.ipo.getFixedOfferingPrice())
-                .agents(this.ipo.getAgents())
+                .agents(this.agents)
                 .sharesCnt(this.sharesCnt)
                 .profit(this.profit)
                 .profitRate(this.profitRate)
