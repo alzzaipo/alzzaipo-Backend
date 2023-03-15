@@ -1,4 +1,4 @@
-package com.alzzaipo.domain.user;
+package com.alzzaipo.domain.member;
 
 import com.alzzaipo.domain.BaseTimeEntity;
 import com.alzzaipo.domain.portfolio.Portfolio;
