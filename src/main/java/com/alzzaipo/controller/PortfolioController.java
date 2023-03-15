@@ -1,15 +1,13 @@
 package com.alzzaipo.controller;
 
-import com.alzzaipo.config.SessionConfig;
-import com.alzzaipo.config.SessionManager;
+import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
+import com.alzzaipo.domain.dto.PortfolioListResponseDto;
+import com.alzzaipo.domain.dto.PortfolioUpdateResponseDto;
 import com.alzzaipo.service.IpoService;
 import com.alzzaipo.service.PortfolioService;
-import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
-import com.alzzaipo.domain.dto.PortfolioListDto;
-import com.alzzaipo.domain.dto.PortfolioUpdateDto;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,30 +20,21 @@ import java.util.Optional;
 @Controller
 public class PortfolioController {
 
-    private final SessionManager sessionManager;
     private final IpoService ipoService;
     private final PortfolioService portfolioService;
 
     @GetMapping("/portfolio")
-    public String getMemberPortfolios(HttpSession session, Model model) {
-        if(!sessionManager.verifySession(session)) {
-            return "login";
-        }
+    public String getMemberPortfolios(@AuthenticationPrincipal String accountId, Model model) {
 
-        Long memberId = getMemberId(session);
+        List<PortfolioListResponseDto> portfolioListResponseDtos
+                = portfolioService.getMemberPortfolioListResponseDtos(accountId);
 
-        List<PortfolioListDto> portfolioListDtos = portfolioService.getMemberPortfolioListDtos(memberId);
-
-        model.addAttribute("portfolioListDtos", portfolioListDtos);
+        model.addAttribute("portfolioListResponseDtos", portfolioListResponseDtos);
         return "portfolio/showPortfolioList";
     }
 
     @GetMapping("/portfolio/new")
-    public String createPortfolioForm(HttpSession session, Model model) {
-
-        if(!sessionManager.verifySession(session)) {
-            return "login";
-        }
+    public String createPortfolioForm(Model model) {
 
         PortfolioCreateRequestDto portfolioCreateRequestDto = new PortfolioCreateRequestDto();
 
@@ -55,47 +44,35 @@ public class PortfolioController {
     }
 
     @PostMapping("/portfolio/new")
-    public String create(HttpSession session, PortfolioCreateRequestDto portfolioCreateRequestDto) {
+    public String create(@AuthenticationPrincipal String accountId, PortfolioCreateRequestDto portfolioCreateRequestDto) {
 
-        if(!sessionManager.verifySession(session)) {
-            return "login";
-        }
-
-        Long memberId = getMemberId(session);
-        portfolioService.createMemberPortfolio(memberId, portfolioCreateRequestDto);
+        portfolioService.createMemberPortfolio(accountId, portfolioCreateRequestDto);
         return "redirect:/portfolio";
     }
 
     @GetMapping("portfolio/{portfolioId}/edit")
     public String updateForm(@PathVariable("portfolioId") Long portfolioId, Model model) {
-        Optional<PortfolioUpdateDto> portfolioUpdateDto = portfolioService.getPortfolioUpdateDto(portfolioId);
+        Optional<PortfolioUpdateResponseDto> portfolioUpdateResponseDto = portfolioService.getPortfolioUpdateResponseDto(portfolioId);
 
-        if(portfolioUpdateDto.isEmpty()) {
+        if(portfolioUpdateResponseDto.isEmpty()) {
             log.error("해당하는 포트폴리오를 찾지 못했습니다. portfolioId=" + portfolioId);
             return "/portfolio/showPortfolioList";
         }
 
-        model.addAttribute("portfolioUpdateDto", portfolioUpdateDto.get());
+        model.addAttribute("portfolioUpdateResponseDto", portfolioUpdateResponseDto.get());
         return "portfolio/updatePortfolioForm";
     }
 
     @PutMapping("portfolio/{portfolioId}/edit")
-    public String update(HttpSession session, PortfolioUpdateDto portfolioUpdateDto) {
-        Long memberId = getMemberId(session);
-        portfolioService.updateMemberPortfolio(memberId, portfolioUpdateDto);
+    public String update(@AuthenticationPrincipal String accountId, PortfolioUpdateResponseDto portfolioUpdateResponseDto) {
+        portfolioService.updateMemberPortfolio(accountId, portfolioUpdateResponseDto);
         return "redirect:/portfolio";
     }
 
     @DeleteMapping("portfolio/{portfolioId}/remove")
-    public String delete(HttpSession session, @PathVariable("portfolioId") Long portfolioId) {
-        Long memberId = getMemberId(session);
-        portfolioService.deleteMemberPortfolio(memberId, portfolioId);
+    public String delete(@AuthenticationPrincipal String accountId, @PathVariable("portfolioId") Long portfolioId) {
+        portfolioService.deleteMemberPortfolio(accountId, portfolioId);
         return "redirect:/portfolio";
-    }
-
-    private Long getMemberId(HttpSession session) {
-        Long memberId = (Long) session.getAttribute(SessionConfig.memberId);
-        return memberId;
     }
 
 }

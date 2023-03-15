@@ -1,20 +1,20 @@
 package com.alzzaipo.api;
 
-import com.alzzaipo.config.SessionConfig;
 import com.alzzaipo.config.SessionManager;
+import com.alzzaipo.domain.dto.PortfolioUpdateResponseDto;
 import com.alzzaipo.service.PortfolioService;
 import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
-import com.alzzaipo.domain.dto.PortfolioListDto;
-import com.alzzaipo.domain.dto.PortfolioUpdateDto;
-import jakarta.servlet.http.HttpSession;
+import com.alzzaipo.domain.dto.PortfolioListResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/portfolio")
 @RestController
@@ -24,25 +24,18 @@ public class PortfolioRestController {
     private final SessionManager sessionManager;
 
     @GetMapping("/list")
-    public ResponseEntity<List<PortfolioListDto>> getMemberPortfolios(HttpSession session) {
-        if(!sessionManager.verifySession(session)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ArrayList<>());
-        }
+    public ResponseEntity<List<PortfolioListResponseDto>> getMemberPortfolios(@AuthenticationPrincipal String accountId) {
 
-        Long memberId = getMemberId(session);
-        List<PortfolioListDto> memberPortfolios = portfolioService.getMemberPortfolioListDtos(memberId);
+        List<PortfolioListResponseDto> portfolioListResponseDtos =
+                portfolioService.getMemberPortfolioListResponseDtos(accountId);
 
-        return ResponseEntity.ok(memberPortfolios);
+        return ResponseEntity.ok(portfolioListResponseDtos);
     }
 
     @PostMapping("/create")
-    public ResponseEntity createMemberPortfolio(HttpSession session, PortfolioCreateRequestDto portfolioCreateRequestDto) {
-        if(!sessionManager.verifySession(session)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity createMemberPortfolio(@AuthenticationPrincipal String accountId, PortfolioCreateRequestDto portfolioCreateRequestDto) {
 
-        Long memberId = getMemberId(session);
-        Boolean success = portfolioService.createMemberPortfolio(memberId, portfolioCreateRequestDto);
+        Boolean success = portfolioService.createMemberPortfolio(accountId, portfolioCreateRequestDto);
 
         if(success) {
             return ResponseEntity.ok().build();
@@ -52,13 +45,8 @@ public class PortfolioRestController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity updateMemberPortfolio(HttpSession session, PortfolioUpdateDto portfolioUpdateDto) {
-        if(!sessionManager.verifySession(session)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Long memberId = getMemberId(session);
-        Boolean success = portfolioService.updateMemberPortfolio(memberId, portfolioUpdateDto);
+    public ResponseEntity updateMemberPortfolio(@AuthenticationPrincipal String accountId, PortfolioUpdateResponseDto portfolioUpdateResponseDto) {
+        Boolean success = portfolioService.updateMemberPortfolio(accountId, portfolioUpdateResponseDto);
 
         if(success) {
             return ResponseEntity.ok().build();
@@ -68,13 +56,9 @@ public class PortfolioRestController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity delete(HttpSession session, @RequestParam("portfolioId") Long portfolioId) {
-        if(!sessionManager.verifySession(session)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity delete(@AuthenticationPrincipal String accountId, @RequestParam("portfolioId") Long portfolioId) {
 
-        Long memberId = getMemberId(session);
-        boolean isPortfolioDeleted  = portfolioService.deleteMemberPortfolio(memberId, portfolioId);
+        boolean isPortfolioDeleted  = portfolioService.deleteMemberPortfolio(accountId, portfolioId);
 
         if(isPortfolioDeleted) {
             return ResponseEntity.ok().build();
@@ -83,7 +67,4 @@ public class PortfolioRestController {
         }
     }
 
-    private Long getMemberId(HttpSession session) {
-        return (Long) session.getAttribute(SessionConfig.memberId);
-    }
 }
