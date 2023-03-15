@@ -1,4 +1,4 @@
-package com.alzzaipo.web.controller;
+package com.alzzaipo.controller;
 
 import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;

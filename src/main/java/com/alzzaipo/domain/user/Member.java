@@ -13,29 +13,36 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class User extends BaseTimeEntity {
+public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "member_id")
     private Long id;
+
+    @Column(unique = true)
+    private String uid;
+
+    private String password;
 
     private String nickname;
 
     @Column(unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Portfolio> portfolios = new ArrayList<>();
 
     @Builder
-    public User(String nickname, String email) {
+    public Member(String uid, String password, String nickname, String email) {
+        this.uid = uid;
+        this.password = password;
         this.nickname = nickname;
         this.email = email;
     }
 
     public void addPortfolio(Portfolio portfolio) {
         this.portfolios.add(portfolio);
-        portfolio.setUser(this);
+        portfolio.setMember(this);
     }
 
     public void changeNickname(String nickname) {

@@ -1,11 +1,9 @@
-package com.alzzaipo.web.domain.Portfolio;
+package com.alzzaipo.domain.portfolio;
 
 import com.alzzaipo.domain.ipo.IPO;
 import com.alzzaipo.domain.ipo.IPORepository;
-import com.alzzaipo.domain.user.User;
-import com.alzzaipo.domain.user.UserRepository;
-import com.alzzaipo.domain.portfolio.Portfolio;
-import com.alzzaipo.domain.portfolio.PortfolioRepository;
+import com.alzzaipo.domain.user.Member;
+import com.alzzaipo.domain.user.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,13 +17,13 @@ class PortfolioRepositoryTest {
 
     private final IPORepository ipoRepository;
     private final PortfolioRepository portfolioRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     @Autowired
-    public PortfolioRepositoryTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, UserRepository userRepository) {
+    public PortfolioRepositoryTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, MemberRepository memberRepository) {
         this.ipoRepository = ipoRepository;
         this.portfolioRepository = portfolioRepository;
-        this.userRepository = userRepository;
+        this.memberRepository = memberRepository;
     }
 
     @Test
@@ -35,10 +33,10 @@ class PortfolioRepositoryTest {
                 .fixedOfferingPrice(10000)
                 .build();
 
-        User user = User.builder().build();
+        Member member = Member.builder().build();
 
         Portfolio portfolio = Portfolio.builder()
-                .user(user)
+                .member(member)
                 .ipo(ipo)
                 .sharesCnt(2)
                 .profit(15000)
@@ -47,7 +45,7 @@ class PortfolioRepositoryTest {
                 .build();
 
         ipoRepository.save(ipo);
-        userRepository.save(user);
+        memberRepository.save(member);
 
         //when
         portfolioRepository.save(portfolio);

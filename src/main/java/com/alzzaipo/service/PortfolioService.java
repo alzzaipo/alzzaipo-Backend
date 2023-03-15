@@ -2,8 +2,8 @@ package com.alzzaipo.service;
 
 import com.alzzaipo.domain.ipo.IPO;
 import com.alzzaipo.domain.ipo.IPORepository;
-import com.alzzaipo.domain.user.User;
-import com.alzzaipo.domain.user.UserRepository;
+import com.alzzaipo.domain.user.Member;
+import com.alzzaipo.domain.user.MemberRepository;
 import com.alzzaipo.domain.portfolio.Portfolio;
 import com.alzzaipo.domain.portfolio.PortfolioRepository;
 import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
@@ -29,7 +29,7 @@ public class PortfolioService {
     private final EntityManager em;
     private final PortfolioRepository portfolioRepository;
     private final IPORepository ipoRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     public Portfolio save(Portfolio portfolio) {
         if(portfolio.getId() == null) {
@@ -52,20 +52,20 @@ public class PortfolioService {
         IPO ipo = ipoRepository.findByStockCode(createRequestDto.getStockCode())
                 .orElseGet(() -> new IPO());
 
-        User user = userRepository.findById(memberId)
-                .orElseGet(() -> new User());
+        Member member = memberRepository.findById(memberId)
+                .orElseGet(() -> new Member());
 
         if(ipo.getId() == null) {
             log.warn("Invalid IPO");
             return false;
         }
-        else if(user.getId() == null) {
+        else if(member.getId() == null) {
             log.warn("Invalid memberId");
             return false;
         }
         else {
             Portfolio portfolio = Portfolio.builder()
-                    .user(user)
+                    .member(member)
                     .ipo(ipo)
                     .sharesCnt(createRequestDto.getSharesCnt())
                     .profit(createRequestDto.getProfit())
@@ -73,7 +73,7 @@ public class PortfolioService {
                     .memo(createRequestDto.getMemo())
                     .build();
 
-            user.addPortfolio(portfolio);
+            member.addPortfolio(portfolio);
             portfolioRepository.save(portfolio);
             return true;
         }
@@ -93,20 +93,20 @@ public class PortfolioService {
         IPO ipo = ipoRepository.findByStockCode(portfolioUpdateDto.getStockCode())
                 .orElseGet(() -> new IPO());
 
-        User user = userRepository.findById(memberId)
-                .orElseGet(() -> new User());
+        Member member = memberRepository.findById(memberId)
+                .orElseGet(() -> new Member());
 
         if(ipo.getId() == null) {
             log.warn("Invalid IPO");
             return false;
         }
-        else if(user.getId() == null) {
+        else if(member.getId() == null) {
             log.warn("Invalid memberId");
             return false;
         }
         else {
             Portfolio portfolio = Portfolio.builder()
-                    .user(user)
+                    .member(member)
                     .ipo(ipo)
                     .sharesCnt(portfolioUpdateDto.getSharesCnt())
                     .profit(portfolioUpdateDto.getProfit())
@@ -127,27 +127,27 @@ public class PortfolioService {
             log.warn("Invalid portfolioId");
             return false;
         }
-        else if(memberId.equals(portfolio.getUser().getId())) {
+        else if(memberId.equals(portfolio.getMember().getId())) {
             portfolioRepository.delete(portfolio);
             return true;
         }
         else {
-            log.warn("MemberId not match with portfolio owner - memberId:" + memberId + " ownerId:" + portfolio.getUser().getId());
+            log.warn("MemberId not match with portfolio owner - memberId:" + memberId + " ownerId:" + portfolio.getMember().getId());
             return false;
         }
     }
 
     @Transactional(readOnly = true)
     public List<PortfolioListDto> getMemberPortfolioListDtos(Long memberId) {
-        User user = userRepository.findById(memberId)
-                .orElseGet(() -> new User());
+        Member member = memberRepository.findById(memberId)
+                .orElseGet(() -> new Member());
 
-        if(user.getId() == null) {
+        if(member.getId() == null) {
             log.warn("Invalid memberId");
             return new ArrayList<>();
         }
         else {
-            return user.getPortfolios().stream()
+            return member.getPortfolios().stream()
                     .map(Portfolio::toDto)
                     .collect(Collectors.toList());
         }

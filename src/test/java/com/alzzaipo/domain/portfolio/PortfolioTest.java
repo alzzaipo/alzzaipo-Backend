@@ -1,11 +1,9 @@
-package com.alzzaipo.web.domain.Portfolio;
+package com.alzzaipo.domain.portfolio;
 
 import com.alzzaipo.domain.ipo.IPO;
-import com.alzzaipo.domain.portfolio.Portfolio;
-import com.alzzaipo.domain.portfolio.PortfolioRepository;
-import com.alzzaipo.service.UserService;
+import com.alzzaipo.service.MemberService;
 import com.alzzaipo.domain.ipo.IPORepository;
-import com.alzzaipo.domain.user.User;
+import com.alzzaipo.domain.user.Member;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,13 +17,13 @@ class PortfolioTest {
 
     private final IPORepository ipoRepository;
     private final PortfolioRepository portfolioRepository;
-    private final UserService userService;
+    private final MemberService memberService;
 
     @Autowired
-    public PortfolioTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, UserService userService) {
+    public PortfolioTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, MemberService memberService) {
         this.ipoRepository = ipoRepository;
         this.portfolioRepository = portfolioRepository;
-        this.userService = userService;
+        this.memberService = memberService;
     }
 
     @Test
@@ -36,10 +34,10 @@ class PortfolioTest {
                 .fixedOfferingPrice(10000)
                 .build();
 
-        User user = User.builder().build();
+        Member member = Member.builder().build();
 
         Portfolio portfolio = Portfolio.builder()
-                .user(user)
+                .member(member)
                 .ipo(ipo)
                 .sharesCnt(10)
                 .profit(47000)
@@ -48,7 +46,7 @@ class PortfolioTest {
                 .build();
 
         ipoRepository.save(ipo);
-        userService.save(user);
+        memberService.save(member);
         Portfolio savedPortfolio = portfolioRepository.save(portfolio);
 
         //when

@@ -1,7 +1,7 @@
 package com.alzzaipo.service;
 
 import com.alzzaipo.config.SessionConfig;
-import com.alzzaipo.domain.user.User;
+import com.alzzaipo.domain.user.Member;
 import com.alzzaipo.domain.dto.KakaoUserInfoDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,16 +23,16 @@ import org.springframework.web.client.RestTemplate;
 public class KakaoLoginService {
 
     private final Environment env;
-    private final UserService userService;
+    private final MemberService memberService;
     private String restApiKey;
     private String clientSecret;
     private String redirectURI;
     private String adminKey;
 
     @Autowired
-    public KakaoLoginService(Environment env, UserService userService) {
+    public KakaoLoginService(Environment env, MemberService memberService) {
         this.env = env;
-        this.userService = userService;
+        this.memberService = memberService;
     }
 
     @PostConstruct
@@ -62,10 +62,10 @@ public class KakaoLoginService {
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
 
         // 카카오 사용자 정보로 회원 등록여부 조회, 없으면 디비에 새로 등록
-        User user = registerKakaoUserIfNeed(kakaoUserInfo);
+        Member member = registerKakaoUserIfNeed(kakaoUserInfo);
 
-        session.setAttribute(SessionConfig.memberId, user.getId());
-        session.setAttribute(SessionConfig.nickname, user.getNickname());
+        session.setAttribute(SessionConfig.memberId, member.getId());
+        session.setAttribute(SessionConfig.nickname, member.getNickname());
         session.setAttribute(SessionConfig.kakaoAccountId, kakaoUserInfo.getKakaoAccountId());
     }
 
@@ -140,18 +140,18 @@ public class KakaoLoginService {
     }
 
     // 가입이 안되어 있으면 가입처리, Member 엔티티 반환
-    private User registerKakaoUserIfNeed(KakaoUserInfoDto kakaoUserInfo) {
+    private Member registerKakaoUserIfNeed(KakaoUserInfoDto kakaoUserInfo) {
         String nickname = kakaoUserInfo.getNickname();
         String email = kakaoUserInfo.getEmail();
 
-        User user = userService.findMemberByEmail(email)
-                .orElseGet(() -> userService.save(new User(nickname, email)));
+        Member member = memberService.findMemberByEmail(email)
+                .orElseGet(() -> memberService.save(new Member("uid", "password", nickname, email)));
 
-        if(user.getId() == null) {
+        if(member.getId() == null) {
             log.info("New Member Registered - nickname:" + nickname + " email:" + email);
         }
 
-        return user;
+        return member;
     }
 
     public void kakaoLogout(HttpSession session) throws JsonProcessingException {

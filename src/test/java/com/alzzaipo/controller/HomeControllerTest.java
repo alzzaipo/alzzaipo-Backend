@@ -1,4 +1,4 @@
-package com.alzzaipo.web.controller;
+package com.alzzaipo.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;

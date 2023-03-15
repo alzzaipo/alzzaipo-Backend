@@ -2,7 +2,7 @@ package com.alzzaipo.domain.portfolio;
 
 import com.alzzaipo.domain.BaseTimeEntity;
 import com.alzzaipo.domain.ipo.IPO;
-import com.alzzaipo.domain.user.User;
+import com.alzzaipo.domain.user.Member;
 import com.alzzaipo.domain.dto.PortfolioListDto;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -20,7 +20,7 @@ public class Portfolio extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private User user;
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ipo_id")
@@ -38,8 +38,8 @@ public class Portfolio extends BaseTimeEntity {
     private String memo;
 
     @Builder
-    public Portfolio(User user, IPO ipo, int sharesCnt, int profit, String agents, String memo) {
-        this.user = user;
+    public Portfolio(Member member, IPO ipo, int sharesCnt, int profit, String agents, String memo) {
+        this.member = member;
         this.ipo = ipo;
         this.sharesCnt = sharesCnt;
         this.profit = profit;
@@ -68,8 +68,8 @@ public class Portfolio extends BaseTimeEntity {
         return 0;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     public void changeId(Long id) { this.id = id; }

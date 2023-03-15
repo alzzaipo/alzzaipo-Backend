@@ -1,7 +1,5 @@
-package com.alzzaipo.web.domain.IPO;
+package com.alzzaipo.domain.ipo;
 
-import com.alzzaipo.domain.ipo.IPO;
-import com.alzzaipo.domain.ipo.IPORepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -36,7 +36,7 @@ public class PortfolioRestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity createUserPortfolio(HttpSession session, PortfolioCreateRequestDto portfolioCreateRequestDto) {
+    public ResponseEntity createMemberPortfolio(HttpSession session, PortfolioCreateRequestDto portfolioCreateRequestDto) {
         if(!sessionManager.verifySession(session)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -52,7 +52,7 @@ public class PortfolioRestController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity updateUserPortfolio(HttpSession session, PortfolioUpdateDto portfolioUpdateDto) {
+    public ResponseEntity updateMemberPortfolio(HttpSession session, PortfolioUpdateDto portfolioUpdateDto) {
         if(!sessionManager.verifySession(session)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
