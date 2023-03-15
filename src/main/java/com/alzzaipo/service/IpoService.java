@@ -1,10 +1,10 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.web.domain.IPO.IPO;
-import com.alzzaipo.web.dto.IpoAnalyzeRequestDto;
-import com.alzzaipo.web.dto.IpoListResponseDto;
-import com.alzzaipo.web.domain.IPO.IPORepository;
-import com.alzzaipo.web.dto.IpoAnalyzeResponseDto;
+import com.alzzaipo.domain.IPO.IPO;
+import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
+import com.alzzaipo.domain.dto.IpoListResponseDto;
+import com.alzzaipo.domain.IPO.IPORepository;
+import com.alzzaipo.domain.dto.IpoAnalyzeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

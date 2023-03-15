@@ -1,9 +1,11 @@
 package com.alzzaipo.web.domain.Portfolio;
 
-import com.alzzaipo.web.domain.IPO.IPO;
-import com.alzzaipo.web.domain.IPO.IPORepository;
-import com.alzzaipo.web.domain.Member.Member;
-import com.alzzaipo.web.domain.Member.MemberRepository;
+import com.alzzaipo.domain.IPO.IPO;
+import com.alzzaipo.domain.IPO.IPORepository;
+import com.alzzaipo.domain.Member.Member;
+import com.alzzaipo.domain.Member.MemberRepository;
+import com.alzzaipo.domain.Portfolio.Portfolio;
+import com.alzzaipo.domain.Portfolio.PortfolioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.alzzaipo.web.dto;
+package com.alzzaipo.domain.dto;
 
 import lombok.Builder;
 import lombok.Getter;

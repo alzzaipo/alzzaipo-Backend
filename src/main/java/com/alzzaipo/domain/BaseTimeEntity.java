@@ -1,4 +1,4 @@
-package com.alzzaipo.web.domain;
+package com.alzzaipo.domain;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

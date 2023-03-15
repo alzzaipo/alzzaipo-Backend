@@ -1,8 +1,8 @@
 package com.alzzaipo.service;
 
 import com.alzzaipo.config.SessionConfig;
-import com.alzzaipo.web.domain.Member.Member;
-import com.alzzaipo.web.dto.KakaoUserInfoDto;
+import com.alzzaipo.domain.Member.Member;
+import com.alzzaipo.domain.dto.KakaoUserInfoDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

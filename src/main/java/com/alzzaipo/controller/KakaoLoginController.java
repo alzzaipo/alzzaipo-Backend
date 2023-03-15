@@ -1,4 +1,4 @@
-package com.alzzaipo.web.controller;
+package com.alzzaipo.controller;
 
 import com.alzzaipo.config.SessionConfig;
 import com.alzzaipo.service.KakaoLoginService;

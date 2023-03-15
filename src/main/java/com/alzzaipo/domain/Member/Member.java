@@ -1,7 +1,7 @@
-package com.alzzaipo.web.domain.Member;
+package com.alzzaipo.domain.Member;
 
-import com.alzzaipo.web.domain.BaseTimeEntity;
-import com.alzzaipo.web.domain.Portfolio.Portfolio;
+import com.alzzaipo.domain.BaseTimeEntity;
+import com.alzzaipo.domain.Portfolio.Portfolio;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

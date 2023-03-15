@@ -1,8 +1,8 @@
-package com.alzzaipo.web.controller;
+package com.alzzaipo.controller;
 
 import com.alzzaipo.service.IpoService;
-import com.alzzaipo.web.dto.IpoAnalyzeRequestDto;
-import com.alzzaipo.web.dto.IpoAnalyzeResponseDto;
+import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
+import com.alzzaipo.domain.dto.IpoAnalyzeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

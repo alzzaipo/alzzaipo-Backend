@@ -1,11 +1,11 @@
-package com.alzzaipo.web.api;
+package com.alzzaipo.api;
 
 import com.alzzaipo.config.SessionConfig;
 import com.alzzaipo.config.SessionManager;
 import com.alzzaipo.service.PortfolioService;
-import com.alzzaipo.web.dto.PortfolioCreateRequestDto;
-import com.alzzaipo.web.dto.PortfolioListDto;
-import com.alzzaipo.web.dto.PortfolioUpdateDto;
+import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
+import com.alzzaipo.domain.dto.PortfolioListDto;
+import com.alzzaipo.domain.dto.PortfolioUpdateDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

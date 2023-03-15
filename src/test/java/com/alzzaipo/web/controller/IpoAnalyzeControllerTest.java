@@ -1,6 +1,6 @@
 package com.alzzaipo.web.controller;
 
-import com.alzzaipo.web.dto.IpoAnalyzeRequestDto;
+import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;

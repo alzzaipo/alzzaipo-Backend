@@ -1,9 +1,9 @@
-package com.alzzaipo.web.api;
+package com.alzzaipo.api;
 
 import com.alzzaipo.service.IpoService;
-import com.alzzaipo.web.dto.IpoAnalyzeRequestDto;
-import com.alzzaipo.web.dto.IpoAnalyzeResponseDto;
-import com.alzzaipo.web.dto.IpoListResponseDto;
+import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
+import com.alzzaipo.domain.dto.IpoAnalyzeResponseDto;
+import com.alzzaipo.domain.dto.IpoListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

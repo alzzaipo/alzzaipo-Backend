@@ -1,7 +1,7 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.web.domain.Member.Member;
-import com.alzzaipo.web.domain.Member.MemberRepository;
+import com.alzzaipo.domain.Member.Member;
+import com.alzzaipo.domain.Member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
-package com.alzzaipo.web.api;
+package com.alzzaipo.api;
 
 import com.alzzaipo.config.SessionConfig;
 import com.alzzaipo.config.SessionManager;
-import com.alzzaipo.web.dto.LoginStatusDto;
+import com.alzzaipo.domain.dto.LoginStatusDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,14 +1,14 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.web.domain.IPO.IPO;
-import com.alzzaipo.web.domain.IPO.IPORepository;
-import com.alzzaipo.web.domain.Member.Member;
-import com.alzzaipo.web.domain.Member.MemberRepository;
-import com.alzzaipo.web.domain.Portfolio.Portfolio;
-import com.alzzaipo.web.domain.Portfolio.PortfolioRepository;
-import com.alzzaipo.web.dto.PortfolioCreateRequestDto;
-import com.alzzaipo.web.dto.PortfolioListDto;
-import com.alzzaipo.web.dto.PortfolioUpdateDto;
+import com.alzzaipo.domain.IPO.IPO;
+import com.alzzaipo.domain.IPO.IPORepository;
+import com.alzzaipo.domain.Member.Member;
+import com.alzzaipo.domain.Member.MemberRepository;
+import com.alzzaipo.domain.Portfolio.Portfolio;
+import com.alzzaipo.domain.Portfolio.PortfolioRepository;
+import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
+import com.alzzaipo.domain.dto.PortfolioListDto;
+import com.alzzaipo.domain.dto.PortfolioUpdateDto;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package com.alzzaipo.crawler;
 
 import com.alzzaipo.service.IpoService;
-import com.alzzaipo.web.domain.IPO.IPO;
+import com.alzzaipo.domain.IPO.IPO;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

@@ -1,8 +1,8 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.web.domain.IPO.IPO;
-import com.alzzaipo.web.dto.IpoAnalyzeRequestDto;
-import com.alzzaipo.web.dto.IpoAnalyzeResponseDto;
+import com.alzzaipo.domain.IPO.IPO;
+import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
+import com.alzzaipo.domain.dto.IpoAnalyzeResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.alzzaipo.web.domain.IPO;
+package com.alzzaipo.domain.IPO;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

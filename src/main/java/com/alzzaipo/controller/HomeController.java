@@ -1,4 +1,4 @@
-package com.alzzaipo.web.controller;
+package com.alzzaipo.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.alzzaipo.web.domain.Member;
+package com.alzzaipo.domain.Member;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
