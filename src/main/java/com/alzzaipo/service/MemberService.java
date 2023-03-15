@@ -1,11 +1,14 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.domain.user.Member;
-import com.alzzaipo.domain.user.MemberRepository;
+import com.alzzaipo.domain.member.Member;
+import com.alzzaipo.domain.member.MemberRepository;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,11 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder encoder;
+
+    @Value("${jwtSecretKey}")
+    private String jwtSecretKey;
+    private Long expiredMillis = 1000 * 60 * 60l;
 
     public Member save(Member member) {
         return memberRepository.save(member);
@@ -30,26 +38,44 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
-    public void join(String uid, String password, String email, String nickname) {
+    public Member join(String accountId, String accountPassword, String email, String nickname) {
 
-        // uid 중복체크
-        memberRepository.findByUid(uid)
-                        .ifPresent(user -> {
-                            throw new AppException(ErrorCode.DUPLICATE_UID, uid + "는 이미 있습니다.");
+        // 계정 아이디 중복체크
+        memberRepository.findByAccountId(accountId)
+                        .ifPresent(member -> {
+                            throw new AppException(ErrorCode.ACCOUNT_ID_DUPLICATED, accountId + " 은 이미 있습니다.");
                         });
 
-        // email 중복 체크
+        // 이메일 중복 체크
         memberRepository.findByEmail(email)
                 .ifPresent(user -> {
-                    throw new AppException(ErrorCode.DUPLICATE_EMAIL, email + "은 이미 있습니다.");
+                    throw new AppException(ErrorCode.EMAIL_DUPLICATED, email + " 은 이미 있습니다.");
                 });
 
         // 저장
-        Member.builder()
-                .uid(uid)
-                .password(password)
+        Member member = Member.builder()
+                .accountId(accountId)
+                .accountPassword(encoder.encode(accountPassword))
                 .email(email)
                 .nickname(nickname)
                 .build();
+
+        return memberRepository.save(member);
+    }
+
+    public String login(String accountId, String accountPassword) {
+
+        // 계정 아이디 확인
+        Member member = memberRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_ID_NOT_FOUND, "존재하지 않는 아이디 입니다."));
+
+        // 계정 비밀번호 확인
+        if(!encoder.matches(accountPassword, member.getAccountPassword())) {
+            throw new AppException(ErrorCode.INVALID_PASSWORD, "비밀번호가 일치하지 않습니다.");
+        }
+
+        // 토큰 발행
+        String token = JwtUtil.createToken(accountId, jwtSecretKey, expiredMillis);
+        return token;
     }
 }

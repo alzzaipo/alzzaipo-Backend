@@ -19,23 +19,25 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(unique = true)
-    private String uid;
+    @Column(unique = true, nullable = false, name = "account_id")
+    private String accountId;
 
-    private String password;
+    @Column(nullable = false, name = "account_password")
+    private String accountPassword;
 
+    @Column(nullable = false)
     private String nickname;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Portfolio> portfolios = new ArrayList<>();
 
     @Builder
-    public Member(String uid, String password, String nickname, String email) {
-        this.uid = uid;
-        this.password = password;
+    public Member(String accountId, String accountPassword, String nickname, String email) {
+        this.accountId = accountId;
+        this.accountPassword = accountPassword;
         this.nickname = nickname;
         this.email = email;
     }
