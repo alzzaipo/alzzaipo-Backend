@@ -1,11 +1,11 @@
 package com.alzzaipo.web.domain.Portfolio;
 
-import com.alzzaipo.domain.IPO.IPO;
-import com.alzzaipo.domain.Portfolio.Portfolio;
-import com.alzzaipo.domain.Portfolio.PortfolioRepository;
-import com.alzzaipo.service.MemberService;
-import com.alzzaipo.domain.IPO.IPORepository;
-import com.alzzaipo.domain.Member.Member;
+import com.alzzaipo.domain.ipo.IPO;
+import com.alzzaipo.domain.portfolio.Portfolio;
+import com.alzzaipo.domain.portfolio.PortfolioRepository;
+import com.alzzaipo.service.UserService;
+import com.alzzaipo.domain.ipo.IPORepository;
+import com.alzzaipo.domain.user.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,13 +19,13 @@ class PortfolioTest {
 
     private final IPORepository ipoRepository;
     private final PortfolioRepository portfolioRepository;
-    private final MemberService memberService;
+    private final UserService userService;
 
     @Autowired
-    public PortfolioTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, MemberService memberService) {
+    public PortfolioTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, UserService userService) {
         this.ipoRepository = ipoRepository;
         this.portfolioRepository = portfolioRepository;
-        this.memberService = memberService;
+        this.userService = userService;
     }
 
     @Test
@@ -36,10 +36,10 @@ class PortfolioTest {
                 .fixedOfferingPrice(10000)
                 .build();
 
-        Member member = Member.builder().build();
+        User user = User.builder().build();
 
         Portfolio portfolio = Portfolio.builder()
-                .member(member)
+                .user(user)
                 .ipo(ipo)
                 .sharesCnt(10)
                 .profit(47000)
@@ -48,7 +48,7 @@ class PortfolioTest {
                 .build();
 
         ipoRepository.save(ipo);
-        memberService.save(member);
+        userService.save(user);
         Portfolio savedPortfolio = portfolioRepository.save(portfolio);
 
         //when

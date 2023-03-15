@@ -1,7 +1,7 @@
 package com.alzzaipo.crawler;
 
 import com.alzzaipo.service.IpoService;
-import com.alzzaipo.domain.IPO.IPO;
+import com.alzzaipo.domain.ipo.IPO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

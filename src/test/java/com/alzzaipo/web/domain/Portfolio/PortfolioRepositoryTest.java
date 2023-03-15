@@ -1,11 +1,11 @@
 package com.alzzaipo.web.domain.Portfolio;
 
-import com.alzzaipo.domain.IPO.IPO;
-import com.alzzaipo.domain.IPO.IPORepository;
-import com.alzzaipo.domain.Member.Member;
-import com.alzzaipo.domain.Member.MemberRepository;
-import com.alzzaipo.domain.Portfolio.Portfolio;
-import com.alzzaipo.domain.Portfolio.PortfolioRepository;
+import com.alzzaipo.domain.ipo.IPO;
+import com.alzzaipo.domain.ipo.IPORepository;
+import com.alzzaipo.domain.user.User;
+import com.alzzaipo.domain.user.UserRepository;
+import com.alzzaipo.domain.portfolio.Portfolio;
+import com.alzzaipo.domain.portfolio.PortfolioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,13 +19,13 @@ class PortfolioRepositoryTest {
 
     private final IPORepository ipoRepository;
     private final PortfolioRepository portfolioRepository;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PortfolioRepositoryTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, MemberRepository memberRepository) {
+    public PortfolioRepositoryTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, UserRepository userRepository) {
         this.ipoRepository = ipoRepository;
         this.portfolioRepository = portfolioRepository;
-        this.memberRepository = memberRepository;
+        this.userRepository = userRepository;
     }
 
     @Test
@@ -35,10 +35,10 @@ class PortfolioRepositoryTest {
                 .fixedOfferingPrice(10000)
                 .build();
 
-        Member member = Member.builder().build();
+        User user = User.builder().build();
 
         Portfolio portfolio = Portfolio.builder()
-                .member(member)
+                .user(user)
                 .ipo(ipo)
                 .sharesCnt(2)
                 .profit(15000)
@@ -47,7 +47,7 @@ class PortfolioRepositoryTest {
                 .build();
 
         ipoRepository.save(ipo);
-        memberRepository.save(member);
+        userRepository.save(user);
 
         //when
         portfolioRepository.save(portfolio);

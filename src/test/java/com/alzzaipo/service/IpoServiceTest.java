@@ -1,6 +1,6 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.domain.IPO.IPO;
+import com.alzzaipo.domain.ipo.IPO;
 import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
 import com.alzzaipo.domain.dto.IpoAnalyzeResponseDto;
 import org.junit.jupiter.api.Test;

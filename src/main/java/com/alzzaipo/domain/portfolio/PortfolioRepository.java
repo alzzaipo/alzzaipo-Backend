@@ -1,4 +1,4 @@
-package com.alzzaipo.domain.Portfolio;
+package com.alzzaipo.domain.portfolio;
 
 import com.alzzaipo.domain.dto.PortfolioUpdateDto;
 import org.springframework.data.jpa.repository.JpaRepository;

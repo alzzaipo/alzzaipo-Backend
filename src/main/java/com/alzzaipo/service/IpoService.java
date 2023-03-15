@@ -1,9 +1,9 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.domain.IPO.IPO;
+import com.alzzaipo.domain.ipo.IPO;
 import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
 import com.alzzaipo.domain.dto.IpoListResponseDto;
-import com.alzzaipo.domain.IPO.IPORepository;
+import com.alzzaipo.domain.ipo.IPORepository;
 import com.alzzaipo.domain.dto.IpoAnalyzeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

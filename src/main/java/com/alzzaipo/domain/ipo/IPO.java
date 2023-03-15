@@ -1,4 +1,4 @@
-package com.alzzaipo.domain.IPO;
+package com.alzzaipo.domain.ipo;
 
 import com.alzzaipo.domain.BaseTimeEntity;
 import jakarta.persistence.Column;
