@@ -12,34 +12,34 @@
 
     <div class="container mt-5 mb-3">
             <div class="row">
-            <div class="col-md-4"  th:each="portfolioListDto : ${portfolioListDtos}">
+            <div class="col-md-4"  th:each="portfolioListResponseDto : ${portfolioListResponseDtos}">
                 <div class="card p-3 mb-4">
                     <div class="mt-2">
-                        <h5 class="heading" th:text="|${portfolioListDto.stockName}(${portfolioListDto.stockCode})|"></h5>
+                        <h5 class="heading" th:text="|${portfolioListResponseDto.stockName}(${portfolioListResponseDto.stockCode})|"></h5>
                         <div class="mt-3">
-                            <div th:text="|청약일: ${portfolioListDto.subscribeStartDate}~${portfolioListDto.subscribeEndDate}|"></div>
-                            <div th:text="|상장일: ${portfolioListDto.listedDate}|"></div>
-                            <div th:text="|증권사: ${portfolioListDto.agents}|"></div>
-                            <div th:text="|공모가: ${portfolioListDto.fixedOfferingPrice}|"></div>
-                            <div th:text="|배정수량: ${portfolioListDto.sharesCnt}|"></div>
-                            <div th:text="|수익: ${portfolioListDto.profit}|"></div>
-                            <div th:text="|메모: ${portfolioListDto.memo}|"></div>
+                            <div th:text="|청약일: ${portfolioListResponseDto.subscribeStartDate}~${portfolioListResponseDto.subscribeEndDate}|"></div>
+                            <div th:text="|상장일: ${portfolioListResponseDto.listedDate}|"></div>
+                            <div th:text="|증권사: ${portfolioListResponseDto.agents}|"></div>
+                            <div th:text="|공모가: ${portfolioListResponseDto.fixedOfferingPrice}|"></div>
+                            <div th:text="|배정수량: ${portfolioListResponseDto.sharesCnt}|"></div>
+                            <div th:text="|수익: ${portfolioListResponseDto.profit}|"></div>
+                            <div th:text="|메모: ${portfolioListResponseDto.memo}|"></div>
                         </div>
                         <div class="mt-2">
                             <strong>수익률</strong>
                             <div class="mt-2">
                                 <div class="progress">
-                                    <div th:class="|progress-bar ${portfolioListDto.profitRate &lt; 0 ? 'bg-danger' : 'bg-primary'}|" role="progressbar" th:style="'width: ' + ${portfolioListDto.profitRate} + '%;'"
-                                         aria-valuemin="0" aria-valuemax="100" th:text="|${portfolioListDto.profitRate} %|"></div>
+                                    <div th:class="|progress-bar ${portfolioListResponseDto.profitRate &lt; 0 ? 'bg-danger' : 'bg-primary'}|" role="progressbar" th:style="'width: ' + ${portfolioListResponseDto.profitRate} + '%;'"
+                                         aria-valuemin="0" aria-valuemax="100" th:text="|${portfolioListResponseDto.profitRate} %|"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="mt-2">
-                            <form method="POST" style="display: inline; float: right" th:action="@{/portfolio/{id}/remove (id=${portfolioListDto.portfolioId})}">
+                            <form method="POST" style="display: inline; float: right" th:action="@{/portfolio/{id}/remove (id=${portfolioListResponseDto.portfolioId})}">
                                 <input type="hidden" name="_method" value="DELETE"/>
                                 <button class="btn btn-sm" type="submit">삭제</button>
                             </form>
-                            <form method="GET" style="display: inline; float: right" th:action="@{/portfolio/{id}/edit (id=${portfolioListDto.portfolioId})}">
+                            <form method="GET" style="display: inline; float: right" th:action="@{/portfolio/{id}/edit (id=${portfolioListResponseDto.portfolioId})}">
                                 <button class="btn btn-sm" type="submit">수정</button>
                             </form>
                         </div>

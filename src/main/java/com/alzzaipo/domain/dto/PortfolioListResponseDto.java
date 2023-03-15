@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PortfolioListDto {
+public class PortfolioListResponseDto {
 
     private Long portfolioId;
 
@@ -37,9 +37,9 @@ public class PortfolioListDto {
     private String memo;
 
     @Builder
-    public PortfolioListDto(Long portfolioId, String stockName, int stockCode, LocalDate subscribeStartDate, LocalDate subscribeEndDate,
-                            LocalDate listedDate, int fixedOfferingPrice, String agents,
-                            int sharesCnt, int profit, int profitRate, String memo) {
+    public PortfolioListResponseDto(Long portfolioId, String stockName, int stockCode, LocalDate subscribeStartDate, LocalDate subscribeEndDate,
+                                    LocalDate listedDate, int fixedOfferingPrice, String agents,
+                                    int sharesCnt, int profit, int profitRate, String memo) {
         this.portfolioId = portfolioId;
         this.stockName = stockName;
         this.stockCode = stockCode;

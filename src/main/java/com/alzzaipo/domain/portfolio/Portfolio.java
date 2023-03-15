@@ -1,9 +1,9 @@
 package com.alzzaipo.domain.portfolio;
 
 import com.alzzaipo.domain.BaseTimeEntity;
+import com.alzzaipo.domain.dto.PortfolioListResponseDto;
 import com.alzzaipo.domain.ipo.IPO;
-import com.alzzaipo.domain.user.Member;
-import com.alzzaipo.domain.dto.PortfolioListDto;
+import com.alzzaipo.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -75,8 +75,8 @@ public class Portfolio extends BaseTimeEntity {
     public void changeId(Long id) { this.id = id; }
 
     @Transactional(readOnly = true)
-    public PortfolioListDto toDto() {
-        PortfolioListDto portfolioListDto = PortfolioListDto.builder()
+    public PortfolioListResponseDto toDto() {
+        PortfolioListResponseDto portfolioListResponseDto = PortfolioListResponseDto.builder()
                 .portfolioId(this.id)
                 .stockName(this.ipo.getStockName())
                 .stockCode(this.ipo.getStockCode())
@@ -91,6 +91,6 @@ public class Portfolio extends BaseTimeEntity {
                 .memo(this.memo)
                 .build();
 
-        return portfolioListDto;
+        return portfolioListResponseDto;
     }
 }

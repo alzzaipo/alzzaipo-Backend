@@ -4,7 +4,7 @@
 <body>
 <div class="container">
     <div th:replace="~{fragments/bodyHeader :: bodyHeader}"/>
-    <form th:action="@{/portfolio/{id}/edit (id=${portfolioUpdateDto.portfolioId})}" th:object="${portfolioUpdateDto}" method="POST">
+    <form th:action="@{/portfolio/{id}/edit (id=${portfolioUpdateResponseDto.portfolioId})}" th:object="${portfolioUpdateResponseDto}" method="POST">
         <input type="hidden" name="_method" VALUE="PUT">
         <input type="hidden" th:field="*{portfolioId}"/>
         <div>
