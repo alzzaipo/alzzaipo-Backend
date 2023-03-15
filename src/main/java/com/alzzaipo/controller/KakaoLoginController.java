@@ -31,7 +31,7 @@ public class KakaoLoginController {
         String redirectURL = "/";
         Long sessionMemberId = (Long) session.getAttribute(SessionConfig.memberId);
 
-        String referer = request.getHeader("Referer");
+/*         String referer = request.getHeader("Referer");
         if (referer != null && referer.contains("://")) {
             String[] parts = referer.split("://");
             String protocol = parts[0];
@@ -42,7 +42,7 @@ public class KakaoLoginController {
                 log.info("X-site domain has connected : " + URL);
                 redirectURL = URL;
             }
-        }
+        } */
 
         log.info("session established - memberId:" + sessionMemberId);
         return "redirect:" + redirectURL;
