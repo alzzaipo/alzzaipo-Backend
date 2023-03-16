@@ -18,7 +18,7 @@ public class SecurityConfig {
 
     private final MemberService memberService;
 
-    @Value("${jwtSecretKey}")
+    @Value("${jwt.secretKey}")
     private String jwtSecretKey;
 
     @Bean

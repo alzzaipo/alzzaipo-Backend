@@ -24,7 +24,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder encoder;
 
-    @Value("${jwtSecretKey}")
+    @Value("${jwt.secretKey}")
     private String jwtSecretKey;
     private Long expiredMillis = 1000 * 60 * 60l;
 

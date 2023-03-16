@@ -1,16 +1,15 @@
 package com.alzzaipo.service;
 
 import com.alzzaipo.config.SessionConfig;
-import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.dto.KakaoUserInfoDto;
+import com.alzzaipo.domain.member.Member;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -19,29 +18,23 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class KakaoLoginService {
 
-    private final Environment env;
     private final MemberService memberService;
+
+    @Value("${kakao.restApiKey}")
     private String restApiKey;
+
+    @Value("${kakao.clientSecret}")
     private String clientSecret;
+
+    @Value("${kakao.redirectURI}")
     private String redirectURI;
+
+    @Value("${kakao.adminKey}")
     private String adminKey;
-
-    @Autowired
-    public KakaoLoginService(Environment env, MemberService memberService) {
-        this.env = env;
-        this.memberService = memberService;
-    }
-
-    @PostConstruct
-    public void postConstruct() {
-        this.restApiKey = env.getProperty("kakaoRestAPIKey");
-        this.clientSecret = env.getProperty("kakaoClientSecret");
-        this.redirectURI = env.getProperty("kakaoRedirectURI");
-        this.adminKey = env.getProperty("kakaoAdminKey");
-    }
 
     public String getAuthCodeRequestUrl() {
         return "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + restApiKey + "&redirect_uri=" + redirectURI;
