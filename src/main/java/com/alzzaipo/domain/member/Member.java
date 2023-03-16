@@ -1,6 +1,8 @@
 package com.alzzaipo.domain.member;
 
 import com.alzzaipo.domain.BaseTimeEntity;
+import com.alzzaipo.domain.notificationEmail.NotificationEmail;
+import com.alzzaipo.domain.notificationKakaotalk.NotificationKakaotalk;
 import com.alzzaipo.domain.portfolio.Portfolio;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -33,6 +35,12 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Portfolio> portfolios = new ArrayList<>();
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private NotificationEmail notificationEmail;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private NotificationKakaotalk notificationKakaotalk;
 
     @Builder
     public Member(String accountId, String accountPassword, String nickname, String email) {
