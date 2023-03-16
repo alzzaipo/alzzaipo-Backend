@@ -2,8 +2,8 @@ package com.alzzaipo.domain.portfolio;
 
 import com.alzzaipo.domain.ipo.IPO;
 import com.alzzaipo.domain.ipo.IPORepository;
-import com.alzzaipo.domain.user.Member;
-import com.alzzaipo.domain.user.MemberRepository;
+import com.alzzaipo.domain.member.Member;
+import com.alzzaipo.domain.member.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +33,12 @@ class PortfolioRepositoryTest {
                 .fixedOfferingPrice(10000)
                 .build();
 
-        Member member = Member.builder().build();
+        Member member = Member.builder()
+                .accountId("test")
+                .accountPassword("test")
+                .email("test")
+                .nickname("test")
+                .build();
 
         Portfolio portfolio = Portfolio.builder()
                 .member(member)
