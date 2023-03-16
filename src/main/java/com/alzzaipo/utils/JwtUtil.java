@@ -5,17 +5,25 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+@Component
 public class JwtUtil {
 
-    public static String createToken(String uid, String key, long expireTimeMillis) {
-        Claims claims = Jwts.claims();
-        claims.put("uid", uid);
+    @Value("${jwt.secretKey}")
+    private String secretKey;
 
-        byte[] keyBytes = Decoders.BASE64.decode(key);
+    private Long expireTimeMillis = 1000 * 60 * 30L;
+
+    public String createToken(String accountId) {
+        Claims claims = Jwts.claims();
+        claims.put("accountId", accountId);
+
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         SecretKey secretKey = Keys.hmacShaKeyFor(keyBytes);
 
         return Jwts.builder()
@@ -26,14 +34,13 @@ public class JwtUtil {
                 .compact();
     }
 
-    public static boolean isExpired(String token, String secretKey) {
+    public boolean isExpired(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody()
                 .getExpiration().before(new Date());
-
     }
 
-    public static String getUid(String token, String secretKey) {
+    public String getAccountId(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody()
-                .get("uid", String.class);
+                .get("accountId", String.class);
     }
 }
