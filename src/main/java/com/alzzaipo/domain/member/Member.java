@@ -1,6 +1,7 @@
 package com.alzzaipo.domain.member;
 
 import com.alzzaipo.domain.BaseTimeEntity;
+import com.alzzaipo.domain.kakaoAccountInfo.KakaoAccountInfo;
 import com.alzzaipo.domain.notificationEmail.NotificationEmail;
 import com.alzzaipo.domain.notificationKakaotalk.NotificationKakaotalk;
 import com.alzzaipo.domain.portfolio.Portfolio;
@@ -41,6 +42,9 @@ public class Member extends BaseTimeEntity {
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private NotificationKakaotalk notificationKakaotalk;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private KakaoAccountInfo kakaoAccountInfo;
 
     @Builder
     public Member(String accountId, String accountPassword, String nickname, String email) {
