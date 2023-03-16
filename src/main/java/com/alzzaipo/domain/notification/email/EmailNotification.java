@@ -1,4 +1,4 @@
-package com.alzzaipo.domain.notificationEmail;
+package com.alzzaipo.domain.notification.email;
 
 import com.alzzaipo.domain.member.Member;
 import jakarta.persistence.*;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class NotificationEmail {
+public class EmailNotification {
     @Id @GeneratedValue
-    @Column(name = "notification_email_id")
+    @Column(name = "email_notification_id")
     private Long id;
 
     @Column(name = "email", nullable = false, unique = true)
@@ -22,7 +22,7 @@ public class NotificationEmail {
     private Member member;
 
     @Builder
-    public NotificationEmail(String email, Member member) {
+    public EmailNotification(String email, Member member) {
         this.email = email;
         this.member = member;
     }

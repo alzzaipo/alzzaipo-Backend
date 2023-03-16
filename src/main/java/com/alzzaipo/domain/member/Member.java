@@ -2,8 +2,8 @@ package com.alzzaipo.domain.member;
 
 import com.alzzaipo.domain.BaseTimeEntity;
 import com.alzzaipo.domain.kakaoAccountInfo.KakaoAccountInfo;
-import com.alzzaipo.domain.notificationEmail.NotificationEmail;
-import com.alzzaipo.domain.notificationKakaotalk.NotificationKakaotalk;
+import com.alzzaipo.domain.notification.email.EmailNotification;
+import com.alzzaipo.domain.notification.kakaotalk.KakaoTalkNotification;
 import com.alzzaipo.domain.portfolio.Portfolio;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -38,10 +38,10 @@ public class Member extends BaseTimeEntity {
     private List<Portfolio> portfolios = new ArrayList<>();
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private NotificationEmail notificationEmail;
+    private EmailNotification emailNotification;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private NotificationKakaotalk notificationKakaotalk;
+    private KakaoTalkNotification kakaoTalkNotification;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private KakaoAccountInfo kakaoAccountInfo;

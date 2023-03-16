@@ -1,4 +1,4 @@
-package com.alzzaipo.domain.notificationKakaotalk;
+package com.alzzaipo.domain.notification.kakaotalk;
 
 import com.alzzaipo.domain.member.Member;
 import jakarta.persistence.*;
@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "notification_kakaotalk", uniqueConstraints = {
+@Table(name = "kakaotalk_notification", uniqueConstraints = {
         @UniqueConstraint(name = "idx_phone", columnNames = {"country_code", "phone_number"})
 })
-public class NotificationKakaotalk {
+public class KakaoTalkNotification {
     @Id @GeneratedValue
-    @Column(name = "notification_kakaotalk_id")
+    @Column(name = "kakaotalk_notification_id")
     Long id;
 
     @Column(name = "country_code", nullable = false)
@@ -28,7 +28,7 @@ public class NotificationKakaotalk {
     Member member;
 
     @Builder
-    public NotificationKakaotalk(String countryCode, String phoneNumber, Member member) {
+    public KakaoTalkNotification(String countryCode, String phoneNumber, Member member) {
         this.countryCode = countryCode;
         this.phoneNumber = phoneNumber;
         this.member = member;
