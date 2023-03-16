@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PortfolioUpdateResponseDto {
+public class PortfolioUpdateRequestDto {
 
     private Long portfolioId;
     private int stockCode;
@@ -16,7 +16,7 @@ public class PortfolioUpdateResponseDto {
     private String memo;
 
     @Builder
-    public PortfolioUpdateResponseDto(Long portfolioId, int stockCode, int sharesCnt, int profit, String agents, String memo) {
+    public PortfolioUpdateRequestDto(Long portfolioId, int stockCode, int sharesCnt, int profit, String agents, String memo) {
         this.portfolioId = portfolioId;
         this.stockCode = stockCode;
         this.sharesCnt = sharesCnt;
