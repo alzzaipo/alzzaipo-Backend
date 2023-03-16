@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface KakaoAccountInfoRepository extends JpaRepository<KakaoAccountInfo, Long> {
     @Query("SELECT k.kakaoAccountId FROM KakaoAccountInfo k WHERE k.member.accountId = :accountId")
-    Optional<String> findKakaoAccountIdByMemberAccountId(String accountId);
+    Optional<Long> findKakaoAccountIdByMemberAccountId(String accountId);
 }

@@ -16,14 +16,14 @@ public class KakaoAccountInfo {
     Long id;
 
     @Column(name = "kakao_account_id", nullable = false, unique = true)
-    String kakaoAccountId;
+    Long kakaoAccountId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     Member member;
 
     @Builder
-    public KakaoAccountInfo(String kakaoAccountId, Member member) {
+    public KakaoAccountInfo(Long kakaoAccountId, Member member) {
         this.kakaoAccountId = kakaoAccountId;
         this.member = member;
     }
