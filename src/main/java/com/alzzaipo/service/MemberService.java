@@ -7,7 +7,6 @@ import com.alzzaipo.exception.ErrorCode;
 import com.alzzaipo.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,16 +22,11 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder encoder;
-
-    @Value("${jwt.secretKey}")
-    private String jwtSecretKey;
-    private Long expiredMillis = 1000 * 60 * 60l;
+    private final JwtUtil jwtUtil;
 
     public Member save(Member member) {
         return memberRepository.save(member);
     }
-
-    public Optional<Member> findMemberById(Long memberId) { return memberRepository.findById(memberId); }
 
     public Optional<Member> findMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
@@ -75,7 +69,7 @@ public class MemberService {
         }
 
         // 토큰 발행
-        String token = JwtUtil.createToken(accountId, jwtSecretKey, expiredMillis);
+        String token = jwtUtil.createToken(accountId);
         return token;
     }
 }
