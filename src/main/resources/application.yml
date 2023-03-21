@@ -1,4 +1,4 @@
-# default
+# default profile
 spring:
   profiles:
     active: prod
@@ -8,20 +8,11 @@ spring:
   config:
     activate:
       on-profile: local
-    import: application-local-config.yml
+    import: secrets/application-common-config.yml, secrets/application-local-config.yml
 
 ---
 spring:
   config:
     activate:
       on-profile: prod
-    import: application-prod-config.yml
----
-spring:
-  config:
-    activate:
-      on-profile: test
-    import: application-local-config.yml
-
-
-
+    import: secrets/application-common-config.yml, secrets/application-prod-config.yml

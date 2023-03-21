@@ -2,4 +2,4 @@ spring:
   config:
     activate:
       on-profile: default
-    import: application-config.yml
+    import: secrets/application-test-config.yml

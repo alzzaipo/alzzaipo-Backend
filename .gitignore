@@ -2,6 +2,4 @@
 .gradle
 build
 etc/
-application-local-config.yml
-application-prod-config.yml
-keystore.p12
+secrets/

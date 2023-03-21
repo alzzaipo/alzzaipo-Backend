@@ -34,14 +34,16 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    # (3) 민감 정보 파일 생성
+    # (3) Secret 파일 생성
     - name : Create secret files with Github Actions Secrets
       uses: actions/checkout@v3
       run:
-        touch ./src/main/resources/application-prod-config.yml \
-        echo "${{ secrets.APPLICATION_PROD_CONFIG }}" > ./src/main/resources/application-prod-config.yml \
-        touch ./src/main/resources/keystore.p12 \
-        echo "${{ secrets.SSL_KEYSTORE }}" > ./src/main/resources/keystore.p12
+        touch ./src/main/resources/secrets/application-prod-config.yml \
+        echo "${{ secrets.APPLICATION_PROD_CONFIG }}" > ./src/main/resources/secrets/application-prod-config.yml \
+        touch ./src/main/resources/secrets/application-common-config.yml \
+        echo "${{ secrets.APPLICATION_COMMON_CONFIG }}" > ./src/main/resources/secrets/application-common-config.yml
+        touch ./src/main/resources/secrets/keystore.p12 \
+        echo "${{ secrets.SSL_KEYSTORE }}" > ./src/main/resources/secrets/keystore.p12
 
     # (4) Gradle build (Test 제외)
     - name: Build with Gradle

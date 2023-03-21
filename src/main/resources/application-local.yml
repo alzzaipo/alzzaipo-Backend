@@ -29,5 +29,5 @@ server:
   ssl:
     enabled: true
     key-store-type: PKCS12
-    key-store: classpath:local_keystore.p12
+    key-store: classpath:secrets/local_keystore.p12
     key-store-password: ${ssl.password}
