@@ -31,7 +31,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String nickname;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 256)
     private String email;
 
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)

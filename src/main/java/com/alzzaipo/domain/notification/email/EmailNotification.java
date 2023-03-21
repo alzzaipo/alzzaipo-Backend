@@ -14,7 +14,7 @@ public class EmailNotification {
     @Column(name = "email_notification_id")
     private Long id;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true, length = 256)
     private String email;
 
     @OneToOne(fetch = FetchType.LAZY)
