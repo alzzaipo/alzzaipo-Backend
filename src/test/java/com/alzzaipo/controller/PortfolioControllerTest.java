@@ -1,4 +1,4 @@
-package com.alzzaipo.api;
+package com.alzzaipo.controller;
 
 import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
 import com.alzzaipo.domain.dto.PortfolioUpdateRequestDto;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @WithMockUser
 @AutoConfigureMockMvc
 @SpringBootTest
-class PortfolioRestControllerTest {
+class PortfolioControllerTest {
 
     @Autowired
     MockMvc mockMvc;

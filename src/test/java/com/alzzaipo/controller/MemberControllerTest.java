@@ -1,4 +1,4 @@
-package com.alzzaipo.api;
+package com.alzzaipo.controller;
 
 import com.alzzaipo.domain.dto.MemberLoginRequestDto;
 import com.alzzaipo.domain.member.Member;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class MemberRestControllerTest {
+class MemberControllerTest {
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
@@ -33,7 +33,7 @@ class MemberRestControllerTest {
     private MemberService memberService;
 
     @Autowired
-    public MemberRestControllerTest(MockMvc mockMvc, ObjectMapper objectMapper) {
+    public MemberControllerTest(MockMvc mockMvc, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
     }

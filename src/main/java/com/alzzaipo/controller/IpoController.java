@@ -1,4 +1,4 @@
-package com.alzzaipo.api;
+package com.alzzaipo.controller;
 
 import com.alzzaipo.service.IpoService;
 import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/ipo")
 @RestController
-public class IpoRestController {
+public class IpoController {
 
     private final IpoService ipoService;
 

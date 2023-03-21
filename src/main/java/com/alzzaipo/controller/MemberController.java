@@ -1,4 +1,4 @@
-package com.alzzaipo.api;
+package com.alzzaipo.controller;
 
 import com.alzzaipo.domain.dto.MemberJoinRequestDto;
 import com.alzzaipo.domain.dto.MemberLoginRequestDto;
@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
-public class MemberRestController {
+public class MemberController {
 
     private final MemberService memberService;
     private final KakaoLoginService kakaoLoginService;

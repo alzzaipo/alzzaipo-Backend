@@ -1,4 +1,4 @@
-package com.alzzaipo.api;
+package com.alzzaipo.controller;
 
 import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
 import com.alzzaipo.domain.dto.PortfolioListResponseDto;
@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/portfolio")
 @RestController
-public class PortfolioRestController {
+public class PortfolioController {
 
     private final PortfolioService portfolioService;
 
