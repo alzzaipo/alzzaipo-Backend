@@ -28,7 +28,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/portfolio/**").authenticated()
                 .requestMatchers("/**").permitAll()
-                .requestMatchers("/api/ipo", "/api/member/login", "/api/member/join").permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

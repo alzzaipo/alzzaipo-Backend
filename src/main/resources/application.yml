@@ -2,6 +2,19 @@
 spring:
   profiles:
     active: prod
+  mail:
+    host: smtp.daum.net
+    port: 465
+    username: ${smtp.email}
+    password: ${smtp.password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 30000
 
 ---
 spring:
