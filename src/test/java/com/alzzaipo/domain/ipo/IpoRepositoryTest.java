@@ -9,16 +9,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-class IPORepositoryTest {
+class IpoRepositoryTest {
 
     @Autowired
-    IPORepository ipoRepository;
+    IpoRepository ipoRepository;
 
     @Test
     public void 저장() throws Exception
     {
         //given
-        IPO ipo = IPO.builder()
+        Ipo ipo = Ipo.builder()
                 .stockName("유령회사")
                 .stockCode(123)
                 .build();
@@ -34,7 +34,7 @@ class IPORepositoryTest {
     public void 조회() throws Exception
     {
         //given
-        IPO ipo = IPO.builder()
+        Ipo ipo = Ipo.builder()
                 .stockName("유령회사")
                 .stockCode(123)
                 .build();
@@ -42,7 +42,7 @@ class IPORepositoryTest {
         ipoRepository.save(ipo);
 
         //when
-        IPO result = ipoRepository.findById(ipo.getId()).get();
+        Ipo result = ipoRepository.findById(ipo.getId()).get();
 
         //then
         assertThat(result).isSameAs(ipo);
@@ -53,12 +53,12 @@ class IPORepositoryTest {
     public void 삭제() throws Exception
     {
         //given
-        IPO ipo1 = IPO.builder()
+        Ipo ipo1 = Ipo.builder()
                 .stockName("유령회사")
                 .stockCode(123)
                 .build();
 
-        IPO ipo2 = IPO.builder()
+        Ipo ipo2 = Ipo.builder()
                 .stockName("해적회사")
                 .stockCode(4546)
                 .build();

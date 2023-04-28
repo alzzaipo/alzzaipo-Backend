@@ -1,6 +1,7 @@
 package com.alzzaipo.domain.ipo;
 
 import com.alzzaipo.domain.BaseTimeEntity;
+import com.alzzaipo.domain.dto.IpoDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @Entity
-public class IPO extends BaseTimeEntity {
+public class Ipo extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
@@ -22,6 +23,10 @@ public class IPO extends BaseTimeEntity {
 
     // 종목명
     private String stockName;
+
+    // 종목 코드
+    @Column(unique = true, nullable = false)
+    private int stockCode;
 
     // 희망공모가 하단(원)
     private int expectedOfferingPriceMin;
@@ -59,15 +64,12 @@ public class IPO extends BaseTimeEntity {
     // 수익률
     private int profitRate;
 
-    // 종목 코드
-    @Column(unique = true, nullable = false)
-    private int stockCode;
-
     @Builder
-    public IPO(String stockName, int expectedOfferingPriceMin, int expectedOfferingPriceMax, int fixedOfferingPrice,
+    public Ipo(String stockName, int expectedOfferingPriceMin, int expectedOfferingPriceMax, int fixedOfferingPrice,
                int totalAmount, int competitionRate, int lockupRate, String agents,
                LocalDate subscribeStartDate, LocalDate subscribeEndDate, LocalDate listedDate, int initialMarketPrice, int stockCode) {
         this.stockName = stockName;
+        this.stockCode = stockCode;
         this.expectedOfferingPriceMin = expectedOfferingPriceMin;
         this.expectedOfferingPriceMax = expectedOfferingPriceMax;
         this.fixedOfferingPrice = fixedOfferingPrice;
@@ -79,12 +81,30 @@ public class IPO extends BaseTimeEntity {
         this.subscribeEndDate = subscribeEndDate;
         this.listedDate = listedDate;
         this.initialMarketPrice = initialMarketPrice;
-        this.stockCode = stockCode;
 
         if(initialMarketPrice > 0) {
             this.profitRate = (int)((double)(initialMarketPrice - fixedOfferingPrice) / (double)fixedOfferingPrice * 100);
         } else {
             this.profitRate = 0;
         }
+    }
+
+    public IpoDto toDto() {
+        IpoDto ipoDto = IpoDto.builder()
+                .stockName(this.stockName)
+                .stockCode(this.stockCode)
+                .expectedOfferingPriceMin(this.expectedOfferingPriceMin)
+                .expectedOfferingPriceMax(this.expectedOfferingPriceMax)
+                .fixedOfferingPrice(this.fixedOfferingPrice)
+                .totalAmount(this.totalAmount)
+                .competitionRate(this.competitionRate)
+                .lockupRate(this.lockupRate)
+                .agents(this.agents)
+                .listedDate(this.listedDate)
+                .initialMarketPrice(this.initialMarketPrice)
+                .profitRate(this.profitRate)
+                .build();
+
+        return ipoDto;
     }
 }

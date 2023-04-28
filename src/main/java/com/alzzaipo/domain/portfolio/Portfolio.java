@@ -2,7 +2,7 @@ package com.alzzaipo.domain.portfolio;
 
 import com.alzzaipo.domain.BaseTimeEntity;
 import com.alzzaipo.domain.dto.PortfolioListResponseDto;
-import com.alzzaipo.domain.ipo.IPO;
+import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -24,7 +24,7 @@ public class Portfolio extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ipo_id")
-    private IPO ipo;
+    private Ipo ipo;
 
     private int sharesCnt;
 
@@ -38,7 +38,7 @@ public class Portfolio extends BaseTimeEntity {
     private String memo;
 
     @Builder
-    public Portfolio(Member member, IPO ipo, int sharesCnt, int profit, String agents, String memo) {
+    public Portfolio(Member member, Ipo ipo, int sharesCnt, int profit, String agents, String memo) {
         this.member = member;
         this.ipo = ipo;
         this.sharesCnt = sharesCnt;

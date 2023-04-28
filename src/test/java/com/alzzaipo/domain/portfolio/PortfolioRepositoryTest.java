@@ -1,7 +1,7 @@
 package com.alzzaipo.domain.portfolio;
 
-import com.alzzaipo.domain.ipo.IPO;
-import com.alzzaipo.domain.ipo.IPORepository;
+import com.alzzaipo.domain.ipo.Ipo;
+import com.alzzaipo.domain.ipo.IpoRepository;
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.member.MemberRepository;
 import org.junit.jupiter.api.Test;
@@ -15,12 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class PortfolioRepositoryTest {
 
-    private final IPORepository ipoRepository;
+    private final IpoRepository ipoRepository;
     private final PortfolioRepository portfolioRepository;
     private final MemberRepository memberRepository;
 
     @Autowired
-    public PortfolioRepositoryTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, MemberRepository memberRepository) {
+    public PortfolioRepositoryTest(IpoRepository ipoRepository, PortfolioRepository portfolioRepository, MemberRepository memberRepository) {
         this.ipoRepository = ipoRepository;
         this.portfolioRepository = portfolioRepository;
         this.memberRepository = memberRepository;
@@ -29,7 +29,7 @@ class PortfolioRepositoryTest {
     @Test
     public void 저장조회삭제() throws Exception {
         //given
-        IPO ipo = IPO.builder()
+        Ipo ipo = Ipo.builder()
                 .fixedOfferingPrice(10000)
                 .build();
 

@@ -1,24 +1,25 @@
 package com.alzzaipo.domain.dto;
 
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
-@NoArgsConstructor
 public class IpoAnalyzeRequestDto {
+    @JsonProperty("from")
     private int from;
+    @JsonProperty("to")
     private int to;
-    private int competitionRate;
-    private int lockupRate;
+    @JsonProperty("minCompetitionRate")
+    private int minCompetitionRate;
+    @JsonProperty("minLockupRate")
+    private int minLockupRate;
 
-    @Builder
-    public IpoAnalyzeRequestDto(int from, int to, int competitionRate, int lockupRate) {
+    public IpoAnalyzeRequestDto(int from, int to, int minCompetitionRate, int minLockupRate) {
         this.from = from;
         this.to = to;
-        this.competitionRate = competitionRate;
-        this.lockupRate = lockupRate;
+        this.minCompetitionRate = minCompetitionRate;
+        this.minLockupRate = minLockupRate;
     }
 }

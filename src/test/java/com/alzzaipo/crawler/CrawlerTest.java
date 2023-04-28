@@ -1,7 +1,7 @@
 package com.alzzaipo.crawler;
 
-import com.alzzaipo.service.IpoService;
-import com.alzzaipo.domain.ipo.IPO;
+import com.alzzaipo.domain.ipo.Ipo;
+import com.alzzaipo.domain.ipo.IpoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,12 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class CrawlerTest {
 
-    private final IpoService ipoService;
+    private final IpoRepository ipoRepository;
     private final Crawler crawler;
 
     @Autowired
-    public CrawlerTest(IpoService ipoService, Crawler crawler) {
-        this.ipoService = ipoService;
+    public CrawlerTest(IpoRepository ipoRepository, Crawler crawler) {
+        this.ipoRepository = ipoRepository;
         this.crawler = crawler;
     }
 
@@ -47,10 +47,10 @@ class CrawlerTest {
         int pageNumber = 1;
 
         //when
-        List<IPO> ipoList = crawler.getIPOListFromPage(pageNumber);
+        List<Ipo> ipoList = crawler.getIPOListFromPage(pageNumber);
 
         //then
-        for (IPO ipo : ipoList) {
+        for (Ipo ipo : ipoList) {
             System.out.println("ipo = " + ipo.getStockName());
         }
 
@@ -67,7 +67,7 @@ class CrawlerTest {
         crawler.updateIPOListFrom(from);
 
         //then
-        List<IPO> findAllList = ipoService.findAll();
+        List<Ipo> findAllList = ipoRepository.findAll();
         assertThat(findAllList.size()).isGreaterThan(0);
         System.out.println(findAllList.size());
     }

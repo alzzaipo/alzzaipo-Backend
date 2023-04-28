@@ -2,8 +2,8 @@ package com.alzzaipo.service;
 
 import com.alzzaipo.domain.dto.PortfolioListResponseDto;
 import com.alzzaipo.domain.dto.PortfolioUpdateRequestDto;
-import com.alzzaipo.domain.ipo.IPO;
-import com.alzzaipo.domain.ipo.IPORepository;
+import com.alzzaipo.domain.ipo.Ipo;
+import com.alzzaipo.domain.ipo.IpoRepository;
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.member.MemberRepository;
 import com.alzzaipo.domain.portfolio.Portfolio;
@@ -28,7 +28,7 @@ public class PortfolioService {
 
     private final EntityManager em;
     private final PortfolioRepository portfolioRepository;
-    private final IPORepository ipoRepository;
+    private final IpoRepository ipoRepository;
     private final MemberRepository memberRepository;
 
     public Portfolio save(Portfolio portfolio) {
@@ -49,7 +49,7 @@ public class PortfolioService {
         Member member = getMemberAfterValidation(accountId);
 
         // 종목코드 검증
-        IPO ipo = getIpoAfterValidation(createRequestDto.getStockCode());
+        Ipo ipo = getIpoAfterValidation(createRequestDto.getStockCode());
 
         // DTO로부터 새로운 포트폴리오 생성
         Portfolio portfolio = Portfolio.builder()
@@ -76,7 +76,7 @@ public class PortfolioService {
         Portfolio oldPortfolio = getPortfolioAfterValidation(portfolioUpdateRequestDto.getPortfolioId());
 
         // 종목코드 검증
-        IPO ipo = getIpoAfterValidation(portfolioUpdateRequestDto.getStockCode());
+        Ipo ipo = getIpoAfterValidation(portfolioUpdateRequestDto.getStockCode());
 
         // 포트폴리오 소유권 검증
         validatePortfolioOwnership(accountId, oldPortfolio.getMember().getAccountId());
@@ -135,8 +135,8 @@ public class PortfolioService {
     }
 
     // 종목코드 검증 후, 해당하는 IPO Entity 반환
-    private IPO getIpoAfterValidation(int stockCode) {
-        IPO ipo = ipoRepository.findByStockCode(stockCode)
+    private Ipo getIpoAfterValidation(int stockCode) {
+        Ipo ipo = ipoRepository.findByStockCode(stockCode)
                 .orElseThrow(() -> new AppException(ErrorCode.IPO_NOT_FOUND,
                         stockCode + ": 존재하지 않는 종목코드 입니다"));
         return ipo;

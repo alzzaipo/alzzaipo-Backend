@@ -1,8 +1,8 @@
 package com.alzzaipo.domain.portfolio;
 
-import com.alzzaipo.domain.ipo.IPO;
+import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.service.MemberService;
-import com.alzzaipo.domain.ipo.IPORepository;
+import com.alzzaipo.domain.ipo.IpoRepository;
 import com.alzzaipo.domain.member.Member;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class PortfolioTest {
 
-    private final IPORepository ipoRepository;
+    private final IpoRepository ipoRepository;
     private final PortfolioRepository portfolioRepository;
     private final MemberService memberService;
 
     @Autowired
-    public PortfolioTest(IPORepository ipoRepository, PortfolioRepository portfolioRepository, MemberService memberService) {
+    public PortfolioTest(IpoRepository ipoRepository, PortfolioRepository portfolioRepository, MemberService memberService) {
         this.ipoRepository = ipoRepository;
         this.portfolioRepository = portfolioRepository;
         this.memberService = memberService;
@@ -30,7 +30,7 @@ class PortfolioTest {
     public void 포트폴리오_수익률계산() throws Exception
     {
         //given
-        IPO ipo = IPO.builder()
+        Ipo ipo = Ipo.builder()
                 .fixedOfferingPrice(10000)
                 .build();
 
