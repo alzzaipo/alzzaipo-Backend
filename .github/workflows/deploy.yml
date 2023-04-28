@@ -37,11 +37,9 @@ jobs:
     # (3) Secret 파일 생성
     - name : Create secret files with Github Actions Secrets
       run: |
-        touch ./src/main/resources/secrets/application-prod-config.yml
+        mkdir ./src/main/resources/secrets
         echo "${{ secrets.APPLICATION_PROD_CONFIG }}" > ./src/main/resources/secrets/application-prod-config.yml
-        touch ./src/main/resources/secrets/application-common-config.yml
         echo "${{ secrets.APPLICATION_COMMON_CONFIG }}" > ./src/main/resources/secrets/application-common-config.yml
-        touch ./src/main/resources/secrets/keystore.p12
         echo "${{ secrets.SSL_KEYSTORE }}" > ./src/main/resources/secrets/keystore.p12
 
     # (4) Gradle build (Test 제외)
