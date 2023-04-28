@@ -36,7 +36,6 @@ jobs:
 
     # (3) Secret 파일 생성
     - name : Create secret files with Github Actions Secrets
-      uses: actions/checkout@v3
       run:
         touch ./src/main/resources/secrets/application-prod-config.yml \
         echo "${{ secrets.APPLICATION_PROD_CONFIG }}" > ./src/main/resources/secrets/application-prod-config.yml \
