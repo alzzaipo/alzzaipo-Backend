@@ -1,7 +1,7 @@
 package com.alzzaipo.crawler;
 
 import com.alzzaipo.service.IpoService;
-import com.alzzaipo.web.domain.IPO.IPO;
+import com.alzzaipo.domain.ipo.Ipo;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,9 +30,9 @@ public class Crawler {
 
         try {
             while (true) {
-                List<IPO> ipoList = getIPOListFromPage(pageNumber);
+                List<Ipo> ipoList = getIPOListFromPage(pageNumber);
 
-                for (IPO ipo : ipoList) {
+                for (Ipo ipo : ipoList) {
                     if (ipo.getSubscribeStartDate().getYear() >= from) {
                         ipoService.save(ipo);
                     } else {
@@ -55,14 +55,14 @@ public class Crawler {
         }
     }
 
-    public List<IPO> getIPOListFromPage(int pageNumber) {
-        List<IPO> ipoList = new ArrayList<>();
+    public List<Ipo> getIPOListFromPage(int pageNumber) {
+        List<Ipo> ipoList = new ArrayList<>();
 
         List<CrawlerDto> crawlerDtoList = getCrawlerDtoListFromPage(pageNumber);
 
         for (CrawlerDto crawlerDto : crawlerDtoList) {
             int initialMarketPrice = initialMarketPriceApi.getInitialMarketPrice(crawlerDto.getStockCode(), crawlerDto.getListedDate());
-            IPO ipo = createIPO(crawlerDto, initialMarketPrice);
+            Ipo ipo = createIPO(crawlerDto, initialMarketPrice);
             ipoList.add(ipo);
         }
 
@@ -284,8 +284,8 @@ public class Crawler {
         return Integer.parseInt(rate);
     }
 
-    private IPO createIPO(CrawlerDto crawlerDto, int initialMarketPrice) {
-        IPO ipo = IPO.builder()
+    private Ipo createIPO(CrawlerDto crawlerDto, int initialMarketPrice) {
+        Ipo ipo = Ipo.builder()
                 .stockName(crawlerDto.getStockName())
                 .expectedOfferingPriceMin(crawlerDto.getExpectedOfferingPriceMin())
                 .expectedOfferingPriceMax(crawlerDto.getExpectedOfferingPriceMax())

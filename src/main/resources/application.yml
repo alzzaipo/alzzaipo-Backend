@@ -1,27 +1,31 @@
-# default
+# default profile
 spring:
   profiles:
     active: prod
+  mail:
+    host: smtp.daum.net
+    port: 465
+    username: ${smtp.email}
+    password: ${smtp.password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 30000
 
 ---
 spring:
   config:
     activate:
       on-profile: local
-    import: application-local-config.yml
+    import: secrets/application-common-config.yml, secrets/application-local-config.yml
 
 ---
 spring:
   config:
     activate:
       on-profile: prod
-    import: application-prod-config.yml
----
-spring:
-  config:
-    activate:
-      on-profile: test
-    import: application-local-config.yml
-
-
-
+    import: secrets/application-common-config.yml, secrets/application-prod-config.yml

@@ -1,7 +1,7 @@
 package com.alzzaipo.crawler;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,14 +12,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class CrawlerController {
 
     private final Crawler crawler;
-    private final Environment env;
+
+    @Value("${crawler.authCode}")
+    private String crawlerAuthCode;
 
     @GetMapping("/crawler/{code}/{year}")
     @ResponseBody
     public String initialize(@PathVariable String code, @PathVariable int year) {
-        String crawlerCode = env.getProperty("crawlerCode");
 
-        if(code.equals(crawlerCode)) {
+        if(code.equals(crawlerAuthCode)) {
             crawler.updateIPOListFrom(year);
         }
 
