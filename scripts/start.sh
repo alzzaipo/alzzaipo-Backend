@@ -9,12 +9,11 @@ DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
 TIME_NOW=$(date +%c)
 
-echo "Clean Build and Copy Jar File"
-cd /home/ubuntu/app
-./gradlew clean build -x test
+echo "$TIME_TIME_NOW > Copy Jar File"
 cp $PROJECT_ROOT/build/libs/*.jar $JAR_FILE
 
-# jar 파일 실행
+chmod +x $JAR_FILE
+
 echo "$TIME_NOW > $JAR_FILE 파일 실행" >> $DEPLOY_LOG
 nohup java -jar $JAR_FILE > $APP_LOG 2> $ERROR_LOG &
 
