@@ -7,8 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MemberJoinRequestDto {
 
-    String accountId;
-    String accountPassword;
-    String email;
-    String nickname;
+    private String accountId;
+    private String accountPassword;
+    private String email;
+    private String nickname;
 }

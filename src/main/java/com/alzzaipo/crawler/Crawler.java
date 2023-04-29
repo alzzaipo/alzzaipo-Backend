@@ -1,5 +1,7 @@
 package com.alzzaipo.crawler;
 
+import com.alzzaipo.exception.AppException;
+import com.alzzaipo.exception.ErrorCode;
 import com.alzzaipo.service.IpoService;
 import com.alzzaipo.domain.ipo.Ipo;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +26,8 @@ public class Crawler {
 
     // 작년 공모주 정보를 데이터베이스에 저장
     @Transactional
-    public void updateIPOListFrom(int from) {
-        int pageNumber = 1;
+    public int updateIPOListFrom(int from) {
+        int pageNumber = 1, cnt = 0;
         boolean stopFlag = false;
 
         try {
@@ -35,6 +37,7 @@ public class Crawler {
                 for (Ipo ipo : ipoList) {
                     if (ipo.getSubscribeStartDate().getYear() >= from) {
                         ipoService.save(ipo);
+                        cnt++;
                     } else {
                         if(ipo.getSubscribeStartDate().getYear() == 1000) {
                             continue;
@@ -51,8 +54,10 @@ public class Crawler {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "크롤링 실패\n" + e.getMessage());
         }
+
+        return cnt;
     }
 
     public List<Ipo> getIPOListFromPage(int pageNumber) {

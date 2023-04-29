@@ -2,6 +2,7 @@ package com.alzzaipo.crawler;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,12 +19,13 @@ public class CrawlerController {
 
     @GetMapping("/crawler/{code}/{year}")
     @ResponseBody
-    public String initialize(@PathVariable String code, @PathVariable int year) {
+    public ResponseEntity<String> initialize(@PathVariable String code, @PathVariable int year) {
+        int updateCnt = 0;
 
         if(code.equals(crawlerAuthCode)) {
-            crawler.updateIPOListFrom(year);
+            updateCnt = crawler.updateIPOListFrom(year);
         }
 
-        return "redirect:/";
+        return ResponseEntity.ok("[성공] " + updateCnt + "건 업데이트 완료");
     }
 }
