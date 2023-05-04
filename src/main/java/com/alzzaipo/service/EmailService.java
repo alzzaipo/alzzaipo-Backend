@@ -1,9 +1,9 @@
 package com.alzzaipo.service;
 
 import com.alzzaipo.config.EmailUtil;
+import com.alzzaipo.domain.account.local.LocalAccountRepository;
 import com.alzzaipo.domain.emailVerification.EmailVerification;
 import com.alzzaipo.domain.emailVerification.EmailVerificationRepository;
-import com.alzzaipo.domain.notification.email.EmailNotificationRepository;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @Service
@@ -22,13 +21,19 @@ public class EmailService {
 
     private final EmailVerificationRepository emailVerificationRepository;
     private final JavaMailSender javaMailSender;
-    private final EmailNotificationRepository emailNotificationRepository;
+    private final LocalAccountRepository localAccountRepository;
 
     // 사용자의 이메일로 인증코드 전송
     @Transactional
     public void sendVerificationCode(String email) {
         // 이메일 형식 검증
         EmailUtil.verifyEmailFormat(email);
+
+        // 이메일 중복 검사
+        localAccountRepository.findByEmail(email)
+                .ifPresent(localAccount -> {
+                    throw new AppException(ErrorCode.DUPLICATED_EMAIL, "중복된 이메일 입니다.");
+                });
 
         // 인증코드 생성
         String verificationCode = createVerificationCode();
