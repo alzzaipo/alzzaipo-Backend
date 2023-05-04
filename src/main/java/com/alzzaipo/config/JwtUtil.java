@@ -1,4 +1,4 @@
-package com.alzzaipo.utils;
+package com.alzzaipo.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -19,9 +19,9 @@ public class JwtUtil {
 
     private Long expireTimeMillis = 1000 * 60 * 30L;
 
-    public String createToken(String accountId) {
+    public String createToken(Long memberId) {
         Claims claims = Jwts.claims();
-        claims.put("accountId", accountId);
+        claims.put("memberId", memberId);
 
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         SecretKey secretKey = Keys.hmacShaKeyFor(keyBytes);
@@ -39,8 +39,8 @@ public class JwtUtil {
                 .getExpiration().before(new Date());
     }
 
-    public String getAccountId(String token) {
+    public Long getMemberId(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody()
-                .get("accountId", String.class);
+                .get("memberId", Long.class);
     }
 }

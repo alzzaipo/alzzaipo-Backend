@@ -1,7 +1,6 @@
 package com.alzzaipo.config;
 
 import com.alzzaipo.service.MemberService;
-import com.alzzaipo.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

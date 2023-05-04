@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -96,7 +95,7 @@ class IpoServiceTest {
             fail("STOCK_CODE_NOT_FOUND 에러가 발생해야 합니다");
         } catch (AppException e){
             // then
-            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.STOCK_CODE_NOT_FOUND);
+            assertThat(e.getErrorCode()).isEqualTo(ErrorCode.INVALID_STOCKCODE);
         }
     }
 

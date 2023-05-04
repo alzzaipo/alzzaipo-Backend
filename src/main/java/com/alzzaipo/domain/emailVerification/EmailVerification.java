@@ -6,8 +6,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @Entity
 public class EmailVerification extends BaseTimeEntity {
@@ -17,12 +19,19 @@ public class EmailVerification extends BaseTimeEntity {
     @Column(unique = true, nullable = false, length = 256)
     private String email;
 
-    @Column(name = "authcode", nullable = false, length = 8)
-    private String authCode;
+    @Column(name = "verification_code", nullable = false, length = 8)
+    private String verificationCode;
+
+    @Column(name = "verification_status", columnDefinition = "boolean default false")
+    private boolean verificationStatus;
 
     @Builder
-    public EmailVerification(String email, String authCode) {
+    public EmailVerification(String email, String verificationCode) {
         this.email = email;
-        this.authCode = authCode;
+        this.verificationCode = verificationCode;
+    }
+
+    public void setVerifiedStatus() {
+        this.verificationStatus = true;
     }
 }

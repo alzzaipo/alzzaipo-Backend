@@ -14,15 +14,15 @@ public class CrawlerController {
 
     private final Crawler crawler;
 
-    @Value("${crawler.authCode}")
-    private String crawlerAuthCode;
+    @Value("${crawler.verificationCode}")
+    private String crawlerVerificationCode;
 
     @GetMapping("/crawler/{code}/{year}")
     @ResponseBody
     public ResponseEntity<String> initialize(@PathVariable String code, @PathVariable int year) {
         int updateCnt = 0;
 
-        if(code.equals(crawlerAuthCode)) {
+        if(code.equals(crawlerVerificationCode)) {
             updateCnt = crawler.updateIPOListFrom(year);
         }
 
