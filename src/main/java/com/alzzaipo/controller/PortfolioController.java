@@ -1,7 +1,7 @@
 package com.alzzaipo.controller;
 
 import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
-import com.alzzaipo.domain.dto.PortfolioListResponseDto;
+import com.alzzaipo.domain.dto.PortfolioResponseDto;
 import com.alzzaipo.domain.dto.PortfolioUpdateRequestDto;
 import com.alzzaipo.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
@@ -19,31 +19,28 @@ public class PortfolioController {
     private final PortfolioService portfolioService;
 
     @GetMapping("/list")
-    public ResponseEntity<List<PortfolioListResponseDto>> getMemberPortfolios(@AuthenticationPrincipal String accountId) {
-
-        List<PortfolioListResponseDto> portfolioListResponseDtos =
-                portfolioService.getMemberPortfolioList(accountId);
-
-        return ResponseEntity.ok(portfolioListResponseDtos);
+    public ResponseEntity<List<PortfolioResponseDto>> getMemberPortfolios(@AuthenticationPrincipal Long memberId) {
+        List<PortfolioResponseDto> portfolioResponseDtos = portfolioService.getPortfolioListByMemberId(memberId);
+        return ResponseEntity.ok(portfolioResponseDtos);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createMemberPortfolio(@AuthenticationPrincipal String accountId,
+    public ResponseEntity<String> createMemberPortfolio(@AuthenticationPrincipal Long memberId,
                                                         @RequestBody PortfolioCreateRequestDto portfolioCreateRequestDto) {
-        portfolioService.createMemberPortfolio(accountId, portfolioCreateRequestDto);
+        portfolioService.create(memberId, portfolioCreateRequestDto);
         return ResponseEntity.ok().body("포트폴리오 생성 완료");
     }
 
     @PutMapping("/update")
-    public ResponseEntity<String> updateMemberPortfolio(@AuthenticationPrincipal String accountId,
+    public ResponseEntity<String> updateMemberPortfolio(@AuthenticationPrincipal Long memberId,
                                                         @RequestBody PortfolioUpdateRequestDto portfolioUpdateRequestDto) {
-        portfolioService.updateMemberPortfolio(accountId, portfolioUpdateRequestDto);
+        portfolioService.update(memberId, portfolioUpdateRequestDto);
         return ResponseEntity.ok().body("포트폴리오 수정 완료");
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> delete(@AuthenticationPrincipal String accountId, @RequestParam("portfolioId") Long portfolioId) {
-        portfolioService.deleteMemberPortfolio(accountId, portfolioId);
+    public ResponseEntity<String> delete(@AuthenticationPrincipal Long memberId, @RequestParam("portfolioId") Long portfolioId) {
+        portfolioService.delete(memberId, portfolioId);
         return ResponseEntity.ok().body("포트폴리오 삭제 완료");
     }
 

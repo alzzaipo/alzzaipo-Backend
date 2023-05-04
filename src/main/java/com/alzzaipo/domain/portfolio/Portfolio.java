@@ -1,7 +1,7 @@
 package com.alzzaipo.domain.portfolio;
 
 import com.alzzaipo.domain.BaseTimeEntity;
-import com.alzzaipo.domain.dto.PortfolioListResponseDto;
+import com.alzzaipo.domain.dto.PortfolioResponseDto;
 import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.domain.member.Member;
 import jakarta.persistence.*;
@@ -48,10 +48,6 @@ public class Portfolio extends BaseTimeEntity {
         this.profitRate = calcProfitRate();
     }
 
-    public void changeAllocatedSharesCnt(int sharesCnt) {
-        this.sharesCnt = sharesCnt;
-    }
-
     public int changeProfit(int profit) {
         this.profit = profit;
         this.profitRate = calcProfitRate();
@@ -75,8 +71,8 @@ public class Portfolio extends BaseTimeEntity {
     public void updateId(Long id) { this.id = id; }
 
     @Transactional(readOnly = true)
-    public PortfolioListResponseDto toDto() {
-        PortfolioListResponseDto portfolioListResponseDto = PortfolioListResponseDto.builder()
+    public PortfolioResponseDto toDto() {
+        PortfolioResponseDto portfolioResponseDto = PortfolioResponseDto.builder()
                 .portfolioId(this.id)
                 .stockName(this.ipo.getStockName())
                 .stockCode(this.ipo.getStockCode())
@@ -91,6 +87,6 @@ public class Portfolio extends BaseTimeEntity {
                 .memo(this.memo)
                 .build();
 
-        return portfolioListResponseDto;
+        return portfolioResponseDto;
     }
 }

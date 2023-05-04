@@ -1,11 +1,11 @@
 package com.alzzaipo.service;
 
 import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
-import com.alzzaipo.domain.dto.IpoDto;
-import com.alzzaipo.domain.ipo.Ipo;
-import com.alzzaipo.domain.dto.IpoListDto;
-import com.alzzaipo.domain.ipo.IpoRepository;
 import com.alzzaipo.domain.dto.IpoAnalyzeResponseDto;
+import com.alzzaipo.domain.dto.IpoDto;
+import com.alzzaipo.domain.dto.IpoListDto;
+import com.alzzaipo.domain.ipo.Ipo;
+import com.alzzaipo.domain.ipo.IpoRepository;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class IpoService {
     // Ipo의 식별자인 종목코드(stockCode)로 조회하여 해당하는 엔티티를 반환합니다
     public Ipo findByStockCode(int stockCode) {
         Ipo ipo = ipoRepository.findByStockCode(stockCode)
-                .orElseThrow(() -> new AppException(ErrorCode.STOCK_CODE_NOT_FOUND, "종목코드를 찾을 수 없습니다 - " + stockCode));
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_STOCKCODE, "종목코드 조회 실패: " + stockCode));
         return ipo;
     }
 

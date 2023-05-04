@@ -1,11 +1,13 @@
 package com.alzzaipo.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-@Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class IpoAnalyzeRequestDto {
     @JsonProperty("from")
     private int from;
@@ -16,10 +18,4 @@ public class IpoAnalyzeRequestDto {
     @JsonProperty("minLockupRate")
     private int minLockupRate;
 
-    public IpoAnalyzeRequestDto(int from, int to, int minCompetitionRate, int minLockupRate) {
-        this.from = from;
-        this.to = to;
-        this.minCompetitionRate = minCompetitionRate;
-        this.minLockupRate = minLockupRate;
-    }
 }
