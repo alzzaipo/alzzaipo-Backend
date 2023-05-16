@@ -6,6 +6,7 @@ import com.alzzaipo.domain.emailVerification.EmailVerification;
 import com.alzzaipo.domain.emailVerification.EmailVerificationRepository;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,6 +20,7 @@ import java.util.Random;
 @Service
 public class EmailService {
 
+    private final EntityManager em;
     private final EmailVerificationRepository emailVerificationRepository;
     private final JavaMailSender javaMailSender;
     private final LocalAccountRepository localAccountRepository;
@@ -35,10 +37,17 @@ public class EmailService {
                     throw new AppException(ErrorCode.DUPLICATED_EMAIL, "중복된 이메일 입니다.");
                 });
 
+        // 이전에 인증코드를 요청한 내역이 있는 경우 무효 처리(삭제)
+        emailVerificationRepository.findByEmail(email)
+                .ifPresent(ev -> {
+                    emailVerificationRepository.delete(ev);
+                    em.flush();
+                });
+
         // 인증코드 생성
         String verificationCode = createVerificationCode();
 
-        // 이메일 내용 작성
+        // 이메일 작성
         SimpleMailMessage simpleMessage = new SimpleMailMessage();
         simpleMessage.setFrom("alzzaipo@daum.net");
         simpleMessage.setTo(email);
@@ -52,12 +61,6 @@ public class EmailService {
             e.printStackTrace();
             throw new AppException(ErrorCode.AUTHENTICATION_CODE_SEND_FAILED, "인증메일 전송 실패");
         }
-
-        // 이전에 인증코드를 요청한 내역이 있는 경우 무효 처리(삭제)
-        emailVerificationRepository.findByEmail(email)
-                .ifPresent(ev -> {
-                    emailVerificationRepository.delete(ev);
-                });
 
         // 인증 정보(이메일, 인증코드) 데이터베이스에 저장
         emailVerificationRepository.save(new EmailVerification(email, verificationCode));

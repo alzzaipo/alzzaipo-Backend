@@ -31,7 +31,4 @@ public class EmailVerification extends BaseTimeEntity {
         this.verificationCode = verificationCode;
     }
 
-    public void setVerifiedStatus() {
-        this.verificationStatus = true;
-    }
 }
