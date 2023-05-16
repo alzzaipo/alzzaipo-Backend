@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface EmailVerificationRepository extends JpaRepository<EmailVerification, Long> {
-    @Query("SELECT e.verificationCode FROM EmailVerification e where e.email = ?1")
+    @Query("SELECT ev.verificationCode FROM EmailVerification ev WHERE ev.email = ?1")
     Optional<String> findVerificationCodeByEmail(String email);
 
     @Query
