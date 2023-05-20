@@ -1,9 +1,6 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
-import com.alzzaipo.domain.dto.IpoAnalyzeResponseDto;
-import com.alzzaipo.domain.dto.IpoDto;
-import com.alzzaipo.domain.dto.IpoListDto;
+import com.alzzaipo.dto.ipo.*;
 import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.domain.ipo.IpoRepository;
 import com.alzzaipo.exception.AppException;
@@ -96,4 +93,18 @@ public class IpoService {
         return ipoAnalyzeResponseDto;
     }
 
+    public IpoAgentsListDto getIpoAgentsListDto(int stockCode) {
+        String agents = ipoRepository.findAgentsByStockCode(stockCode)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_STOCKCODE, "종목코드 조회 실패"));
+
+        List<String> agentsList = new ArrayList<>();
+
+        if(!agents.isEmpty()) {
+            for(String agent : agents.split(",")) {
+                agentsList.add(agent);
+            }
+        }
+
+        return new IpoAgentsListDto(agentsList);
+    }
 }

@@ -1,4 +1,4 @@
-package com.alzzaipo.config;
+package com.alzzaipo.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

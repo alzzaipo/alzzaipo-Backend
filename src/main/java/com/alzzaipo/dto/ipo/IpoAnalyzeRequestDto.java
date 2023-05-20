@@ -1,4 +1,4 @@
-package com.alzzaipo.domain.dto;
+package com.alzzaipo.dto.ipo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

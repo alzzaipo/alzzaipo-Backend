@@ -1,4 +1,4 @@
-package com.alzzaipo.domain.dto;
+package com.alzzaipo.dto.account.local;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

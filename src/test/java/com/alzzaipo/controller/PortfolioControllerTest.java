@@ -1,7 +1,7 @@
 package com.alzzaipo.controller;
 
-import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
-import com.alzzaipo.domain.dto.PortfolioUpdateRequestDto;
+import com.alzzaipo.dto.portfolio.PortfolioCreateRequestDto;
+import com.alzzaipo.dto.portfolio.PortfolioUpdateRequestDto;
 import com.alzzaipo.domain.portfolio.Portfolio;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;

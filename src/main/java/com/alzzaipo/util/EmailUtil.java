@@ -1,4 +1,4 @@
-package com.alzzaipo.config;
+package com.alzzaipo.util;
 
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;

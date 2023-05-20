@@ -1,9 +1,9 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.config.JwtUtil;
+import com.alzzaipo.util.JwtUtil;
 import com.alzzaipo.domain.account.social.SocialAccount;
 import com.alzzaipo.domain.account.social.SocialCode;
-import com.alzzaipo.domain.dto.SocialAccountInfo;
+import com.alzzaipo.dto.account.social.SocialAccountInfo;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;

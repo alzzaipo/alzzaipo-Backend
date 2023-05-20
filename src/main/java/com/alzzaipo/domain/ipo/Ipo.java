@@ -1,7 +1,7 @@
 package com.alzzaipo.domain.ipo;
 
 import com.alzzaipo.domain.BaseTimeEntity;
-import com.alzzaipo.domain.dto.IpoDto;
+import com.alzzaipo.dto.ipo.IpoDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,4 +1,4 @@
-package com.alzzaipo.domain.dto;
+package com.alzzaipo.dto.portfolio;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,11 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@Getter
-@Setter
-public class PortfolioUpdateRequestDto {
+@Getter @Setter
+public class PortfolioCreateRequestDto {
 
-    private Long portfolioId;
     private int stockCode;
     private int sharesCnt;
     private int profit;
@@ -18,8 +16,7 @@ public class PortfolioUpdateRequestDto {
     private String memo;
 
     @Builder
-    public PortfolioUpdateRequestDto(Long portfolioId, int stockCode, int sharesCnt, int profit, String agents, String memo) {
-        this.portfolioId = portfolioId;
+    public PortfolioCreateRequestDto(int stockCode, int sharesCnt, int profit, String agents, String memo) {
         this.stockCode = stockCode;
         this.sharesCnt = sharesCnt;
         this.profit = profit;

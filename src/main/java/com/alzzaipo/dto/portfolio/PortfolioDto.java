@@ -1,4 +1,4 @@
-package com.alzzaipo.domain.dto;
+package com.alzzaipo.dto.portfolio;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PortfolioResponseDto {
+public class PortfolioDto {
 
     private Long portfolioId;
 
@@ -37,9 +37,9 @@ public class PortfolioResponseDto {
     private String memo;
 
     @Builder
-    public PortfolioResponseDto(Long portfolioId, String stockName, int stockCode, LocalDate subscribeStartDate, LocalDate subscribeEndDate,
-                                LocalDate listedDate, int fixedOfferingPrice, String agents,
-                                int sharesCnt, int profit, int profitRate, String memo) {
+    public PortfolioDto(Long portfolioId, String stockName, int stockCode, LocalDate subscribeStartDate, LocalDate subscribeEndDate,
+                        LocalDate listedDate, int fixedOfferingPrice, String agents,
+                        int sharesCnt, int profit, int profitRate, String memo) {
         this.portfolioId = portfolioId;
         this.stockName = stockName;
         this.stockCode = stockCode;

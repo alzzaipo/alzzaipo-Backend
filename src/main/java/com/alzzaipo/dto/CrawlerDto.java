@@ -1,4 +1,4 @@
-package com.alzzaipo.crawler;
+package com.alzzaipo.dto;
 
 import lombok.Builder;
 import lombok.Getter;

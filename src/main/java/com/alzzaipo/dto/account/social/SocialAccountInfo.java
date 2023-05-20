@@ -1,16 +1,13 @@
-package com.alzzaipo.domain.dto;
+package com.alzzaipo.dto.account.social;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LocalAccountRegisterRequestDto {
-
-    private String accountId;
-    private String accountPassword;
+@Getter
+public class SocialAccountInfo {
     private String email;
     private String nickname;
 }
