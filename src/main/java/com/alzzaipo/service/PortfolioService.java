@@ -1,24 +1,23 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.dto.portfolio.PortfolioResponseDto;
-import com.alzzaipo.dto.portfolio.PortfolioUpdateRequestDto;
 import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.portfolio.Portfolio;
 import com.alzzaipo.domain.portfolio.PortfolioRepository;
 import com.alzzaipo.dto.portfolio.PortfolioCreateRequestDto;
+import com.alzzaipo.dto.portfolio.PortfolioDto;
+import com.alzzaipo.dto.portfolio.PortfolioListDto;
+import com.alzzaipo.dto.portfolio.PortfolioUpdateRequestDto;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Slf4j
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -108,13 +107,26 @@ public class PortfolioService {
     }
 
     @Transactional(readOnly = true)
-    public List<PortfolioResponseDto> getPortfolioListByMemberId(Long memberId) {
+    public PortfolioListDto getPortfolioListDto(Long memberId) {
+        Long totalProfit = 0L;
+        int totalProfitRate = 0;
+        List<PortfolioDto> portFolioDtoList = new ArrayList<>();
         List<Portfolio> portfolioList = portfolioRepository.findByMemberId(memberId);
 
-        // 포트폴리오를 DTO로 변환하여 반환
-        return portfolioList.stream()
-                    .map(Portfolio::toDto)
-                    .collect(Collectors.toList());
+        if(portfolioList.isEmpty()) {
+            totalProfit = 0L;
+            totalProfitRate = 0;
+        }
+        else {
+            for(Portfolio p : portfolioList) {
+                totalProfit += p.getProfit();
+                portFolioDtoList.add(p.toDto());
+            }
+
+            totalProfitRate = totalProfitRate / portfolioList.size();
+        }
+
+        return new PortfolioListDto(totalProfit, totalProfitRate, portFolioDtoList);
     }
 
     // 회원이 포트폴리오의 소유자인지 검증

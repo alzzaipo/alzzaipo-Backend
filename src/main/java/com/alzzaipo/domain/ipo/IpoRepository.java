@@ -17,4 +17,7 @@ public interface IpoRepository extends JpaRepository<Ipo, Long> {
 
     @Query("SELECT new com.alzzaipo.dto.ipo.IpoListDto(i.stockName, i.stockCode) FROM Ipo i")
     List<IpoListDto> findAllIpoListDto();
+
+    @Query("SELECT i.agents FROM Ipo i WHERE i.stockCode = ?1")
+    Optional<String> findAgentsByStockCode(int stockCode);
 }

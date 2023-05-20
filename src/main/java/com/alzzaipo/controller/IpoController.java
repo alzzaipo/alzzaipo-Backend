@@ -1,5 +1,6 @@
 package com.alzzaipo.controller;
 
+import com.alzzaipo.dto.ipo.IpoAgentsListDto;
 import com.alzzaipo.service.IpoService;
 import com.alzzaipo.dto.ipo.IpoAnalyzeRequestDto;
 import com.alzzaipo.dto.ipo.IpoAnalyzeResponseDto;
@@ -29,7 +30,12 @@ public class IpoController {
     public ResponseEntity<IpoAnalyzeResponseDto> getIpoAnalyzeResult(@RequestBody IpoAnalyzeRequestDto ipoAnalyzeRequestDto) {
         // 분석 조건에 부합하는 공모주들의 (평균 수익률, 공모주 목록)을 담은 분석결과 DTO를 가져옵니다
         IpoAnalyzeResponseDto analyzeResponseDto = ipoService.analyze(ipoAnalyzeRequestDto);
-
         return ResponseEntity.ok(analyzeResponseDto);
+    }
+
+    @GetMapping("/{stockCode}/agents")
+    public ResponseEntity<IpoAgentsListDto> getIpoAgentsList(@PathVariable int stockCode) {
+        IpoAgentsListDto ipoAgentsListDto = ipoService.getIpoAgentsListDto(stockCode);
+        return ResponseEntity.ok(ipoAgentsListDto);
     }
 }
