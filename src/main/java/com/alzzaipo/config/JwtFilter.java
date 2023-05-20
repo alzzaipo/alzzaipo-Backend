@@ -1,6 +1,7 @@
 package com.alzzaipo.config;
 
 import com.alzzaipo.service.MemberService;
+import com.alzzaipo.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

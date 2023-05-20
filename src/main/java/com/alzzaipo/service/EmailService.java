@@ -1,6 +1,6 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.config.EmailUtil;
+import com.alzzaipo.util.EmailUtil;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
 import com.alzzaipo.domain.emailVerification.EmailVerification;
 import com.alzzaipo.domain.emailVerification.EmailVerificationRepository;

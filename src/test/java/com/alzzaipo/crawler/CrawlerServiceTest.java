@@ -2,6 +2,8 @@ package com.alzzaipo.crawler;
 
 import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.domain.ipo.IpoRepository;
+import com.alzzaipo.dto.CrawlerDto;
+import com.alzzaipo.service.CrawlerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,15 +15,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-class CrawlerTest {
+class CrawlerServiceTest {
 
     private final IpoRepository ipoRepository;
-    private final Crawler crawler;
+    private final CrawlerService crawlerService;
 
     @Autowired
-    public CrawlerTest(IpoRepository ipoRepository, Crawler crawler) {
+    public CrawlerServiceTest(IpoRepository ipoRepository, CrawlerService crawlerService) {
         this.ipoRepository = ipoRepository;
-        this.crawler = crawler;
+        this.crawlerService = crawlerService;
     }
 
     @Test
@@ -30,7 +32,7 @@ class CrawlerTest {
         int pageNumber = 1;
 
         //when
-        List<CrawlerDto> crawlerDtoList = crawler.getCrawlerDtoListFromPage(pageNumber);
+        List<CrawlerDto> crawlerDtoList = crawlerService.getCrawlerDtoListFromPage(pageNumber);
 
         //then
         for (CrawlerDto crawlerDto : crawlerDtoList) {
@@ -47,7 +49,7 @@ class CrawlerTest {
         int pageNumber = 1;
 
         //when
-        List<Ipo> ipoList = crawler.getIPOListFromPage(pageNumber);
+        List<Ipo> ipoList = crawlerService.getIPOListFromPage(pageNumber);
 
         //then
         for (Ipo ipo : ipoList) {
@@ -64,7 +66,7 @@ class CrawlerTest {
         int from = 2023;
 
         //when
-        crawler.updateIPOListFrom(from);
+        crawlerService.updateIPOListFrom(from);
 
         //then
         List<Ipo> findAllList = ipoRepository.findAll();

@@ -1,5 +1,6 @@
-package com.alzzaipo.crawler;
+package com.alzzaipo.controller;
 
+import com.alzzaipo.service.CrawlerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequiredArgsConstructor
 public class CrawlerController {
 
-    private final Crawler crawler;
+    private final CrawlerService crawlerService;
 
     @Value("${crawler.verificationCode}")
     private String crawlerVerificationCode;
@@ -23,7 +24,7 @@ public class CrawlerController {
         int updateCnt = 0;
 
         if(code.equals(crawlerVerificationCode)) {
-            updateCnt = crawler.updateIPOListFrom(year);
+            updateCnt = crawlerService.updateIPOListFrom(year);
         }
 
         return ResponseEntity.ok("[성공] " + updateCnt + "건 업데이트 완료");

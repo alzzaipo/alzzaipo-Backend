@@ -1,7 +1,7 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.config.EmailUtil;
-import com.alzzaipo.config.JwtUtil;
+import com.alzzaipo.util.EmailUtil;
+import com.alzzaipo.util.JwtUtil;
 import com.alzzaipo.domain.account.local.LocalAccount;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
 import com.alzzaipo.dto.account.local.LocalAccountIdDto;
