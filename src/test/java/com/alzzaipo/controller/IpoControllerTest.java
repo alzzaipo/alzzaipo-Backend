@@ -1,9 +1,9 @@
 package com.alzzaipo.controller;
 
-import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
-import com.alzzaipo.domain.dto.IpoAnalyzeResponseDto;
-import com.alzzaipo.domain.dto.IpoDto;
-import com.alzzaipo.domain.dto.IpoListDto;
+import com.alzzaipo.dto.ipo.IpoAnalyzeRequestDto;
+import com.alzzaipo.dto.ipo.IpoAnalyzeResponseDto;
+import com.alzzaipo.dto.ipo.IpoDto;
+import com.alzzaipo.dto.ipo.IpoListDto;
 import com.alzzaipo.service.IpoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;

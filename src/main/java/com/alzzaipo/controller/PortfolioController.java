@@ -1,8 +1,8 @@
 package com.alzzaipo.controller;
 
-import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
-import com.alzzaipo.domain.dto.PortfolioResponseDto;
-import com.alzzaipo.domain.dto.PortfolioUpdateRequestDto;
+import com.alzzaipo.dto.portfolio.PortfolioCreateRequestDto;
+import com.alzzaipo.dto.portfolio.PortfolioResponseDto;
+import com.alzzaipo.dto.portfolio.PortfolioUpdateRequestDto;
 import com.alzzaipo.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

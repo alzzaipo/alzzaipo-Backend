@@ -1,9 +1,9 @@
 package com.alzzaipo.controller;
 
-import com.alzzaipo.domain.dto.AccountIdDto;
-import com.alzzaipo.domain.dto.EmailDto;
-import com.alzzaipo.domain.dto.LocalAccountLoginRequestDto;
-import com.alzzaipo.domain.dto.LocalAccountRegisterRequestDto;
+import com.alzzaipo.dto.account.local.LocalAccountIdDto;
+import com.alzzaipo.dto.email.EmailDto;
+import com.alzzaipo.dto.account.local.LocalAccountLoginRequestDto;
+import com.alzzaipo.dto.account.local.LocalAccountRegisterRequestDto;
 import com.alzzaipo.service.LocalAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public class LocalAccountController {
     }
 
     @PostMapping("/verify-account-id")
-    public ResponseEntity<String> verifyAccountId(@RequestBody AccountIdDto dto) {
+    public ResponseEntity<String> verifyAccountId(@RequestBody LocalAccountIdDto dto) {
         localAccountService.verifyAccountId(dto);
         return ResponseEntity.ok().body("사용 가능한 아이디 입니다.");
     }

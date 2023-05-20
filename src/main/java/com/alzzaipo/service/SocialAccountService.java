@@ -3,7 +3,7 @@ package com.alzzaipo.service;
 import com.alzzaipo.domain.account.social.SocialAccount;
 import com.alzzaipo.domain.account.social.SocialAccountRepository;
 import com.alzzaipo.domain.account.social.SocialCode;
-import com.alzzaipo.domain.dto.SocialAccountInfo;
+import com.alzzaipo.dto.account.social.SocialAccountInfo;
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.member.MemberType;
 import lombok.RequiredArgsConstructor;

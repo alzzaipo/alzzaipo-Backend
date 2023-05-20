@@ -1,12 +1,12 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.domain.dto.PortfolioResponseDto;
-import com.alzzaipo.domain.dto.PortfolioUpdateRequestDto;
+import com.alzzaipo.dto.portfolio.PortfolioResponseDto;
+import com.alzzaipo.dto.portfolio.PortfolioUpdateRequestDto;
 import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.portfolio.Portfolio;
 import com.alzzaipo.domain.portfolio.PortfolioRepository;
-import com.alzzaipo.domain.dto.PortfolioCreateRequestDto;
+import com.alzzaipo.dto.portfolio.PortfolioCreateRequestDto;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;
 import jakarta.persistence.EntityManager;

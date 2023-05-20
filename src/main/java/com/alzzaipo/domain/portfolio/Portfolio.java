@@ -1,7 +1,7 @@
 package com.alzzaipo.domain.portfolio;
 
 import com.alzzaipo.domain.BaseTimeEntity;
-import com.alzzaipo.domain.dto.PortfolioResponseDto;
+import com.alzzaipo.dto.portfolio.PortfolioResponseDto;
 import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.domain.member.Member;
 import jakarta.persistence.*;

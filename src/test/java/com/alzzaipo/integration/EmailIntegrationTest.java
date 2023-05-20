@@ -1,6 +1,6 @@
 package com.alzzaipo.integration;
 
-import com.alzzaipo.domain.dto.EmailVerificationRequestDto;
+import com.alzzaipo.dto.email.EmailVerificationRequestDto;
 import com.alzzaipo.domain.emailVerification.EmailVerification;
 import com.alzzaipo.domain.emailVerification.EmailVerificationRepository;
 import com.alzzaipo.service.EmailService;

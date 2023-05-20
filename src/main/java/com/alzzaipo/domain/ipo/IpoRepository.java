@@ -1,6 +1,6 @@
 package com.alzzaipo.domain.ipo;
 
-import com.alzzaipo.domain.dto.IpoListDto;
+import com.alzzaipo.dto.ipo.IpoListDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,6 +15,6 @@ public interface IpoRepository extends JpaRepository<Ipo, Long> {
     @Query("SELECT i FROM Ipo i WHERE i.listedDate >= ?1 AND i.listedDate <= ?2 AND i.competitionRate >= ?3 AND i.lockupRate >= ?4")
     List<Ipo> analyze(LocalDate from, LocalDate to, int minCompetitionRate, int minLockupRate);
 
-    @Query("SELECT new com.alzzaipo.domain.dto.IpoListDto(i.stockName, i.stockCode) FROM Ipo i")
+    @Query("SELECT new com.alzzaipo.dto.ipo.IpoListDto(i.stockName, i.stockCode) FROM Ipo i")
     List<IpoListDto> findAllIpoListDto();
 }

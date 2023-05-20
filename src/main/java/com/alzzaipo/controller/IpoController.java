@@ -1,9 +1,9 @@
 package com.alzzaipo.controller;
 
 import com.alzzaipo.service.IpoService;
-import com.alzzaipo.domain.dto.IpoAnalyzeRequestDto;
-import com.alzzaipo.domain.dto.IpoAnalyzeResponseDto;
-import com.alzzaipo.domain.dto.IpoListDto;
+import com.alzzaipo.dto.ipo.IpoAnalyzeRequestDto;
+import com.alzzaipo.dto.ipo.IpoAnalyzeResponseDto;
+import com.alzzaipo.dto.ipo.IpoListDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

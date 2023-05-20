@@ -2,7 +2,7 @@ package com.alzzaipo.integration;
 
 import com.alzzaipo.domain.account.local.LocalAccount;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
-import com.alzzaipo.domain.dto.EmailDto;
+import com.alzzaipo.dto.email.EmailDto;
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.member.MemberType;
 import com.alzzaipo.service.MemberService;

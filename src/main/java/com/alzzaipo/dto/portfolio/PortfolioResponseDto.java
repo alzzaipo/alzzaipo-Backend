@@ -1,4 +1,4 @@
-package com.alzzaipo.domain.dto;
+package com.alzzaipo.dto.portfolio;
 
 import lombok.Builder;
 import lombok.Getter;

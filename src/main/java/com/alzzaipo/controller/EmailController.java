@@ -1,7 +1,7 @@
 package com.alzzaipo.controller;
 
-import com.alzzaipo.domain.dto.EmailDto;
-import com.alzzaipo.domain.dto.EmailVerificationRequestDto;
+import com.alzzaipo.dto.email.EmailDto;
+import com.alzzaipo.dto.email.EmailVerificationRequestDto;
 import com.alzzaipo.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
