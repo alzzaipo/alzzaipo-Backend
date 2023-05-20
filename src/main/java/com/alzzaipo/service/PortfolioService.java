@@ -120,6 +120,7 @@ public class PortfolioService {
         else {
             for(Portfolio p : portfolioList) {
                 totalProfit += p.getProfit();
+                totalProfitRate += p.getProfitRate();
                 portFolioDtoList.add(p.toDto());
             }
 
