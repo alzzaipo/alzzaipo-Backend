@@ -137,16 +137,17 @@ public class LocalAccountService {
         }
     }
 
-    public LocalAccountProfileDto getLocalAccountProfileDto(Long memberId) {
+    public LocalAccountProfileResponseDto getLocalAccountProfileDto(Long memberId) {
         LocalAccount localAccount = localAccountRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_MEMBER_ID, "해당 회원 정보를 찾을 수 없습니다."));
 
-        // 아이디, 닉네임, 연동된 소셜 로그인 종류
+        // 아이디, 닉네임, 이메일, 연동된 소셜 로그인 종류
         String accountId = localAccount.getAccountId();
         String nickname = localAccount.getMember().getNickname();
+        String email = localAccount.getEmail();
         List<SocialCode> socialLoginTypes = socialAccountRepository.findSocialLoginTypes(memberId);
 
-        return new LocalAccountProfileDto(accountId, nickname, socialLoginTypes);
+        return new LocalAccountProfileResponseDto(accountId, nickname, email, socialLoginTypes);
     }
 
     @Transactional

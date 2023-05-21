@@ -46,9 +46,9 @@ public class LocalAccountController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<LocalAccountProfileDto> profile(@AuthenticationPrincipal Long memberId) {
-        LocalAccountProfileDto localAccountProfileDto = localAccountService.getLocalAccountProfileDto(memberId);
-        return ResponseEntity.ok().body(localAccountProfileDto);
+    public ResponseEntity<LocalAccountProfileResponseDto> profile(@AuthenticationPrincipal Long memberId) {
+        LocalAccountProfileResponseDto localAccountProfileResponseDto = localAccountService.getLocalAccountProfileDto(memberId);
+        return ResponseEntity.ok().body(localAccountProfileResponseDto);
     }
 
     @PutMapping("/profile/update")

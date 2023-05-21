@@ -8,8 +8,9 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class LocalAccountProfileDto {
+public class LocalAccountProfileResponseDto {
     private String accountId;
     private String nickname;
+    private String email;
     private List<SocialCode> linkedSocialLoginTypes;
 }
