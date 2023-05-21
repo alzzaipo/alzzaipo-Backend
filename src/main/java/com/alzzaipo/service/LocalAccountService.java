@@ -13,7 +13,6 @@ import com.alzzaipo.domain.member.MemberType;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -139,15 +138,32 @@ public class LocalAccountService {
     }
 
     public LocalAccountProfileDto getLocalAccountProfileDto(Long memberId) {
-        // 아이디, 닉네임, 간편 로그인 종류
         LocalAccount localAccount = localAccountRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_MEMBER_ID, "해당 회원 정보를 찾을 수 없습니다."));
 
+        // 아이디, 닉네임, 연동된 소셜 로그인 종류
         String accountId = localAccount.getAccountId();
         String nickname = localAccount.getMember().getNickname();
         List<SocialCode> socialLoginTypes = socialAccountRepository.findSocialLoginTypes(memberId);
 
         return new LocalAccountProfileDto(accountId, nickname, socialLoginTypes);
+    }
+
+    @Transactional
+    public void updateProfile(Long memberId, LocalAccountProfileUpdateRequestDto dto) {
+        LocalAccount localAccount = localAccountRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_MEMBER_ID, "해당 회원 정보를 찾을 수 없습니다."));
+
+        if (!localAccount.getEmail().equals(dto.getEmail())) {
+            if (emailService.getEmailVerificationStatus(dto.getEmail()) == false) {
+                throw new AppException(ErrorCode.UNAUTHORIZED, "인증되지 않은 이메일 입니다.");
+            }
+            localAccount.changeEmail(dto.getEmail());
+        }
+
+        if (!localAccount.getMember().getNickname().equals(dto.getNickname())) {
+            localAccount.getMember().changeNickname(dto.getNickname());
+        }
     }
 
 }

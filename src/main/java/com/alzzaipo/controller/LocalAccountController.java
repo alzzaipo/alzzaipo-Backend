@@ -51,4 +51,9 @@ public class LocalAccountController {
         return ResponseEntity.ok().body(localAccountProfileDto);
     }
 
+    @PutMapping("/profile/update")
+    public ResponseEntity<String> updateProfile(@AuthenticationPrincipal Long memberId, @RequestBody LocalAccountProfileUpdateRequestDto dto) {
+        localAccountService.updateProfile(memberId, dto);
+        return ResponseEntity.ok().body("회원정보 수정 완료");
+    }
 }
