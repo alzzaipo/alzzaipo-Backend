@@ -11,4 +11,7 @@ public interface LocalAccountRepository extends JpaRepository<LocalAccount, Long
 
     @Query
     Optional<LocalAccount> findByAccountId(String accountId);
+
+    @Query("SELECT l FROM LocalAccount l WHERE l.member.id = ?1")
+    Optional<LocalAccount> findByMemberId(Long memberId);
 }

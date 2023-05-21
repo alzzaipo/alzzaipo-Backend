@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .cors().and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/portfolio/**").authenticated()
+                .requestMatchers("/api/member/profile").authenticated()
                 .requestMatchers("/**").permitAll()
                 .and()
                 .sessionManagement()

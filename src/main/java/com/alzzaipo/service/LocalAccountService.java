@@ -1,29 +1,33 @@
 package com.alzzaipo.service;
 
+import com.alzzaipo.domain.account.social.SocialAccountRepository;
+import com.alzzaipo.domain.account.social.SocialCode;
+import com.alzzaipo.dto.account.local.*;
 import com.alzzaipo.util.EmailUtil;
 import com.alzzaipo.util.JwtUtil;
 import com.alzzaipo.domain.account.local.LocalAccount;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
-import com.alzzaipo.dto.account.local.LocalAccountIdDto;
 import com.alzzaipo.dto.email.EmailDto;
-import com.alzzaipo.dto.account.local.LocalAccountLoginRequestDto;
-import com.alzzaipo.dto.account.local.LocalAccountRegisterRequestDto;
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.member.MemberType;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class LocalAccountService {
 
     private final LocalAccountRepository localAccountRepository;
+    private final SocialAccountRepository socialAccountRepository;
     private final MemberService memberService;
     private final EmailService emailService;
     private final BCryptPasswordEncoder encoder;
@@ -133,4 +137,17 @@ public class LocalAccountService {
             throw new AppException(ErrorCode.INVALID_PASSWORD_FORMAT, "올바르지 않은 비밀번호 형식입니다.");
         }
     }
+
+    public LocalAccountProfileDto getLocalAccountProfileDto(Long memberId) {
+        // 아이디, 닉네임, 간편 로그인 종류
+        LocalAccount localAccount = localAccountRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_MEMBER_ID, "해당 회원 정보를 찾을 수 없습니다."));
+
+        String accountId = localAccount.getAccountId();
+        String nickname = localAccount.getMember().getNickname();
+        List<SocialCode> socialLoginTypes = socialAccountRepository.findSocialLoginTypes(memberId);
+
+        return new LocalAccountProfileDto(accountId, nickname, socialLoginTypes);
+    }
+
 }
