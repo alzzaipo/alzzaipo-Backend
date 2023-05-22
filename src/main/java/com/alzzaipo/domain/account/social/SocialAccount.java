@@ -11,18 +11,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "social_account", uniqueConstraints = {
-        @UniqueConstraint(name = "idx_email", columnNames = {"email", "socialCode"})
+        @UniqueConstraint(name = "idx_email", columnNames = {"email", "social_code"})
 })
 public class SocialAccount extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 256)
+    @Column(nullable = false, length = 256)
     private String email;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name="social_code", nullable = false)
     private SocialCode socialCode;
 
     @ManyToOne(fetch = FetchType.LAZY)

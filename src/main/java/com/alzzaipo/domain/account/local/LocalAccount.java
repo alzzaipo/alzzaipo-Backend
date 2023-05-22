@@ -34,4 +34,8 @@ public class LocalAccount extends BaseTimeEntity {
         this.email = email;
         this.member = member;
     }
+
+    public void changeEmail(String email) {
+        this.email = email;
+    }
 }
