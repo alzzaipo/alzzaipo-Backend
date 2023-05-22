@@ -13,16 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    @Transactional
     public Member save(Member member) {
         return memberRepository.save(member);
     }
 
+    @Transactional
     public Member createAndSave(String nickname, MemberType memberType) {
         Member member = Member.builder()
                 .nickname(nickname)
@@ -37,8 +39,16 @@ public class MemberService {
                 .orElseThrow(() -> {
                     throw new AppException(ErrorCode.INVALID_MEMBER_ID, "회원 조회 실패");
                 });
-
         return member;
     }
 
+    public String getMemberNickname(Long memberId) {
+        Member member = findById(memberId);
+        return member.getNickname();
+    }
+
+    public MemberType getMemberType(Long memberId) {
+        Member member = findById(memberId);
+        return member.getMemberType();
+    }
 }

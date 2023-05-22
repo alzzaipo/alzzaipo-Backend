@@ -47,6 +47,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/local-member/profile").authenticated()
                 .requestMatchers("/api/local-member/profile/update").authenticated()
                 .requestMatchers("/api/local-member/change-password").authenticated()
+                .requestMatchers("/api/member/nickname").authenticated()
+                .requestMatchers("/api/member/memberType").authenticated()
                 .requestMatchers("/**").permitAll()
                 .and()
                 .sessionManagement()
