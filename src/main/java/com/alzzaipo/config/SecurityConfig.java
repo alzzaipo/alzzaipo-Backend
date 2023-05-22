@@ -1,6 +1,5 @@
 package com.alzzaipo.config;
 
-import com.alzzaipo.service.MemberService;
 import com.alzzaipo.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +18,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
-    private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
     @Bean
@@ -49,12 +47,13 @@ public class SecurityConfig {
                 .requestMatchers("/api/local-member/change-password").authenticated()
                 .requestMatchers("/api/member/nickname").authenticated()
                 .requestMatchers("/api/member/memberType").authenticated()
+                .requestMatchers("/api/member/current-login-type").authenticated()
                 .requestMatchers("/**").permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(new JwtFilter(memberService, jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.alzzaipo.controller;
 
+import com.alzzaipo.config.MemberPrincipal;
 import com.alzzaipo.dto.account.local.*;
 import com.alzzaipo.dto.email.EmailDto;
 import com.alzzaipo.service.LocalAccountService;
@@ -45,20 +46,20 @@ public class LocalAccountController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<LocalAccountProfileResponseDto> profile(@AuthenticationPrincipal Long memberId) {
-        LocalAccountProfileResponseDto localAccountProfileResponseDto = localAccountService.getLocalAccountProfileDto(memberId);
+    public ResponseEntity<LocalAccountProfileResponseDto> profile(@AuthenticationPrincipal MemberPrincipal memberInfo) {
+        LocalAccountProfileResponseDto localAccountProfileResponseDto = localAccountService.getLocalAccountProfileDto(memberInfo.getMemberId());
         return ResponseEntity.ok().body(localAccountProfileResponseDto);
     }
 
     @PutMapping("/profile/update")
-    public ResponseEntity<String> updateProfile(@AuthenticationPrincipal Long memberId, @RequestBody LocalAccountProfileUpdateRequestDto dto) {
-        localAccountService.updateProfile(memberId, dto);
+    public ResponseEntity<String> updateProfile(@AuthenticationPrincipal MemberPrincipal memberInfo, @RequestBody LocalAccountProfileUpdateRequestDto dto) {
+        localAccountService.updateProfile(memberInfo.getMemberId(), dto);
         return ResponseEntity.ok().body("회원정보 수정 완료");
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@AuthenticationPrincipal Long memberId, @RequestBody LocalAccountPasswordChangeRequestDto dto) {
-        localAccountService.changePassword(memberId, dto);
+    public ResponseEntity<String> changePassword(@AuthenticationPrincipal MemberPrincipal memberInfo, @RequestBody LocalAccountPasswordChangeRequestDto dto) {
+        localAccountService.changePassword(memberInfo.getMemberId(), dto);
         return ResponseEntity.ok().body("비밀번호 변경 완료");
     }
 }

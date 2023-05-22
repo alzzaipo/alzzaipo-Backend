@@ -1,5 +1,6 @@
 package com.alzzaipo.util;
 
+import com.alzzaipo.enums.LoginType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,9 +20,10 @@ public class JwtUtil {
 
     private Long expireTimeMillis = 1000 * 60 * 30L;
 
-    public String createToken(Long memberId) {
+    public String createToken(Long memberId, LoginType loginType) {
         Claims claims = Jwts.claims();
         claims.put("memberId", memberId);
+        claims.put("loginType", loginType.name());
 
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         SecretKey secretKey = Keys.hmacShaKeyFor(keyBytes);
@@ -42,5 +44,10 @@ public class JwtUtil {
     public Long getMemberId(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody()
                 .get("memberId", Long.class);
+    }
+
+    public String getLoginType(String token) {
+        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody()
+                .get("loginType", String.class);
     }
 }

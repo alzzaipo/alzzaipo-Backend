@@ -1,5 +1,6 @@
 package com.alzzaipo.service;
 
+import com.alzzaipo.enums.LoginType;
 import com.alzzaipo.util.JwtUtil;
 import com.alzzaipo.domain.account.social.SocialAccount;
 import com.alzzaipo.enums.SocialCode;
@@ -74,7 +75,7 @@ public class KakaoLoginService {
         }
 
         // JWT 발급
-        String jwt = jwtUtil.createToken(optionalSocialAccount.get().getMember().getId());
+        String jwt = jwtUtil.createToken(optionalSocialAccount.get().getMember().getId(), LoginType.KAKAO);
 
         // JWT 반환
         return jwt;

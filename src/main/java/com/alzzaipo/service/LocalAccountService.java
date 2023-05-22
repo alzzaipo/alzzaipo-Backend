@@ -3,6 +3,7 @@ package com.alzzaipo.service;
 import com.alzzaipo.domain.account.local.LocalAccount;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
 import com.alzzaipo.domain.account.social.SocialAccountRepository;
+import com.alzzaipo.enums.LoginType;
 import com.alzzaipo.enums.SocialCode;
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.enums.MemberType;
@@ -127,7 +128,7 @@ public class LocalAccountService {
         verifyLocalAccountPassword(userInputAccountPassword, storedAccountPassword);
 
         // 토큰 발행
-        String token = jwtUtil.createToken(localAccount.getMember().getId());
+        String token = jwtUtil.createToken(localAccount.getMember().getId(), LoginType.LOCAL);
         return token;
     }
 
