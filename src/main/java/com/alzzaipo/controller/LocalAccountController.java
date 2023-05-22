@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/member")
+@RequestMapping("/api/local-member")
 @Controller
 public class LocalAccountController {
 
