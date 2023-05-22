@@ -1,6 +1,6 @@
 package com.alzzaipo.config;
 
-import com.alzzaipo.service.MemberService;
+import com.alzzaipo.enums.LoginType;
 import com.alzzaipo.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
     @Override
@@ -43,12 +42,14 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 토큰에서 memberId 꺼내기
+        // 로그인한 회원의 정보를 담은 Custom Principal 생성
         Long memberId = jwtUtil.getMemberId(token);
+        String loginType = jwtUtil.getLoginType(token);
+        MemberPrincipal memberPrincipal = new MemberPrincipal(memberId, LoginType.valueOf(loginType));
 
         // 권한 부여
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(memberId, null, List.of(new SimpleGrantedAuthority("USER")));
+                new UsernamePasswordAuthenticationToken(memberPrincipal, null, List.of(new SimpleGrantedAuthority("USER")));
 
         // Detail 추가
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

@@ -1,4 +1,4 @@
-package com.alzzaipo.domain.account.social;
+package com.alzzaipo.enums;
 
 public enum SocialCode {
     KAKAO, NAVER, GOOGLE

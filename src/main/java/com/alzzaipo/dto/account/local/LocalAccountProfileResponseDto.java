@@ -1,6 +1,6 @@
 package com.alzzaipo.dto.account.local;
 
-import com.alzzaipo.domain.account.social.SocialCode;
+import com.alzzaipo.enums.SocialCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

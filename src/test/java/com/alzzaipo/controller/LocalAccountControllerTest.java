@@ -3,7 +3,7 @@ package com.alzzaipo.controller;
 import com.alzzaipo.dto.account.local.LocalAccountLoginRequestDto;
 import com.alzzaipo.dto.account.local.LocalAccountRegisterRequestDto;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
 import com.alzzaipo.service.LocalAccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;

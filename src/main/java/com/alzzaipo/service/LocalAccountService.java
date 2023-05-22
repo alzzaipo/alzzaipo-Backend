@@ -1,24 +1,23 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.domain.account.social.SocialAccountRepository;
-import com.alzzaipo.domain.account.social.SocialCode;
-import com.alzzaipo.dto.account.local.*;
-import com.alzzaipo.util.EmailUtil;
-import com.alzzaipo.util.JwtUtil;
 import com.alzzaipo.domain.account.local.LocalAccount;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
-import com.alzzaipo.dto.email.EmailDto;
+import com.alzzaipo.domain.account.social.SocialAccountRepository;
+import com.alzzaipo.enums.LoginType;
+import com.alzzaipo.enums.SocialCode;
 import com.alzzaipo.domain.member.Member;
-import com.alzzaipo.domain.member.MemberType;
+import com.alzzaipo.enums.MemberType;
+import com.alzzaipo.dto.account.local.*;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
+import com.alzzaipo.util.DataFormatUtil;
+import com.alzzaipo.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -29,37 +28,69 @@ public class LocalAccountService {
     private final SocialAccountRepository socialAccountRepository;
     private final MemberService memberService;
     private final EmailService emailService;
-    private final BCryptPasswordEncoder encoder;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+
+    // 멤버 인덱스로 로컬 계정 조회, 실패 시 예외 발생 -> BAD_REQUEST
+    private LocalAccount findLocalAccountByMemberId(Long memberId) {
+        LocalAccount localAccount = localAccountRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_MEMBER_ID, "회원 조회 실패"));
+        return localAccount;
+    }
+
+    // 사용자 입력 비밀번호가 계정 비밀번호와 일치하는지 검사
+    private boolean checkLocalAccountPassword(String userInputAccountPassword, String storedAccountPassword) {
+        return passwordEncoder.matches(userInputAccountPassword, storedAccountPassword);
+    }
+
+    // 사용자 입력 비밀번호가 일치하지 않으면 예외 발생 -> Unauthorized 응답
+    private void verifyLocalAccountPassword(String userInputAccountPassword, String storedAccountPassword) {
+        if(!checkLocalAccountPassword(userInputAccountPassword, storedAccountPassword)) {
+            throw new AppException(ErrorCode.INVALID_ACCOUNT_PASSWORD, "비밀번호를 확인해 주세요.");
+        }
+    }
+
+    // 아이디 중복 여부 조회, 중복 시 예외 발생 -> CONFLICT 응답
+    public void verifyAccountIdUsability(String accountId) {
+        DataFormatUtil.validateAccountIdFormat(accountId);
+
+        localAccountRepository.findByAccountId(accountId)
+                .ifPresent(localAccount -> {
+                    throw new AppException(ErrorCode.ACCOUNT_ID_DUPLICATED, "중복된 아이디 입니다.");
+                });
+    }
+
+    // 이메일 중복 여부 조회, 중복 시 예외 발생 -> CONFLICT 응답
+    public void verifyEmailUsability(String email) {
+        DataFormatUtil.validateEmailFormat(email);
+
+        localAccountRepository.findByEmail(email)
+                .ifPresent(localAccount -> {
+                    throw new AppException(ErrorCode.DUPLICATED_EMAIL, "중복된 이메일 입니다.");
+                });
+    }
 
     @Transactional
     public LocalAccount register(LocalAccountRegisterRequestDto dto) {
-
         String accountId = dto.getAccountId();
         String accountPassword = dto.getAccountPassword();
         String email = dto.getEmail();
         String nickname = dto.getNickname();
 
         // 아이디 포맷 검사
-        verifyAccountIdFormat(accountId);
+        DataFormatUtil.validateAccountIdFormat(accountId);
 
         // 비밀번호 포맷 검사
-        verifyPasswordFormat(accountPassword);
+        DataFormatUtil.validateAccountPasswordFormat(accountPassword);
 
         // 이메일 포맷 검사
-        EmailUtil.verifyEmailFormat(email);
+        DataFormatUtil.validateEmailFormat(email);
 
         // 아이디 중복 체크
-        localAccountRepository.findByAccountId(accountId)
-                .ifPresent(localAccount -> {
-                    throw new AppException(ErrorCode.ACCOUNT_ID_DUPLICATED, "중복된 아이디 입니다.");
-                });
+        verifyAccountIdUsability(accountId);
 
         // 이메일 중복 체크
-        localAccountRepository.findByEmail(email)
-                .ifPresent(localAccount -> {
-                    throw new AppException(ErrorCode.DUPLICATED_EMAIL, "중복된 이메일 입니다.");
-                });
+        verifyEmailUsability(email);
 
         // 이메일 인증 여부 확인
         if(emailService.getEmailVerificationStatus(email) == false) {
@@ -70,7 +101,7 @@ public class LocalAccountService {
         Member member = memberService.createAndSave(nickname, MemberType.LOCAL);
         LocalAccount localAccount = LocalAccount.builder()
                 .accountId(accountId)
-                .accountPassword(encoder.encode(accountPassword))
+                .accountPassword(passwordEncoder.encode(accountPassword))
                 .email(email)
                 .member(member)
                 .build();
@@ -79,67 +110,31 @@ public class LocalAccountService {
     }
 
     public String login(LocalAccountLoginRequestDto dto) {
-        String accountId = dto.getAccountId();
-        String accountPassword = dto.getAccountPassword();
+        String userInputAccountId = dto.getAccountId();
+        String userInputAccountPassword = dto.getAccountPassword();
 
         // 아이디 포맷 검사
-        verifyAccountIdFormat(accountId);
+        DataFormatUtil.validateAccountIdFormat(userInputAccountId);
 
         // 비밀번호 포맷 검사
-        verifyPasswordFormat(accountPassword);
+        DataFormatUtil.validateAccountPasswordFormat(userInputAccountPassword);
 
-        // 계정 아이디 조회
-        LocalAccount localAccount = localAccountRepository.findByAccountId(accountId)
+        // 아이디로 로컬 계정 찾기
+        LocalAccount localAccount = localAccountRepository.findByAccountId(userInputAccountId)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_ACCOUNT_ID, "아이디 조회 실패"));
 
         // 계정 비밀번호 검사
-        if(!encoder.matches(accountPassword, localAccount.getAccountPassword())) {
-            throw new AppException(ErrorCode.INVALID_ACCOUNT_PASSWORD, "비밀번호를 확인해 주세요.");
-        }
+        String storedAccountPassword = localAccount.getAccountPassword();
+        verifyLocalAccountPassword(userInputAccountPassword, storedAccountPassword);
 
         // 토큰 발행
-        String token = jwtUtil.createToken(localAccount.getMember().getId());
+        String token = jwtUtil.createToken(localAccount.getMember().getId(), LoginType.LOCAL);
         return token;
     }
 
-    public void verifyAccountId(LocalAccountIdDto dto) {
-        String accountId = dto.getAccountId();
-
-        verifyAccountIdFormat(accountId);
-
-        localAccountRepository.findByAccountId(accountId)
-                .ifPresent(localAccount -> {
-                    throw new AppException(ErrorCode.ACCOUNT_ID_DUPLICATED, "중복된 아이디 입니다.");
-                });
-    }
-
-    public void verifyEmail(EmailDto dto) {
-        String email = dto.getEmail();
-        EmailUtil.verifyEmailFormat(email);
-
-        localAccountRepository.findByEmail(email)
-                .ifPresent(localAccount -> {
-                    throw new AppException(ErrorCode.DUPLICATED_EMAIL, "중복된 이메일 입니다.");
-                });
-    }
-
-    public void verifyAccountIdFormat(String accountId) {
-        String regex = "^[a-z0-9_-]{5,20}$";
-        if(!Pattern.matches(regex, accountId)) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "올바르지 않은 아이디 형식입니다.");
-        }
-    }
-
-    public void verifyPasswordFormat(String password) {
-        String regex = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[~!@#$%^&*_\\-+=`|\\\\(){}\\[\\]:;\"'<>,.?/]).{8,16}$";
-        if(!Pattern.matches(regex, password)) {
-            throw new AppException(ErrorCode.INVALID_PASSWORD_FORMAT, "올바르지 않은 비밀번호 형식입니다.");
-        }
-    }
-
+    // 계정 프로필 정보 조회
     public LocalAccountProfileResponseDto getLocalAccountProfileDto(Long memberId) {
-        LocalAccount localAccount = localAccountRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new AppException(ErrorCode.INVALID_MEMBER_ID, "해당 회원 정보를 찾을 수 없습니다."));
+        LocalAccount localAccount = findLocalAccountByMemberId(memberId);
 
         // 아이디, 닉네임, 이메일, 연동된 소셜 로그인 종류
         String accountId = localAccount.getAccountId();
@@ -150,21 +145,54 @@ public class LocalAccountService {
         return new LocalAccountProfileResponseDto(accountId, nickname, email, socialLoginTypes);
     }
 
+    // 계정 프로필 정보 수정
     @Transactional
     public void updateProfile(Long memberId, LocalAccountProfileUpdateRequestDto dto) {
-        LocalAccount localAccount = localAccountRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new AppException(ErrorCode.INVALID_MEMBER_ID, "해당 회원 정보를 찾을 수 없습니다."));
+        LocalAccount localAccount = findLocalAccountByMemberId(memberId);
 
-        if (!localAccount.getEmail().equals(dto.getEmail())) {
-            if (emailService.getEmailVerificationStatus(dto.getEmail()) == false) {
+        String storedEmail = localAccount.getEmail();
+        String storedNickname = localAccount.getMember().getNickname();
+        String userInputEmail = dto.getEmail();
+        String userInputNickname = dto.getNickname();
+
+        if (!storedEmail.equals(userInputEmail)) {
+            if (emailService.getEmailVerificationStatus(userInputEmail) == false) {
                 throw new AppException(ErrorCode.UNAUTHORIZED, "인증되지 않은 이메일 입니다.");
             }
-            localAccount.changeEmail(dto.getEmail());
+            localAccount.changeEmail(userInputEmail);
         }
 
-        if (!localAccount.getMember().getNickname().equals(dto.getNickname())) {
-            localAccount.getMember().changeNickname(dto.getNickname());
+        if (!storedNickname.equals(userInputNickname)) {
+            localAccount.getMember().changeNickname(userInputNickname);
         }
     }
 
+    @Transactional
+    public void changePassword(Long memberId, LocalAccountPasswordChangeRequestDto dto) {
+        // 사용자 입력 기존 비밀번호와 새로운 비밀번호
+        String userInputCurrentAccountPassword = dto.getCurrentAccountPassword();
+        String userInputNewAccountPassword = dto.getNewAccountPassword();
+
+        // 사용자 입력 기존 비밀번호 포맷 검사
+        DataFormatUtil.validateAccountPasswordFormat(userInputCurrentAccountPassword);
+
+        // 새로운 비밀번호 포맷 검사
+        DataFormatUtil.validateAccountPasswordFormat(userInputNewAccountPassword);
+
+        // 계정 엔티티 조회
+        LocalAccount localAccount = findLocalAccountByMemberId(memberId);
+
+        // 사용자 입력 기존 비밀번호 검증
+        String storedAccountPassword = localAccount.getAccountPassword();
+        verifyLocalAccountPassword(userInputCurrentAccountPassword, storedAccountPassword);
+
+        // 새로운 비밀번호가 기존의 비밀번호와 다르게 입력되었는지 검사
+        if(userInputCurrentAccountPassword.equals(userInputNewAccountPassword)) {
+            throw new AppException(ErrorCode.INVALID_NEW_PASSWORD, "기존의 비밀번호와 같은 비밀번호 입니다.");
+        }
+
+        // 새로운 비밀번호로 변경
+        String newEncodedAccountPassword = passwordEncoder.encode(userInputNewAccountPassword);
+        localAccount.changeAccountPassword(newEncodedAccountPassword);
+    }
 }

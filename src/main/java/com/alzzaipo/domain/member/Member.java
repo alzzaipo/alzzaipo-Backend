@@ -2,6 +2,7 @@ package com.alzzaipo.domain.member;
 
 import com.alzzaipo.domain.BaseTimeEntity;
 import com.alzzaipo.domain.portfolio.Portfolio;
+import com.alzzaipo.enums.MemberType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

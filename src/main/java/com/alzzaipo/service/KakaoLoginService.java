@@ -1,11 +1,12 @@
 package com.alzzaipo.service;
 
+import com.alzzaipo.enums.LoginType;
 import com.alzzaipo.util.JwtUtil;
 import com.alzzaipo.domain.account.social.SocialAccount;
-import com.alzzaipo.domain.account.social.SocialCode;
+import com.alzzaipo.enums.SocialCode;
 import com.alzzaipo.dto.account.social.SocialAccountInfo;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,7 +75,7 @@ public class KakaoLoginService {
         }
 
         // JWT 발급
-        String jwt = jwtUtil.createToken(optionalSocialAccount.get().getMember().getId());
+        String jwt = jwtUtil.createToken(optionalSocialAccount.get().getMember().getId(), LoginType.KAKAO);
 
         // JWT 반환
         return jwt;

@@ -1,11 +1,11 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.util.EmailUtil;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
 import com.alzzaipo.domain.emailVerification.EmailVerification;
 import com.alzzaipo.domain.emailVerification.EmailVerificationRepository;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
+import com.alzzaipo.util.DataFormatUtil;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -29,7 +29,7 @@ public class EmailService {
     @Transactional
     public void sendVerificationCode(String email) {
         // 이메일 형식 검증
-        EmailUtil.verifyEmailFormat(email);
+        DataFormatUtil.validateEmailFormat(email);
 
         // 이메일 중복 검사
         localAccountRepository.findByEmail(email)
@@ -98,10 +98,10 @@ public class EmailService {
     @Transactional
     public void validateVerificationCode(String email, String verificationCode) {
         // 이메일 포맷 확인
-        EmailUtil.verifyEmailFormat(email);
+        DataFormatUtil.validateEmailFormat(email);
 
         // 인증코드 포맷 확인
-        EmailUtil.validateVerificationCodeFormat(verificationCode);
+        DataFormatUtil.validateVerificationCodeFormat(verificationCode);
 
         String correctVerificationCode = emailVerificationRepository.findVerificationCodeByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED, "요청된 내역이 없습니다."));

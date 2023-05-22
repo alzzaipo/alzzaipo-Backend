@@ -38,4 +38,8 @@ public class LocalAccount extends BaseTimeEntity {
     public void changeEmail(String email) {
         this.email = email;
     }
+
+    public void changeAccountPassword(String newEncodedAccountPassword) {
+        this.accountPassword = newEncodedAccountPassword;
+    }
 }

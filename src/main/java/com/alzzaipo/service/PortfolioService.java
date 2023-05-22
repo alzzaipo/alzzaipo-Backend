@@ -9,7 +9,7 @@ import com.alzzaipo.dto.portfolio.PortfolioDto;
 import com.alzzaipo.dto.portfolio.PortfolioListDto;
 import com.alzzaipo.dto.portfolio.PortfolioUpdateRequestDto;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -2,9 +2,9 @@ package com.alzzaipo.service;
 
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.member.MemberRepository;
-import com.alzzaipo.domain.member.MemberType;
+import com.alzzaipo.enums.MemberType;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,16 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    @Transactional
     public Member save(Member member) {
         return memberRepository.save(member);
     }
 
+    @Transactional
     public Member createAndSave(String nickname, MemberType memberType) {
         Member member = Member.builder()
                 .nickname(nickname)
@@ -37,8 +39,16 @@ public class MemberService {
                 .orElseThrow(() -> {
                     throw new AppException(ErrorCode.INVALID_MEMBER_ID, "회원 조회 실패");
                 });
-
         return member;
     }
 
+    public String getMemberNickname(Long memberId) {
+        Member member = findById(memberId);
+        return member.getNickname();
+    }
+
+    public MemberType getMemberType(Long memberId) {
+        Member member = findById(memberId);
+        return member.getMemberType();
+    }
 }
