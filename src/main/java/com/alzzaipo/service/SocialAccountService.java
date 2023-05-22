@@ -2,10 +2,10 @@ package com.alzzaipo.service;
 
 import com.alzzaipo.domain.account.social.SocialAccount;
 import com.alzzaipo.domain.account.social.SocialAccountRepository;
-import com.alzzaipo.domain.account.social.SocialCode;
+import com.alzzaipo.enums.SocialCode;
 import com.alzzaipo.dto.account.social.SocialAccountInfo;
 import com.alzzaipo.domain.member.Member;
-import com.alzzaipo.domain.member.MemberType;
+import com.alzzaipo.enums.MemberType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

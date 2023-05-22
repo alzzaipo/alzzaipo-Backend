@@ -1,5 +1,6 @@
 package com.alzzaipo.exception;
 
+import com.alzzaipo.enums.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

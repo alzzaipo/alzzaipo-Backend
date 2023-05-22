@@ -4,7 +4,7 @@ import com.alzzaipo.domain.account.local.LocalAccountRepository;
 import com.alzzaipo.domain.emailVerification.EmailVerification;
 import com.alzzaipo.domain.emailVerification.EmailVerificationRepository;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
 import com.alzzaipo.util.DataFormatUtil;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;

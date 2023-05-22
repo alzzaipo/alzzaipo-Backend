@@ -2,9 +2,9 @@ package com.alzzaipo.service;
 
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.member.MemberRepository;
-import com.alzzaipo.domain.member.MemberType;
+import com.alzzaipo.enums.MemberType;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

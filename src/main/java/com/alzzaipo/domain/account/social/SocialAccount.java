@@ -2,6 +2,7 @@ package com.alzzaipo.domain.account.social;
 
 import com.alzzaipo.domain.BaseTimeEntity;
 import com.alzzaipo.domain.member.Member;
+import com.alzzaipo.enums.SocialCode;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

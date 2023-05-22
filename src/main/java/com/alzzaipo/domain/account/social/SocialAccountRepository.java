@@ -1,5 +1,6 @@
 package com.alzzaipo.domain.account.social;
 
+import com.alzzaipo.enums.SocialCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

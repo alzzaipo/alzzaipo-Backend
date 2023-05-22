@@ -1,7 +1,7 @@
 package com.alzzaipo.util;
 
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -5,7 +5,7 @@ import com.alzzaipo.dto.ipo.IpoListDto;
 import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.domain.ipo.IpoRepository;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

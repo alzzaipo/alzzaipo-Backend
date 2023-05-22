@@ -4,7 +4,7 @@ import com.alzzaipo.dto.ipo.*;
 import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.domain.ipo.IpoRepository;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

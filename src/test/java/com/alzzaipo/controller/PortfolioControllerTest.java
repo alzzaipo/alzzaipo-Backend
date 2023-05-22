@@ -4,7 +4,7 @@ import com.alzzaipo.dto.portfolio.PortfolioCreateRequestDto;
 import com.alzzaipo.dto.portfolio.PortfolioUpdateRequestDto;
 import com.alzzaipo.domain.portfolio.Portfolio;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
 import com.alzzaipo.service.PortfolioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;

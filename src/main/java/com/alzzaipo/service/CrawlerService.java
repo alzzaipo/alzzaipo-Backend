@@ -3,7 +3,7 @@ package com.alzzaipo.service;
 import com.alzzaipo.util.InitialMarketPriceApi;
 import com.alzzaipo.dto.CrawlerDto;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.enums.ErrorCode;
 import com.alzzaipo.domain.ipo.Ipo;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
