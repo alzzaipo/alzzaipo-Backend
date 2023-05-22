@@ -1,24 +1,23 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.domain.account.social.SocialAccountRepository;
-import com.alzzaipo.domain.account.social.SocialCode;
-import com.alzzaipo.dto.account.local.*;
-import com.alzzaipo.util.EmailUtil;
-import com.alzzaipo.util.JwtUtil;
 import com.alzzaipo.domain.account.local.LocalAccount;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
-import com.alzzaipo.dto.email.EmailDto;
+import com.alzzaipo.domain.account.social.SocialAccountRepository;
+import com.alzzaipo.domain.account.social.SocialCode;
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.member.MemberType;
+import com.alzzaipo.dto.account.local.*;
+import com.alzzaipo.dto.email.EmailDto;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.exception.ErrorCode;
+import com.alzzaipo.util.DataFormatUtil;
+import com.alzzaipo.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -41,13 +40,13 @@ public class LocalAccountService {
         String nickname = dto.getNickname();
 
         // 아이디 포맷 검사
-        verifyAccountIdFormat(accountId);
+        DataFormatUtil.validateAccountIdFormat(accountId);
 
         // 비밀번호 포맷 검사
-        verifyPasswordFormat(accountPassword);
+        DataFormatUtil.validateAccountPasswordFormat(accountPassword);
 
         // 이메일 포맷 검사
-        EmailUtil.verifyEmailFormat(email);
+        DataFormatUtil.validateEmailFormat(email);
 
         // 아이디 중복 체크
         localAccountRepository.findByAccountId(accountId)
@@ -83,10 +82,10 @@ public class LocalAccountService {
         String accountPassword = dto.getAccountPassword();
 
         // 아이디 포맷 검사
-        verifyAccountIdFormat(accountId);
+        DataFormatUtil.validateAccountIdFormat(accountId);
 
         // 비밀번호 포맷 검사
-        verifyPasswordFormat(accountPassword);
+        DataFormatUtil.validateAccountPasswordFormat(accountPassword);
 
         // 계정 아이디 조회
         LocalAccount localAccount = localAccountRepository.findByAccountId(accountId)
@@ -105,7 +104,7 @@ public class LocalAccountService {
     public void verifyAccountId(LocalAccountIdDto dto) {
         String accountId = dto.getAccountId();
 
-        verifyAccountIdFormat(accountId);
+        DataFormatUtil.validateAccountIdFormat(accountId);
 
         localAccountRepository.findByAccountId(accountId)
                 .ifPresent(localAccount -> {
@@ -115,26 +114,12 @@ public class LocalAccountService {
 
     public void verifyEmail(EmailDto dto) {
         String email = dto.getEmail();
-        EmailUtil.verifyEmailFormat(email);
+        DataFormatUtil.validateEmailFormat(email);
 
         localAccountRepository.findByEmail(email)
                 .ifPresent(localAccount -> {
                     throw new AppException(ErrorCode.DUPLICATED_EMAIL, "중복된 이메일 입니다.");
                 });
-    }
-
-    public void verifyAccountIdFormat(String accountId) {
-        String regex = "^[a-z0-9_-]{5,20}$";
-        if(!Pattern.matches(regex, accountId)) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "올바르지 않은 아이디 형식입니다.");
-        }
-    }
-
-    public void verifyPasswordFormat(String password) {
-        String regex = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[~!@#$%^&*_\\-+=`|\\\\(){}\\[\\]:;\"'<>,.?/]).{8,16}$";
-        if(!Pattern.matches(regex, password)) {
-            throw new AppException(ErrorCode.INVALID_PASSWORD_FORMAT, "올바르지 않은 비밀번호 형식입니다.");
-        }
     }
 
     public LocalAccountProfileResponseDto getLocalAccountProfileDto(Long memberId) {
