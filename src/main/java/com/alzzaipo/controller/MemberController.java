@@ -24,7 +24,7 @@ public class MemberController {
         return ResponseEntity.ok().body(nickname);
     }
 
-    @GetMapping("/memberType")
+    @GetMapping("/member-type")
     public ResponseEntity<MemberType> getMemberType(@AuthenticationPrincipal MemberPrincipal memberInfo) {
         MemberType memberType = memberService.getMemberType(memberInfo.getMemberId());
         return ResponseEntity.ok().body(memberType);
