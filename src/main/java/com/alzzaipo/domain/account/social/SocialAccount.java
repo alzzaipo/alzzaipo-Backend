@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "social_account", uniqueConstraints = {
-        @UniqueConstraint(name = "idx_email", columnNames = {"email", "social_code"})
+        @UniqueConstraint(name = "uix-email-social_code", columnNames = {"email", "social_code"})
 })
 public class SocialAccount extends BaseTimeEntity {
 
@@ -26,7 +26,7 @@ public class SocialAccount extends BaseTimeEntity {
     private SocialCode socialCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @Builder
