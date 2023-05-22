@@ -19,13 +19,13 @@ public class LocalAccountController {
 
     @PostMapping("/verify-account-id")
     public ResponseEntity<String> verifyAccountId(@RequestBody LocalAccountIdDto dto) {
-        localAccountService.verifyAccountId(dto);
+        localAccountService.verifyAccountIdUsability(dto.getAccountId());
         return ResponseEntity.ok().body("사용 가능한 아이디 입니다.");
     }
 
     @PostMapping("/verify-email")
     public ResponseEntity<String> verifyEmail(@RequestBody EmailDto dto) {
-        localAccountService.verifyEmail(dto);
+        localAccountService.verifyEmailUsability(dto.getEmail());
         return ResponseEntity.ok().body("사용 가능한 이메일 입니다.");
     }
 
