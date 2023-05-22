@@ -26,7 +26,8 @@ public enum ErrorCode {
     INVALID_PASSWORD_FORMAT(HttpStatus.BAD_REQUEST),
     UNVERIFIED_EMAIL(HttpStatus.UNAUTHORIZED),
     NULL_PASSED(HttpStatus.BAD_REQUEST),
-    INVALID_ACCOUNT_PASSWORD(HttpStatus.UNAUTHORIZED);
+    INVALID_ACCOUNT_PASSWORD(HttpStatus.UNAUTHORIZED),
+    INVALID_NEW_PASSWORD(HttpStatus.BAD_REQUEST);
 
     private final HttpStatus httpStatus;
 }

@@ -56,4 +56,10 @@ public class LocalAccountController {
         localAccountService.updateProfile(memberId, dto);
         return ResponseEntity.ok().body("회원정보 수정 완료");
     }
+
+    @PostMapping("change-password")
+    public ResponseEntity<String> changePassword(@AuthenticationPrincipal Long memberId, @RequestBody LocalAccountPasswordChangeRequestDto dto) {
+        localAccountService.changePassword(memberId, dto);
+        return ResponseEntity.ok().body("비밀번호 변경 완료");
+    }
 }
