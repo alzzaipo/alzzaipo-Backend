@@ -1,6 +1,8 @@
 package com.alzzaipo.domain.member;
 
 import com.alzzaipo.domain.BaseTimeEntity;
+import com.alzzaipo.domain.account.local.LocalAccount;
+import com.alzzaipo.domain.account.social.SocialAccount;
 import com.alzzaipo.domain.portfolio.Portfolio;
 import com.alzzaipo.enums.MemberType;
 import jakarta.persistence.*;
@@ -28,6 +30,9 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Portfolio> portfolios = new ArrayList<>();
+
+    @OneToOne(mappedBy = "member")
+    private LocalAccount localAccount;
 
     @Builder
     public Member(MemberType memberType, String nickname) {

@@ -2,7 +2,7 @@ package com.alzzaipo.domain.account.social;
 
 import com.alzzaipo.domain.BaseTimeEntity;
 import com.alzzaipo.domain.member.Member;
-import com.alzzaipo.enums.SocialCode;
+import com.alzzaipo.enums.LoginType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "social_account", uniqueConstraints = {
-        @UniqueConstraint(name = "uix-email-social_code", columnNames = {"email", "social_code"})
+        @UniqueConstraint(name = "uix-email-login_type", columnNames = {"email", "login_type"})
 })
 public class SocialAccount extends BaseTimeEntity {
 
@@ -23,17 +23,17 @@ public class SocialAccount extends BaseTimeEntity {
     private String email;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name="social_code", nullable = false)
-    private SocialCode socialCode;
+    @Column(name="login_type", nullable = false)
+    private LoginType loginType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @Builder
-    public SocialAccount(String email, SocialCode socialCode, Member member) {
+    public SocialAccount(String email, LoginType loginType, Member member) {
         this.email = email;
-        this.socialCode = socialCode;
+        this.loginType = loginType;
         this.member = member;
     }
 }

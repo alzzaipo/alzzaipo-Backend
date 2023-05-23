@@ -3,9 +3,8 @@ package com.alzzaipo.service;
 import com.alzzaipo.domain.account.local.LocalAccount;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
 import com.alzzaipo.domain.account.social.SocialAccountRepository;
-import com.alzzaipo.enums.LoginType;
-import com.alzzaipo.enums.SocialCode;
 import com.alzzaipo.domain.member.Member;
+import com.alzzaipo.enums.LoginType;
 import com.alzzaipo.enums.MemberType;
 import com.alzzaipo.dto.account.local.*;
 import com.alzzaipo.exception.AppException;
@@ -16,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -32,7 +29,7 @@ public class LocalAccountService {
     private final JwtUtil jwtUtil;
 
     // 멤버 인덱스로 로컬 계정 조회, 실패 시 예외 발생 -> BAD_REQUEST
-    private LocalAccount findLocalAccountByMemberId(Long memberId) {
+    public LocalAccount findLocalAccountByMemberId(Long memberId) {
         LocalAccount localAccount = localAccountRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_MEMBER_ID, "회원 조회 실패"));
         return localAccount;
@@ -130,41 +127,6 @@ public class LocalAccountService {
         // 토큰 발행
         String token = jwtUtil.createToken(localAccount.getMember().getId(), LoginType.LOCAL);
         return token;
-    }
-
-    // 계정 프로필 정보 조회
-    public LocalAccountProfileResponseDto getLocalAccountProfileDto(Long memberId) {
-        LocalAccount localAccount = findLocalAccountByMemberId(memberId);
-
-        // 아이디, 닉네임, 이메일, 연동된 소셜 로그인 종류
-        String accountId = localAccount.getAccountId();
-        String nickname = localAccount.getMember().getNickname();
-        String email = localAccount.getEmail();
-        List<SocialCode> socialLoginTypes = socialAccountRepository.findSocialLoginTypes(memberId);
-
-        return new LocalAccountProfileResponseDto(accountId, nickname, email, socialLoginTypes);
-    }
-
-    // 계정 프로필 정보 수정
-    @Transactional
-    public void updateProfile(Long memberId, LocalAccountProfileUpdateRequestDto dto) {
-        LocalAccount localAccount = findLocalAccountByMemberId(memberId);
-
-        String storedEmail = localAccount.getEmail();
-        String storedNickname = localAccount.getMember().getNickname();
-        String userInputEmail = dto.getEmail();
-        String userInputNickname = dto.getNickname();
-
-        if (!storedEmail.equals(userInputEmail)) {
-            if (emailService.getEmailVerificationStatus(userInputEmail) == false) {
-                throw new AppException(ErrorCode.UNAUTHORIZED, "인증되지 않은 이메일 입니다.");
-            }
-            localAccount.changeEmail(userInputEmail);
-        }
-
-        if (!storedNickname.equals(userInputNickname)) {
-            localAccount.getMember().changeNickname(userInputNickname);
-        }
     }
 
     @Transactional
