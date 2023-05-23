@@ -25,12 +25,12 @@ public class SocialAccountController {
     }
 
     @GetMapping("/kakao_callback")
-    public ResponseEntity<String> kakaoLogin(@RequestParam("code") String code) throws JsonProcessingException {
+    public ResponseEntity<Void> kakaoLogin(@RequestParam("code") String code) throws JsonProcessingException {
         String jwt = kakaoLoginService.kakaoLogin(code);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + jwt);
 
-        return ResponseEntity.ok().body(jwt);
+        return ResponseEntity.ok().headers(headers).build();
     }
 }
