@@ -45,18 +45,6 @@ public class LocalAccountController {
         return ResponseEntity.ok().headers(headers).build();
     }
 
-    @GetMapping("/profile")
-    public ResponseEntity<LocalAccountProfileResponseDto> profile(@AuthenticationPrincipal MemberPrincipal memberInfo) {
-        LocalAccountProfileResponseDto localAccountProfileResponseDto = localAccountService.getLocalAccountProfileDto(memberInfo.getMemberId());
-        return ResponseEntity.ok().body(localAccountProfileResponseDto);
-    }
-
-    @PutMapping("/profile/update")
-    public ResponseEntity<String> updateProfile(@AuthenticationPrincipal MemberPrincipal memberInfo, @RequestBody LocalAccountProfileUpdateRequestDto dto) {
-        localAccountService.updateProfile(memberInfo.getMemberId(), dto);
-        return ResponseEntity.ok().body("회원정보 수정 완료");
-    }
-
     @PostMapping("/change-password")
     public ResponseEntity<String> changePassword(@AuthenticationPrincipal MemberPrincipal memberInfo, @RequestBody LocalAccountPasswordChangeRequestDto dto) {
         localAccountService.changePassword(memberInfo.getMemberId(), dto);

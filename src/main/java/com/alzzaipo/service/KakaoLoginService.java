@@ -3,7 +3,6 @@ package com.alzzaipo.service;
 import com.alzzaipo.enums.LoginType;
 import com.alzzaipo.util.JwtUtil;
 import com.alzzaipo.domain.account.social.SocialAccount;
-import com.alzzaipo.enums.SocialCode;
 import com.alzzaipo.dto.account.social.SocialAccountInfo;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.enums.ErrorCode;
@@ -27,7 +26,6 @@ public class KakaoLoginService {
 
     private final SocialAccountService socialAccountService;
     private final JwtUtil jwtUtil;
-    private final SocialCode socialCode = SocialCode.KAKAO;
 
     @Value("${kakao.restApiKey}")
     private String restApiKey;
@@ -66,10 +64,11 @@ public class KakaoLoginService {
         }
 
         // 등록되지 않은 계정인 경우 가입 처리
-        socialAccountService.registerIfNeeded(accountInfo, SocialCode.KAKAO);
+        socialAccountService.registerIfNeeded(accountInfo, LoginType.KAKAO);
 
         // 등록된 소셜 계정 조회
-        Optional<SocialAccount> optionalSocialAccount = socialAccountService.findByEmailAndSocialCode(accountInfo.getEmail(), socialCode);
+        Optional<SocialAccount> optionalSocialAccount =
+                socialAccountService.findByEmailAndLoginType(accountInfo.getEmail(), LoginType.KAKAO);
         if(optionalSocialAccount.isEmpty()) {
             throw new AppException(ErrorCode.UNAUTHORIZED, "카카오 계정 조회 실패");
         }

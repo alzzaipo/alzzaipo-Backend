@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberPrincipal {
     private Long memberId;
-    private LoginType loginType;
+    private LoginType currentLoginType;
 }
