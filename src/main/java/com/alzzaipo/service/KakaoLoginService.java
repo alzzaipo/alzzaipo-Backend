@@ -67,14 +67,11 @@ public class KakaoLoginService {
         socialAccountService.registerIfNeeded(accountInfo, LoginType.KAKAO);
 
         // 등록된 소셜 계정 조회
-        Optional<SocialAccount> optionalSocialAccount =
-                socialAccountService.findByEmailAndLoginType(accountInfo.getEmail(), LoginType.KAKAO);
-        if(optionalSocialAccount.isEmpty()) {
-            throw new AppException(ErrorCode.UNAUTHORIZED, "카카오 계정 조회 실패");
-        }
+        SocialAccount socialAccount = socialAccountService.findByEmailAndLoginType(accountInfo.getEmail(), LoginType.KAKAO)
+                        .orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED, "카카오 계정 조회 실패"));
 
         // JWT 발급
-        String jwt = jwtUtil.createToken(optionalSocialAccount.get().getMember().getId(), LoginType.KAKAO);
+        String jwt = jwtUtil.createToken(socialAccount.getMember().getId(), LoginType.KAKAO);
 
         // JWT 반환
         return jwt;
