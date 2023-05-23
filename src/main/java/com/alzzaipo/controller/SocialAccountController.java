@@ -4,6 +4,7 @@ import com.alzzaipo.service.KakaoLoginService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,10 @@ public class SocialAccountController {
     @GetMapping("/kakao_callback")
     public ResponseEntity<String> kakaoLogin(@RequestParam("code") String code) throws JsonProcessingException {
         String jwt = kakaoLoginService.kakaoLogin(code);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwt);
+
         return ResponseEntity.ok().body(jwt);
     }
 }
