@@ -28,7 +28,8 @@ public enum ErrorCode {
     NULL_PASSED(HttpStatus.BAD_REQUEST),
     INVALID_ACCOUNT_PASSWORD(HttpStatus.UNAUTHORIZED),
     INVALID_NEW_PASSWORD(HttpStatus.BAD_REQUEST),
-    INVALID_SOCIAL_ACCOUNT(HttpStatus.BAD_REQUEST);
+    INVALID_SOCIAL_ACCOUNT(HttpStatus.BAD_REQUEST),
+    INVALID_CONNECT_REQUEST(HttpStatus.CONFLICT);
 
     private final HttpStatus httpStatus;
 }
