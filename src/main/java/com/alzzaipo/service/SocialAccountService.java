@@ -4,8 +4,10 @@ import com.alzzaipo.domain.account.social.SocialAccount;
 import com.alzzaipo.domain.member.Member;
 import com.alzzaipo.domain.member.MemberRepository;
 import com.alzzaipo.dto.account.social.SocialAccountInfo;
+import com.alzzaipo.enums.ErrorCode;
 import com.alzzaipo.enums.LoginType;
 import com.alzzaipo.enums.MemberType;
+import com.alzzaipo.exception.AppException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,4 +61,17 @@ public class SocialAccountService {
         return linkedSocialLoginTypes;
     }
 
+    @Transactional
+    public void connectNewAccount(Long memberId, SocialAccountInfo socialAccountInfo, LoginType loginType) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_MEMBER_ID, "회원 조회 실패"));
+
+        SocialAccount connectedSocialAccount = SocialAccount.builder()
+                .email(socialAccountInfo.getEmail())
+                .loginType(loginType)
+                .member(member)
+                .build();
+
+        socialAccountRepository.save(connectedSocialAccount);
+    }
 }

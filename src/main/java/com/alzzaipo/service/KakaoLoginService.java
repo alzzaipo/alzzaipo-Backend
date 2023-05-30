@@ -1,11 +1,12 @@
 package com.alzzaipo.service;
 
-import com.alzzaipo.enums.LoginType;
-import com.alzzaipo.util.JwtUtil;
+import com.alzzaipo.config.MemberPrincipal;
 import com.alzzaipo.domain.account.social.SocialAccount;
 import com.alzzaipo.dto.account.social.SocialAccountInfo;
-import com.alzzaipo.exception.AppException;
 import com.alzzaipo.enums.ErrorCode;
+import com.alzzaipo.enums.LoginType;
+import com.alzzaipo.exception.AppException;
+import com.alzzaipo.util.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,8 +18,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -39,10 +38,6 @@ public class KakaoLoginService {
     @Value("${kakao.adminKey}")
     private String adminKey;
 
-    public String getAuthCodeRequestUrl() {
-        return "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + restApiKey + "&redirect_uri=" + redirectURI;
-    }
-
     public String kakaoLogin(String code) throws JsonProcessingException {
         // 인가 코드 검증
         if(code == null || code.equals("")) {
@@ -55,7 +50,7 @@ public class KakaoLoginService {
             throw new AppException(ErrorCode.INVALID_KAKAO_ACCESS_TOKEN, "카카오 액세스 토큰을 수신하지 못했습니다.");
         }
 
-        // 액세스 토큰으로 카카오 프로필 정보(회원번호, 닉네임) 조회
+        // 액세스 토큰으로 카카오 프로필 정보(이메일, 닉네임) 조회
         SocialAccountInfo accountInfo;
         try {
              accountInfo = getAccountInfo(accessToken);
@@ -75,6 +70,30 @@ public class KakaoLoginService {
 
         // JWT 반환
         return jwt;
+    }
+
+    public void connect(MemberPrincipal memberInfo, String code) throws JsonProcessingException {
+        // 인가 코드 검증
+        if(code == null || code.equals("")) {
+            throw new AppException(ErrorCode.INVALID_KAKAO_AUTH_CODE, "카카오 인가코드를 수신하지 못했습니다.");
+        }
+
+        // 인가 코드로 액세스 토큰 요청
+        String accessToken = getAccessToken(code);
+        if(accessToken == null || accessToken.equals("")) {
+            throw new AppException(ErrorCode.INVALID_KAKAO_ACCESS_TOKEN, "카카오 액세스 토큰을 수신하지 못했습니다.");
+        }
+
+        // 액세스 토큰으로 카카오 프로필 정보(이메일, 닉네임) 조회
+        SocialAccountInfo socialAccountInfo;
+        try {
+            socialAccountInfo = getAccountInfo(accessToken);
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "카카오 프로필 정보 조회 실패");
+        }
+
+        // 기존 회원 정보에 새로운 소셜 계정 연동 처리
+        socialAccountService.connectNewAccount(memberInfo.getMemberId(), socialAccountInfo, LoginType.KAKAO);
     }
 
     /* 인가 코드로 액세스 토큰 받기 */
