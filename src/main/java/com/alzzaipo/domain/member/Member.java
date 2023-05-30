@@ -31,8 +31,11 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Portfolio> portfolios = new ArrayList<>();
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private LocalAccount localAccount;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<SocialAccount> socialAccounts;
 
     @Builder
     public Member(MemberType memberType, String nickname) {

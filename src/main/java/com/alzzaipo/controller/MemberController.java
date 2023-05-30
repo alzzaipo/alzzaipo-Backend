@@ -35,4 +35,9 @@ public class MemberController {
         return ResponseEntity.ok().body("회원정보 수정 완료");
     }
 
+    @DeleteMapping("/unregister")
+    public ResponseEntity<String> unregister(@AuthenticationPrincipal MemberPrincipal memberInfo) {
+        memberService.delete(memberInfo.getMemberId());
+        return ResponseEntity.ok().body("회원탈퇴 완료");
+    }
 }

@@ -118,4 +118,10 @@ public class MemberService {
 
         member.changeNickname(dto.getNickname());
     }
+
+    @Transactional
+    public void delete(Long memberId){
+        Member member = findById(memberId);
+        memberRepository.delete(member);
+    }
 }
