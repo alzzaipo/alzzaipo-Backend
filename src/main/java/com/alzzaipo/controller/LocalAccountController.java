@@ -50,4 +50,10 @@ public class LocalAccountController {
         localAccountService.changePassword(memberInfo.getMemberId(), dto);
         return ResponseEntity.ok().body("비밀번호 변경 완료");
     }
+
+    @GetMapping("/verify-password")
+    public ResponseEntity<String> verifyPassword(@AuthenticationPrincipal MemberPrincipal memberInfo, @RequestBody LocalAccountPasswordDto dto) {
+        localAccountService.verifyPassword(memberInfo, dto);
+        return ResponseEntity.ok().build();
+    }
 }

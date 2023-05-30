@@ -1,5 +1,6 @@
 package com.alzzaipo.service;
 
+import com.alzzaipo.config.MemberPrincipal;
 import com.alzzaipo.domain.account.local.LocalAccount;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
 import com.alzzaipo.domain.account.social.SocialAccountRepository;
@@ -156,5 +157,10 @@ public class LocalAccountService {
         // 새로운 비밀번호로 변경
         String newEncodedAccountPassword = passwordEncoder.encode(userInputNewAccountPassword);
         localAccount.changeAccountPassword(newEncodedAccountPassword);
+    }
+
+    public void verifyPassword(MemberPrincipal memberInfo, LocalAccountPasswordDto dto) {
+        LocalAccount localAccount = findLocalAccountByMemberId(memberInfo.getMemberId());
+        verifyLocalAccountPassword(dto.getAccountPassword(), localAccount.getAccountPassword());
     }
 }
