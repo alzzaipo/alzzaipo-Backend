@@ -32,8 +32,11 @@ public class KakaoLoginService {
     @Value("${kakao.clientSecret}")
     private String clientSecret;
 
-    @Value("${kakao.redirectURI}")
-    private String redirectURI;
+    @Value("${kakao.redirectURI.login}")
+    private String loginRedirectURI;
+
+    @Value("${kakao.redirectURI.connect}")
+    private String connectRedirectURI;
 
     @Value("${kakao.adminKey}")
     private String adminKey;
@@ -45,7 +48,7 @@ public class KakaoLoginService {
         }
 
         // 인가 코드로 액세스 토큰 요청
-        String accessToken = getAccessToken(code);
+        String accessToken = getAccessToken(code, loginRedirectURI);
         if(accessToken == null || accessToken.equals("")) {
             throw new AppException(ErrorCode.INVALID_KAKAO_ACCESS_TOKEN, "카카오 액세스 토큰을 수신하지 못했습니다.");
         }
@@ -79,7 +82,7 @@ public class KakaoLoginService {
         }
 
         // 인가 코드로 액세스 토큰 요청
-        String accessToken = getAccessToken(code);
+        String accessToken = getAccessToken(code, connectRedirectURI);
         if(accessToken == null || accessToken.equals("")) {
             throw new AppException(ErrorCode.INVALID_KAKAO_ACCESS_TOKEN, "카카오 액세스 토큰을 수신하지 못했습니다.");
         }
@@ -97,7 +100,7 @@ public class KakaoLoginService {
     }
 
     /* 인가 코드로 액세스 토큰 받기 */
-    private String getAccessToken(String code) throws JsonProcessingException {
+    private String getAccessToken(String code, String redirectUri) throws JsonProcessingException {
         // 헤더 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -107,7 +110,7 @@ public class KakaoLoginService {
         LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", restApiKey);
-        body.add("redirect_uri", redirectURI);
+        body.add("redirect_uri", redirectUri);
         body.add("code", code);
         body.add("client_secret", clientSecret);
 
