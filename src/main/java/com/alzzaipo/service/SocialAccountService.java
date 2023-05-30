@@ -64,7 +64,9 @@ public class SocialAccountService {
     @Transactional
     public void connectNewAccount(Long memberId, SocialAccountInfo socialAccountInfo, LoginType loginType) {
         socialAccountRepository.findByEmailAndLoginType(socialAccountInfo.getEmail(), loginType)
-                .orElseThrow(() -> new AppException(ErrorCode.INVALID_CONNECT_REQUEST, "이미 가입된 소셜 계정이 존재합니다."));
+                .ifPresent(registeredAccount -> {
+                    throw new AppException(ErrorCode.INVALID_CONNECT_REQUEST, "이미 가입된 소셜 계정이 존재합니다.");
+                });
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AppException(ErrorCode.INVALID_MEMBER_ID, "회원 조회 실패"));
