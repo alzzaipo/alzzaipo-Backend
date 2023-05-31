@@ -1,7 +1,8 @@
 package com.alzzaipo.service;
 
+import com.alzzaipo.domain.ipo.IpoRepository;
 import com.alzzaipo.util.InitialMarketPriceApi;
-import com.alzzaipo.dto.CrawlerDto;
+import com.alzzaipo.dto.IpoData;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.enums.ErrorCode;
 import com.alzzaipo.domain.ipo.Ipo;
@@ -20,63 +21,49 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Component
-public class CrawlerService {
+public class IpoScraperService {
 
-    private final IpoService ipoService;
+    private final IpoRepository ipoRepository;
     private final InitialMarketPriceApi initialMarketPriceApi;
 
-    // 작년 공모주 정보를 데이터베이스에 저장
     @Transactional
-    public int updateIPOListFrom(int from) {
-        int pageNumber = 1, cnt = 0;
-        boolean stopFlag = false;
+    public int updateIpoTableByScrapingPages(int startPage, int endPage) {
+        int newEntityCount = 0;
 
         try {
-            while (true) {
-                List<Ipo> ipoList = getIPOListFromPage(pageNumber);
+            for(int pageNumber = startPage; pageNumber <= endPage; pageNumber++) {
+                List<Ipo> ipoList = extractIpoEntitiesFromPage(pageNumber);
 
                 for (Ipo ipo : ipoList) {
-                    if (ipo.getSubscribeStartDate().getYear() >= from) {
-                        ipoService.save(ipo);
-                        cnt++;
-                    } else {
-                        if(ipo.getSubscribeStartDate().getYear() == 1000) {
-                            continue;
-                        } else {
-                            stopFlag = true;
-                            break;
-                        }
+                    if(ipoRepository.findByStockCode(ipo.getStockCode()).isEmpty()) {
+                        ipoRepository.save(ipo);
+                        newEntityCount++;
                     }
-                }
-                if (stopFlag) {
-                    break;
-                } else {
-                    pageNumber += 1;
                 }
             }
         } catch (Exception e) {
             throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "크롤링 실패\n" + e.getMessage());
         }
 
-        return cnt;
+        return newEntityCount;
     }
 
-    public List<Ipo> getIPOListFromPage(int pageNumber) {
-        List<Ipo> ipoList = new ArrayList<>();
+    public List<Ipo> extractIpoEntitiesFromPage(int pageNumber) {
+        List<Ipo> ipoEntities = new ArrayList<>();
 
-        List<CrawlerDto> crawlerDtoList = getCrawlerDtoListFromPage(pageNumber);
+        List<IpoData> scrapingResult = scrapeIpoDataFromPage(pageNumber);
 
-        for (CrawlerDto crawlerDto : crawlerDtoList) {
-            int initialMarketPrice = initialMarketPriceApi.getInitialMarketPrice(crawlerDto.getStockCode(), crawlerDto.getListedDate());
-            Ipo ipo = createIPO(crawlerDto, initialMarketPrice);
-            ipoList.add(ipo);
+        for (IpoData ipoData : scrapingResult) {
+            int initialMarketPrice = initialMarketPriceApi.getInitialMarketPrice(ipoData.getStockCode(), ipoData.getListedDate());
+            Ipo ipo = createIPO(ipoData, initialMarketPrice);
+            ipoEntities.add(ipo);
         }
 
-        return ipoList;
+        return ipoEntities;
     }
 
-    public List<CrawlerDto> getCrawlerDtoListFromPage(int pageNumber) {
-        List<CrawlerDto> result = new ArrayList<>();
+    public List<IpoData> scrapeIpoDataFromPage(int pageNumber) {
+        List<IpoData> result = new ArrayList<>();
         String url = "http://www.ipo38.co.kr/ipo/index.htm?o=&key=5&page=";
         String selector1 = "body > table:nth-child(5) > tbody > tr > td > table > tbody > tr > td:nth-child(1) >"
                 + "table:nth-child(10) > tbody > tr:nth-child(2) > td > table > tbody > tr";
@@ -93,8 +80,8 @@ public class CrawlerService {
                 // 단건 수요예측결과
                 Element ipoRawData = ipoRawDataList.get(i);
                 // 수요예측결과로부터 청약정보객체 생성
-                CrawlerDto crawlerDto = createCrawlerDto(ipoRawData);
-                result.add(crawlerDto);
+                IpoData ipoData = parseIpoData(ipoRawData);
+                result.add(ipoData);
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -103,12 +90,12 @@ public class CrawlerService {
         return result;
     }
 
-    private CrawlerDto createCrawlerDto(Element ipoRawData) throws Exception {
+    private IpoData parseIpoData(Element ipoRawData) throws Exception {
 
         // 종목명
         String stockName = "조회불가" ;
         String rawData = ipoRawData.child(0).text();
-        if(rawData != null && !rawData.isEmpty()) {
+        if(!rawData.isEmpty()) {
             stockName = rawData;
         }
 
@@ -116,7 +103,7 @@ public class CrawlerService {
         int expectedOfferingPriceMin = -1, expectedOfferingPriceMax = -1;
         rawData = ipoRawData.child(2).text();
 
-        if (rawData != null && !rawData.isEmpty()) {
+        if (!rawData.isEmpty()) {
             String[] offeringPrices = rawData.split("~");
             if(offeringPrices.length > 0) {
                 expectedOfferingPriceMin = Integer.parseInt(offeringPrices[0].replace(",", ""));
@@ -131,35 +118,35 @@ public class CrawlerService {
         // 최종공모가
         int fixedOfferingPrice = -1;
         rawData = ipoRawData.child(3).text();
-        if (rawData != null && !rawData.isEmpty()) {
+        if (!rawData.isEmpty()) {
             fixedOfferingPrice = Integer.parseInt(rawData.replace(",", ""));
         }
 
         // 공모금액
         int totalAmount = -1;
         rawData = ipoRawData.child(4).text();
-        if (rawData != null && !rawData.isEmpty()) {
+        if (!rawData.isEmpty()) {
             totalAmount = Integer.parseInt(rawData.replace(",", ""));
         }
 
         // 기관경쟁률
         int competitionRate = -1;
         rawData = ipoRawData.child(5).text();
-        if (rawData != null && !rawData.isEmpty()) {
+        if (!rawData.isEmpty()) {
             competitionRate = getCleanRate(rawData);
         }
 
         // 의무보유확약비율
         int lockupRate = -1;
         rawData = ipoRawData.child(6).text();
-        if (rawData != null && !rawData.isEmpty()) {
+        if (!rawData.isEmpty()) {
             lockupRate = getCleanRate(rawData);
         }
 
         // 주간사
         String agents = "조회불가";
         rawData = ipoRawData.child(7).text();
-        if(rawData != null && !rawData.isEmpty()) {
+        if(!rawData.isEmpty()) {
             agents = rawData;
         }
 
@@ -167,7 +154,7 @@ public class CrawlerService {
 
         /* 상세 페이지에서 추가 청약정보를 가져옵니다 */
         String newUrl = "http://www.ipo38.co.kr/ipo/" + ipoRawData.child(0).child(0).attr("href").substring(2);
-        List<String> additionalData = getAdditionalIPOData(newUrl);     // 조회불가 시, "error" 반환
+        List<String> additionalData = getAdditionalInformation(newUrl);     // 조회불가 시, "error" 반환
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
 
@@ -193,7 +180,7 @@ public class CrawlerService {
             stockCode = Integer.parseInt(additionalData.get(3));
         }
 
-        CrawlerDto crawlerDto = CrawlerDto.builder()
+        IpoData ipoScrapingResultDto = IpoData.builder()
                 .stockName(stockName)
                 .expectedOfferingPriceMin(expectedOfferingPriceMin)
                 .expectedOfferingPriceMax(expectedOfferingPriceMax)
@@ -208,11 +195,11 @@ public class CrawlerService {
                 .stockCode(stockCode)
                 .build();
 
-        return crawlerDto;
+        return ipoScrapingResultDto;
     }
 
     // 청약 시작일, 청약 종료일, 상장일 시초가, 종목코드 데이터를 담은 String 리스트를 반환
-    private static List<String> getAdditionalIPOData(String url) throws Exception {
+    private static List<String> getAdditionalInformation(String url) throws Exception {
         List<String> result = new ArrayList<>();
 
         String subscribeDateSelector1 = "body > table:nth-child(5) > tbody > tr > td > table > tbody > tr > td:nth-child(1) >" +
@@ -234,10 +221,11 @@ public class CrawlerService {
             String subscribeStartDate = "error", subscribeEndDate = "error";
             String subscribeDate = document.select(subscribeDateSelector1).text();
 
-            if(subscribeDate == null && subscribeDate.isEmpty()) {
+            if(subscribeDate.isEmpty()) {
                 subscribeDate = document.select(subscribeDateSelector2).text();
             }
-            if(subscribeDate != null && !subscribeDate.isEmpty()) {
+
+            if(!subscribeDate.isEmpty()) {
                 String[] subscribeDates = subscribeDate.replace(" ", "").split("~");
                 if(subscribeDates.length > 0) {
                     subscribeStartDate = subscribeDates[0];
@@ -250,17 +238,17 @@ public class CrawlerService {
             /* 상장일 */
             String listedDate = "error";
             String rawData = document.select(listedDateSelector1).text();
-            if (rawData == null || rawData.isEmpty()) {
+            if (rawData.isEmpty()) {
                 rawData = document.select(listedDateSelector2).text();
             }
-            if(rawData != null && !rawData.isEmpty()) {
+            if(!rawData.isEmpty()) {
                 listedDate = rawData;
             }
 
             /* 종목 코드 */
             String stockCode = "error";
             rawData = document.select(stockCodeSelector).text();
-            if(rawData != null && !rawData.isEmpty()) {
+            if(!rawData.isEmpty()) {
                 stockCode = rawData;
             }
 
@@ -290,20 +278,20 @@ public class CrawlerService {
         return Integer.parseInt(rate);
     }
 
-    private Ipo createIPO(CrawlerDto crawlerDto, int initialMarketPrice) {
+    private Ipo createIPO(IpoData ipoData, int initialMarketPrice) {
         Ipo ipo = Ipo.builder()
-                .stockName(crawlerDto.getStockName())
-                .expectedOfferingPriceMin(crawlerDto.getExpectedOfferingPriceMin())
-                .expectedOfferingPriceMax(crawlerDto.getExpectedOfferingPriceMax())
-                .fixedOfferingPrice(crawlerDto.getFixedOfferingPrice())
-                .totalAmount(crawlerDto.getTotalAmount())
-                .competitionRate(crawlerDto.getCompetitionRate())
-                .lockupRate(crawlerDto.getLockupRate())
-                .agents(crawlerDto.getAgents())
-                .subscribeStartDate(crawlerDto.getSubscribeStartDate())
-                .subscribeEndDate(crawlerDto.getSubscribeEndDate())
-                .listedDate(crawlerDto.getListedDate())
-                .stockCode(crawlerDto.getStockCode())
+                .stockName(ipoData.getStockName())
+                .expectedOfferingPriceMin(ipoData.getExpectedOfferingPriceMin())
+                .expectedOfferingPriceMax(ipoData.getExpectedOfferingPriceMax())
+                .fixedOfferingPrice(ipoData.getFixedOfferingPrice())
+                .totalAmount(ipoData.getTotalAmount())
+                .competitionRate(ipoData.getCompetitionRate())
+                .lockupRate(ipoData.getLockupRate())
+                .agents(ipoData.getAgents())
+                .subscribeStartDate(ipoData.getSubscribeStartDate())
+                .subscribeEndDate(ipoData.getSubscribeEndDate())
+                .listedDate(ipoData.getListedDate())
+                .stockCode(ipoData.getStockCode())
                 .initialMarketPrice(initialMarketPrice)
                 .build();
 

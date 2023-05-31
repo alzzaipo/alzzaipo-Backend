@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class CrawlerDto {
+public class IpoData {
 
     // 종목명
     String stockName;
@@ -45,9 +45,9 @@ public class CrawlerDto {
     int stockCode;
 
     @Builder()
-    public CrawlerDto(String stockName, int expectedOfferingPriceMin, int expectedOfferingPriceMax,
-                      int fixedOfferingPrice, int totalAmount, int competitionRate, int lockupRate, String agents,
-                      LocalDate subscribeStartDate, LocalDate subscribeEndDate, LocalDate listedDate, int stockCode) {
+    public IpoData(String stockName, int expectedOfferingPriceMin, int expectedOfferingPriceMax,
+                   int fixedOfferingPrice, int totalAmount, int competitionRate, int lockupRate, String agents,
+                   LocalDate subscribeStartDate, LocalDate subscribeEndDate, LocalDate listedDate, int stockCode) {
         this.stockName = stockName;
         this.expectedOfferingPriceMin = expectedOfferingPriceMin;
         this.expectedOfferingPriceMax = expectedOfferingPriceMax;

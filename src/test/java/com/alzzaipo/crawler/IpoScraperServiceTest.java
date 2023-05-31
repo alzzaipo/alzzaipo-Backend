@@ -2,8 +2,8 @@ package com.alzzaipo.crawler;
 
 import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.domain.ipo.IpoRepository;
-import com.alzzaipo.dto.CrawlerDto;
-import com.alzzaipo.service.CrawlerService;
+import com.alzzaipo.dto.IpoData;
+import com.alzzaipo.service.IpoScraperService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,15 +15,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-class CrawlerServiceTest {
+class IpoScraperServiceTest {
 
     private final IpoRepository ipoRepository;
-    private final CrawlerService crawlerService;
+    private final IpoScraperService ipoScraperService;
 
     @Autowired
-    public CrawlerServiceTest(IpoRepository ipoRepository, CrawlerService crawlerService) {
+    public IpoScraperServiceTest(IpoRepository ipoRepository, IpoScraperService ipoScraperService) {
         this.ipoRepository = ipoRepository;
-        this.crawlerService = crawlerService;
+        this.ipoScraperService = ipoScraperService;
     }
 
     @Test
@@ -32,14 +32,14 @@ class CrawlerServiceTest {
         int pageNumber = 1;
 
         //when
-        List<CrawlerDto> crawlerDtoList = crawlerService.getCrawlerDtoListFromPage(pageNumber);
+        List<IpoData> ipoDataList = ipoScraperService.scrapeIpoDataFromPage(pageNumber);
 
         //then
-        for (CrawlerDto crawlerDto : crawlerDtoList) {
-            System.out.println(crawlerDto.toString());
+        for (IpoData ipoData : ipoDataList) {
+            System.out.println(ipoData.toString());
         }
 
-        assertThat(crawlerDtoList.size()).isEqualTo(20);
+        assertThat(ipoDataList.size()).isEqualTo(20);
     }
 
     @Test
@@ -49,7 +49,7 @@ class CrawlerServiceTest {
         int pageNumber = 1;
 
         //when
-        List<Ipo> ipoList = crawlerService.getIPOListFromPage(pageNumber);
+        List<Ipo> ipoList = ipoScraperService.extractIpoEntitiesFromPage(pageNumber);
 
         //then
         for (Ipo ipo : ipoList) {
@@ -63,10 +63,9 @@ class CrawlerServiceTest {
     public void updateIPOListFrom() throws Exception
     {
         //given
-        int from = 2023;
 
         //when
-        crawlerService.updateIPOListFrom(from);
+        ipoScraperService.updateIpoTableByScrapingPages(1, 1);
 
         //then
         List<Ipo> findAllList = ipoRepository.findAll();
