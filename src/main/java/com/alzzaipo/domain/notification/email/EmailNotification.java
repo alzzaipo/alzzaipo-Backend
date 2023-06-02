@@ -26,4 +26,8 @@ public class EmailNotification {
         this.email = email;
         this.member = member;
     }
+
+    public void changeEmail(String email) {
+        this.email = email;
+    }
 }
