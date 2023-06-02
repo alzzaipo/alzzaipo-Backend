@@ -40,8 +40,8 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<SocialAccount> socialAccounts;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private NotificationCriteria notificationCriteria;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<NotificationCriteria> notificationCriteriaList;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private EmailNotification emailNotification;
@@ -67,7 +67,10 @@ public class Member extends BaseTimeEntity {
                 return account;
             }
         }
-
         return null;
+    }
+
+    public void addNotificationCriteria(NotificationCriteria notificationCriteria) {
+        this.notificationCriteriaList.add(notificationCriteria);
     }
 }

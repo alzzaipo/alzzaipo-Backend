@@ -4,3 +4,4 @@ build
 etc/
 secrets/
 /out/
+application-local.yml
