@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/local-member/change-password").authenticated()
                 .requestMatchers("/api/local-member/verify-password").authenticated()
                 .requestMatchers("/api/social/kakao/connect").authenticated()
+                .requestMatchers("/api/notification/**").authenticated()
                 .requestMatchers("/**").permitAll()
                 .and()
                 .sessionManagement()

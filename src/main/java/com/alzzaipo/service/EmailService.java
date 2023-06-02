@@ -3,19 +3,24 @@ package com.alzzaipo.service;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
 import com.alzzaipo.domain.emailVerification.EmailVerification;
 import com.alzzaipo.domain.emailVerification.EmailVerificationRepository;
+import com.alzzaipo.domain.ipo.Ipo;
 import com.alzzaipo.exception.AppException;
 import com.alzzaipo.enums.ErrorCode;
 import com.alzzaipo.util.DataFormatUtil;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class EmailService {
@@ -120,5 +125,34 @@ public class EmailService {
         return ev.isEmpty()? false : ev.get().isVerificationStatus();
     }
 
+    public void sendNewIpoNotificationEmail(Ipo ipo, List<String> emails) {
+        SimpleMailMessage simpleMessage = new SimpleMailMessage();
+        simpleMessage.setFrom("alzzaipo@daum.net");
+        simpleMessage.setSubject("[알짜공모주] 신규 공모주 알림 : " + ipo.getStockName());
+
+        String text = String.format("*새로운 알짜 공모주가 등장했어요!*\n\n" +
+                "[공모주명] : %s\n" +
+                "[기관경쟁률] : %d\n" +
+                "[의무확약비율] : %d\n" +
+                "[희망공모가] : %d~%d\n" +
+                "[최종공모가] : %d\n" +
+                "[청약주간사] : %s\n" +
+                "[공모청약일] : %s ~ %s"
+        , ipo.getStockName(), ipo.getCompetitionRate(), ipo.getLockupRate(), ipo.getExpectedOfferingPriceMin(),
+                ipo.getExpectedOfferingPriceMax(), ipo.getFixedOfferingPrice(), ipo.getAgents(),
+                ipo.getSubscribeStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                ipo.getSubscribeEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
+        simpleMessage.setText(text);
+
+        try {
+            for(String email : emails) {
+                simpleMessage.setTo(email);
+                javaMailSender.send(simpleMessage);
+            }
+        } catch (Exception e) {
+            log.error("신규 공모주 알림 메일 전송 실패 : " + e.getMessage());
+        }
+    }
 
 }

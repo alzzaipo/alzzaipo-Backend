@@ -3,7 +3,10 @@ package com.alzzaipo.domain.member;
 import com.alzzaipo.domain.BaseTimeEntity;
 import com.alzzaipo.domain.account.local.LocalAccount;
 import com.alzzaipo.domain.account.social.SocialAccount;
+import com.alzzaipo.domain.notification.criteria.NotificationCriteria;
+import com.alzzaipo.domain.notification.email.EmailNotification;
 import com.alzzaipo.domain.portfolio.Portfolio;
+import com.alzzaipo.enums.LoginType;
 import com.alzzaipo.enums.MemberType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -37,6 +40,12 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<SocialAccount> socialAccounts;
 
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private NotificationCriteria notificationCriteria;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private EmailNotification emailNotification;
+
     @Builder
     public Member(MemberType memberType, String nickname) {
         this.memberType = memberType;
@@ -50,5 +59,15 @@ public class Member extends BaseTimeEntity {
 
     public void changeNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public SocialAccount getSocialAccount(LoginType loginType) {
+        for(SocialAccount account : socialAccounts) {
+            if (account.getLoginType() == loginType) {
+                return account;
+            }
+        }
+
+        return null;
     }
 }
