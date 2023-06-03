@@ -95,6 +95,9 @@ public class LocalAccountService {
             throw new AppException(ErrorCode.UNAUTHORIZED, "인증되지 않은 이메일 입니다.");
         }
 
+        // 인증 내역 소멸
+        emailService.deleteVerificationHistory(email);
+
         // 계정 생성
         Member member = memberService.createAndSave(nickname, MemberType.LOCAL);
         LocalAccount localAccount = LocalAccount.builder()

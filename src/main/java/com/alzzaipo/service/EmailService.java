@@ -155,4 +155,11 @@ public class EmailService {
         }
     }
 
+    @Transactional
+    public void deleteVerificationHistory(String email) {
+        EmailVerification emailVerification = emailVerificationRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED, "인증되지 않은 이메일 입니다."));
+
+        emailVerificationRepository.delete(emailVerification);
+    }
 }
