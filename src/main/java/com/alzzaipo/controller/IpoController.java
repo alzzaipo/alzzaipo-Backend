@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/ipo")
+@RequestMapping("/ipo")
 @RestController
 public class IpoController {
 
