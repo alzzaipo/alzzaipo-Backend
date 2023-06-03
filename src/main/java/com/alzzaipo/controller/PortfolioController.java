@@ -11,7 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/portfolio")
+@RequestMapping("/portfolio")
 @RestController
 public class PortfolioController {
 
