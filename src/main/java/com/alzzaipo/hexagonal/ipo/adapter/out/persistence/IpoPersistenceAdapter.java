@@ -1,6 +1,8 @@
 package com.alzzaipo.hexagonal.ipo.adapter.out.persistence;
 
 import com.alzzaipo.hexagonal.ipo.IpoMapper;
+import com.alzzaipo.hexagonal.ipo.application.port.in.AnalyzeIpoProfitRateCommand;
+import com.alzzaipo.hexagonal.ipo.application.port.out.FindAnalyzeIpoProfitRateTargetPort;
 import com.alzzaipo.hexagonal.ipo.application.port.out.FindIpoByStockCodePort;
 import com.alzzaipo.hexagonal.ipo.application.port.out.FindIpoListPort;
 import com.alzzaipo.hexagonal.ipo.application.port.out.RegisterIpoPort;
@@ -17,7 +19,8 @@ import java.util.stream.Collectors;
 public class IpoPersistenceAdapter implements
         RegisterIpoPort,
         FindIpoByStockCodePort,
-        FindIpoListPort {
+        FindIpoListPort,
+        FindAnalyzeIpoProfitRateTargetPort {
 
     private final NewIpoRepository newIpoRepository;
     private final IpoMapper ipoMapper;
@@ -52,6 +55,19 @@ public class IpoPersistenceAdapter implements
     @Override
     public List<Ipo> findIpoList() {
         return newIpoRepository.findAll()
+                .stream()
+                .map(this.ipoMapper::toDomainEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Ipo> findAnalyzeIpoProfitRateTarget(AnalyzeIpoProfitRateCommand command) {
+        return newIpoRepository.findAnalyzeIpoProfitRateTarget(
+                        command.getYearFrom(),
+                        command.getYearTo(),
+                        command.getMinCompetitionRate(),
+                        command.getMinLockupRate()
+                )
                 .stream()
                 .map(this.ipoMapper::toDomainEntity)
                 .collect(Collectors.toList());
