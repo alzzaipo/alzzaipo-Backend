@@ -15,7 +15,7 @@ public class IpoPersistenceAdapter implements
         RegisterIpoPort
         , FindIpoByStockCodePort {
 
-    private final IpoRepository ipoRepository;
+    private final NewIpoRepository newIpoRepository;
     private final IpoMapper ipoMapper;
 
     @Override
@@ -36,12 +36,12 @@ public class IpoPersistenceAdapter implements
                 ipo.getInitialMarketPrice(),
                 ipo.getProfitRate());
 
-        ipoRepository.save(ipoJpaEntity);
+        newIpoRepository.save(ipoJpaEntity);
     }
 
     @Override
     public Optional<Ipo> findIpoByStockCodePort(int stockCode) {
-        return ipoRepository.findByStockCode(stockCode)
+        return newIpoRepository.findByStockCode(stockCode)
                 .map(this.ipoMapper::toDomainEntity);
     }
 }
