@@ -1,15 +1,22 @@
 package com.alzzaipo.hexagonal.ipo.adapter.out.persistence;
 
+import com.alzzaipo.hexagonal.ipo.IpoMapper;
+import com.alzzaipo.hexagonal.ipo.application.port.out.FindIpoByStockCodePort;
 import com.alzzaipo.hexagonal.ipo.application.port.out.RegisterIpoPort;
 import com.alzzaipo.hexagonal.ipo.domain.Ipo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
-public class IpoPersistenceAdapter implements RegisterIpoPort {
+public class IpoPersistenceAdapter implements
+        RegisterIpoPort
+        , FindIpoByStockCodePort {
 
     private final IpoRepository ipoRepository;
+    private final IpoMapper ipoMapper;
 
     @Override
     public void registerIpo(Ipo ipo) {
@@ -30,5 +37,11 @@ public class IpoPersistenceAdapter implements RegisterIpoPort {
                 ipo.getProfitRate());
 
         ipoRepository.save(ipoJpaEntity);
+    }
+
+    @Override
+    public Optional<Ipo> findIpoByStockCodePort(int stockCode) {
+        return ipoRepository.findByStockCode(stockCode)
+                .map(this.ipoMapper::toDomainEntity);
     }
 }
