@@ -42,7 +42,7 @@ public class LocalAccountIntegrationTest {
     public void 이메일_검증_성공() throws Exception {
         String email = "test@naver.com";
 
-        mockMvc.perform(post("/api/member/verify-email")
+        mockMvc.perform(post("/member/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new  EmailDto(email))))
                 .andExpect(status().isOk());
@@ -53,7 +53,7 @@ public class LocalAccountIntegrationTest {
     public void 이메일_검증_실패1() throws Exception {
         String email = ".test@naver.com";
 
-        mockMvc.perform(post("/api/member/verify-email")
+        mockMvc.perform(post("/member/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new EmailDto(email))))
                 .andExpect(status().isBadRequest());
@@ -64,7 +64,7 @@ public class LocalAccountIntegrationTest {
     public void 이메일_검증_실패2() throws Exception {
         String email = "test.@naver.com";
 
-        mockMvc.perform(post("/api/member/verify-email")
+        mockMvc.perform(post("/member/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new  EmailDto(email))))
                 .andExpect(status().isBadRequest());
@@ -75,7 +75,7 @@ public class LocalAccountIntegrationTest {
     public void 이메일_검증_실패3() throws Exception {
         String email = "te..st@naver.com";
 
-        mockMvc.perform(post("/api/member/verify-email")
+        mockMvc.perform(post("/member/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new  EmailDto(email))))
                 .andExpect(status().isBadRequest());
@@ -86,7 +86,7 @@ public class LocalAccountIntegrationTest {
     public void 이메일_검증_실패6() throws Exception {
         String email = "aaa";
 
-        mockMvc.perform(post("/api/member/verify-email")
+        mockMvc.perform(post("/member/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new  EmailDto(email))))
                 .andExpect(status().isBadRequest());
@@ -97,7 +97,7 @@ public class LocalAccountIntegrationTest {
     public void 이메일_검증_실패7() throws Exception {
         String email = ";test@naver.com";
 
-        mockMvc.perform(post("/api/member/verify-email")
+        mockMvc.perform(post("/member/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new  EmailDto(email))))
                 .andExpect(status().isBadRequest());
@@ -108,7 +108,7 @@ public class LocalAccountIntegrationTest {
     public void 이메일_검증_실패10() throws Exception {
         String email = "test@naver";
 
-        mockMvc.perform(post("/api/member/verify-email")
+        mockMvc.perform(post("/member/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new  EmailDto(email))))
                 .andExpect(status().isBadRequest());
@@ -119,7 +119,7 @@ public class LocalAccountIntegrationTest {
     public void 이메일_검증_실패12() throws Exception {
         String email = "test@_naver.com";
 
-        mockMvc.perform(post("/api/member/verify-email")
+        mockMvc.perform(post("/member/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new  EmailDto(email))))
                 .andExpect(status().isBadRequest());
@@ -130,7 +130,7 @@ public class LocalAccountIntegrationTest {
     public void 이메일_검증_실패13() throws Exception {
         String email = "test@.naver.com";
 
-        mockMvc.perform(post("/api/member/verify-email")
+        mockMvc.perform(post("/member/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new  EmailDto(email))))
                 .andExpect(status().isBadRequest());
@@ -141,7 +141,7 @@ public class LocalAccountIntegrationTest {
     public void 이메일_검증_실패14() throws Exception {
         String email = "test@n!aver.com";
 
-        mockMvc.perform(post("/api/member/verify-email")
+        mockMvc.perform(post("/member/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new  EmailDto(email))))
                 .andExpect(status().isBadRequest());
@@ -166,7 +166,7 @@ public class LocalAccountIntegrationTest {
         String registeredEmail = "test@naver.com";
 
         // then : 인증코드 전송 요청은 거부된다
-        mockMvc.perform(post("/api/member/verify-email")
+        mockMvc.perform(post("/member/verify-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new  EmailDto(registeredEmail))))
                 .andExpect(status().isConflict());

@@ -48,7 +48,7 @@ class IpoControllerTest {
         when(ipoService.getIpoList()).thenReturn(ipoList);
 
         //when, then
-        mockMvc.perform(get("/api/ipo/list"))
+        mockMvc.perform(get("/ipo/list"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -96,7 +96,7 @@ class IpoControllerTest {
         IpoAnalyzeRequestDto requestDto
                 = new IpoAnalyzeRequestDto(2020, 2023, 1000, 10);
 
-        mockMvc.perform(post("/api/ipo/analyze")
+        mockMvc.perform(post("/ipo/analyze")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(requestDto)))
                 .andExpect(status().isOk())
