@@ -2,18 +2,22 @@ package com.alzzaipo.hexagonal.ipo.adapter.out.persistence;
 
 import com.alzzaipo.hexagonal.ipo.IpoMapper;
 import com.alzzaipo.hexagonal.ipo.application.port.out.FindIpoByStockCodePort;
+import com.alzzaipo.hexagonal.ipo.application.port.out.FindIpoListPort;
 import com.alzzaipo.hexagonal.ipo.application.port.out.RegisterIpoPort;
 import com.alzzaipo.hexagonal.ipo.domain.Ipo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
 public class IpoPersistenceAdapter implements
-        RegisterIpoPort
-        , FindIpoByStockCodePort {
+        RegisterIpoPort,
+        FindIpoByStockCodePort,
+        FindIpoListPort {
 
     private final NewIpoRepository newIpoRepository;
     private final IpoMapper ipoMapper;
@@ -43,5 +47,13 @@ public class IpoPersistenceAdapter implements
     public Optional<Ipo> findIpoByStockCodePort(int stockCode) {
         return newIpoRepository.findByStockCode(stockCode)
                 .map(this.ipoMapper::toDomainEntity);
+    }
+
+    @Override
+    public List<Ipo> findIpoList() {
+        return newIpoRepository.findAll()
+                .stream()
+                .map(this.ipoMapper::toDomainEntity)
+                .collect(Collectors.toList());
     }
 }
