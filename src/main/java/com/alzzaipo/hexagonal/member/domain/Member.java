@@ -1,17 +1,20 @@
 package com.alzzaipo.hexagonal.member.domain;
 
+import com.alzzaipo.hexagonal.common.UidGenerator;
 import lombok.Getter;
-
-import java.util.UUID;
 
 @Getter
 public class Member {
 
-    private final UUID uuid;
+    private final long uid;
     private final String nickname;
 
-    public Member(UUID uuid, String nickname) {
-        this.uuid = uuid;
+    public static Member create(String nickname) {
+        return new Member(UidGenerator.generate(), nickname);
+    }
+
+    public Member(long uid, String nickname) {
+        this.uid = uid;
         this.nickname = nickname;
     }
 }
