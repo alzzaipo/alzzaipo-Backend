@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/new/email")
+@RequestMapping("/email")
 @RequiredArgsConstructor
-public class NewEmailController {
+public class EmailController {
 
     private final SendEmailVerificationCodeUseCase sendEmailVerificationCodeUseCase;
     private final VerifyEmailVerificationCodeUseCase verifyEmailVerificationCodeUseCase;
