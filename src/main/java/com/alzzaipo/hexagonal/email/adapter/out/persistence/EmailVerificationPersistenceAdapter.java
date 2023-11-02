@@ -4,7 +4,7 @@ import com.alzzaipo.hexagonal.email.application.port.out.DeleteOldEmailVerificat
 import com.alzzaipo.hexagonal.email.application.port.out.FindEmailVerificationCodePort;
 import com.alzzaipo.hexagonal.email.application.port.out.SaveEmailVerificationHistoryPort;
 import com.alzzaipo.hexagonal.email.application.port.out.SetEmailVerificationHistoryVerifiedPort;
-import com.alzzaipo.hexagonal.email.domain.Email;
+import com.alzzaipo.hexagonal.common.Email;
 import com.alzzaipo.hexagonal.email.domain.EmailVerificationCode;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;

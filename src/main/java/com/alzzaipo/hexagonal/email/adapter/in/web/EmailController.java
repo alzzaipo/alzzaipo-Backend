@@ -2,7 +2,7 @@ package com.alzzaipo.hexagonal.email.adapter.in.web;
 
 import com.alzzaipo.hexagonal.email.application.port.in.SendEmailVerificationCodeUseCase;
 import com.alzzaipo.hexagonal.email.application.port.in.VerifyEmailVerificationCodeUseCase;
-import com.alzzaipo.hexagonal.email.domain.Email;
+import com.alzzaipo.hexagonal.common.Email;
 import com.alzzaipo.hexagonal.email.domain.EmailVerificationCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

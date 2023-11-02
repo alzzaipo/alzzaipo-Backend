@@ -1,7 +1,7 @@
 package com.alzzaipo.hexagonal.email.adapter.out.web;
 
 import com.alzzaipo.hexagonal.email.application.port.out.SendEmailVerificationCodePort;
-import com.alzzaipo.hexagonal.email.domain.Email;
+import com.alzzaipo.hexagonal.common.Email;
 import com.alzzaipo.hexagonal.email.domain.EmailVerificationCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

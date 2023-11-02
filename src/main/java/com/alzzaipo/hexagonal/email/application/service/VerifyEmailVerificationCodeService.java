@@ -4,7 +4,7 @@ import com.alzzaipo.hexagonal.email.application.port.in.VerifyEmailVerificationC
 import com.alzzaipo.hexagonal.email.domain.EmailVerificationCode;
 import com.alzzaipo.hexagonal.email.application.port.out.FindEmailVerificationCodePort;
 import com.alzzaipo.hexagonal.email.application.port.out.SetEmailVerificationHistoryVerifiedPort;
-import com.alzzaipo.hexagonal.email.domain.Email;
+import com.alzzaipo.hexagonal.common.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

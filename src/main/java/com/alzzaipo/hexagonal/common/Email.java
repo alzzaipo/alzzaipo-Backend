@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.email.domain;
+package com.alzzaipo.hexagonal.common;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -5,7 +5,7 @@ import com.alzzaipo.hexagonal.email.application.port.out.DeleteOldEmailVerificat
 import com.alzzaipo.hexagonal.email.domain.EmailVerificationCode;
 import com.alzzaipo.hexagonal.email.application.port.out.SaveEmailVerificationHistoryPort;
 import com.alzzaipo.hexagonal.email.application.port.out.SendEmailVerificationCodePort;
-import com.alzzaipo.hexagonal.email.domain.Email;
+import com.alzzaipo.hexagonal.common.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
