@@ -11,4 +11,7 @@ public interface NewLocalAccountRepository extends JpaRepository<LocalAccountJpa
 
     @Query("SELECT l FROM LocalAccountJpaEntity l WHERE l.accountId = :accountId")
     Optional<LocalAccount> findByAccountId(@Param("accountId") String accountId);
+
+    @Query("SELECT l FROM LocalAccountJpaEntity l WHERE l.email = :email")
+    Optional<LocalAccount> findByEmail(@Param("email") String email);
 }
