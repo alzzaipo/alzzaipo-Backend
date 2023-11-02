@@ -4,5 +4,5 @@ import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
 
 public interface CheckLocalAccountIdAvailabilityUseCase {
 
-    boolean checkLocalAccountIdAvailability(LocalAccountId accountId);
+    boolean checkLocalAccountIdAvailability(LocalAccountId localAccountId);
 }
