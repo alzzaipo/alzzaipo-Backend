@@ -1,7 +1,7 @@
 package com.alzzaipo.hexagonal.member.application.port.out;
 
-import com.alzzaipo.domain.account.local.LocalAccount;
 import com.alzzaipo.hexagonal.common.Email;
+import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccount;
 
 import java.util.Optional;
 
