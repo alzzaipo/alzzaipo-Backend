@@ -1,6 +1,7 @@
 package com.alzzaipo.hexagonal.member.adapter.out.persistence.LocalAccount;
 
 import com.alzzaipo.hexagonal.common.Email;
+import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.Member.MemberJpaEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.Member.NewMemberRepository;
 import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByAccountIdPort;
@@ -8,6 +9,7 @@ import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByEmai
 import com.alzzaipo.hexagonal.member.application.port.out.RegisterLocalAccountPort;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccount;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
+import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountPassword;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,13 +30,15 @@ public class LocalAccountPersistenceAdapter implements
     @Override
     @Transactional(readOnly = true)
     public Optional<LocalAccount> findLocalAccountByAccountId(LocalAccountId localAccountId) {
-        return localAccountRepository.findByAccountId(localAccountId.get());
+        return localAccountRepository.findByAccountId(localAccountId.get())
+                .map(this::toDomainEntity);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<LocalAccount> findLocalAccountByEmailPort(Email email) {
-        return localAccountRepository.findByEmail(email.get());
+        return localAccountRepository.findByEmail(email.get())
+                .map(this::toDomainEntity);
     }
 
     @Override
@@ -50,5 +54,13 @@ public class LocalAccountPersistenceAdapter implements
         );
 
         localAccountRepository.save(localAccountJpaEntity);
+    }
+
+    private LocalAccount toDomainEntity(LocalAccountJpaEntity jpaEntity) {
+        return new LocalAccount(
+                new Uid(jpaEntity.getMemberJpaEntity().getUid()),
+                new LocalAccountId(jpaEntity.getAccountId()),
+                new LocalAccountPassword(jpaEntity.getAccountPassword()),
+                new Email(jpaEntity.getEmail()));
     }
 }
