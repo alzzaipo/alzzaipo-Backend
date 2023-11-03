@@ -7,9 +7,8 @@ import com.alzzaipo.hexagonal.member.adapter.out.persistence.Member.NewMemberRep
 import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByAccountIdPort;
 import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByEmailPort;
 import com.alzzaipo.hexagonal.member.application.port.out.RegisterLocalAccountPort;
-import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccount;
+import com.alzzaipo.hexagonal.member.application.port.out.SecureLocalAccount;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
-import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountPassword;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,38 +28,50 @@ public class LocalAccountPersistenceAdapter implements
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<LocalAccount> findLocalAccountByAccountId(LocalAccountId localAccountId) {
+    public Optional<SecureLocalAccount> findLocalAccountByAccountId(LocalAccountId localAccountId) {
         return localAccountRepository.findByAccountId(localAccountId.get())
-                .map(this::toDomainEntity);
+                .map(this::toSecureLocalAccount);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<LocalAccount> findLocalAccountByEmailPort(Email email) {
+    public Optional<SecureLocalAccount> findLocalAccountByEmailPort(Email email) {
         return localAccountRepository.findByEmail(email.get())
-                .map(this::toDomainEntity);
+                .map(this::toSecureLocalAccount);
     }
 
     @Override
-    public void registerLocalAccountPort(LocalAccount localAccount) {
-        MemberJpaEntity memberJpaEntity = memberRepository.findByUid(localAccount.getMemberUID().get())
+    public void registerLocalAccountPort(SecureLocalAccount secureLocalAccount) {
+        MemberJpaEntity memberJpaEntity = memberRepository.findByUid(secureLocalAccount.getMemberUID().get())
                 .orElseThrow(() -> new IllegalArgumentException("회원 엔티티 조회 실패"));
 
-        LocalAccountJpaEntity localAccountJpaEntity = new LocalAccountJpaEntity(
-                localAccount.getAccountId().get(),
-                localAccount.getAccountPassword().get(),
-                localAccount.getEmail().get(),
-                memberJpaEntity
-        );
+        LocalAccountJpaEntity localAccountJpaEntity = toJpaEntity(memberJpaEntity, secureLocalAccount);
 
         localAccountRepository.save(localAccountJpaEntity);
     }
 
-    private LocalAccount toDomainEntity(LocalAccountJpaEntity jpaEntity) {
-        return new LocalAccount(
-                new Uid(jpaEntity.getMemberJpaEntity().getUid()),
-                new LocalAccountId(jpaEntity.getAccountId()),
-                new LocalAccountPassword(jpaEntity.getAccountPassword()),
-                new Email(jpaEntity.getEmail()));
+    private SecureLocalAccount toSecureLocalAccount(LocalAccountJpaEntity jpaEntity) {
+        Uid memberUID = new Uid(jpaEntity.getMemberJpaEntity().getUid());
+        LocalAccountId localAccountId = new LocalAccountId(jpaEntity.getAccountId());
+        String encryptedLocalAccountPassword = jpaEntity.getAccountPassword();
+        Email email = new Email(jpaEntity.getEmail());
+
+        return new SecureLocalAccount(
+                memberUID,
+                localAccountId,
+                encryptedLocalAccountPassword,
+                email);
+    }
+
+    private LocalAccountJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity, SecureLocalAccount secureLocalAccount) {
+        String accountId = secureLocalAccount.getAccountId().get();
+        String encryptedAccountPassword = secureLocalAccount.getEncryptedAccountPassword();
+        String email = secureLocalAccount.getEmail().get();
+
+        return new LocalAccountJpaEntity(
+                accountId,
+                encryptedAccountPassword,
+                email,
+                memberJpaEntity);
     }
 }

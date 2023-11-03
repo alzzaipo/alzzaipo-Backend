@@ -17,7 +17,7 @@ public class LocalAccountJpaEntity {
     @Column(unique = true, nullable = false, length = 20)
     private String accountId;
 
-    @Column(nullable = false, length = 16)
+    @Column(nullable = false)
     private String accountPassword;
 
     @Column(unique = true, nullable = false, length = 256)
