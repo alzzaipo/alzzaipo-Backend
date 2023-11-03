@@ -1,0 +1,31 @@
+package com.alzzaipo.hexagonal.ipo.application.service;
+
+import com.alzzaipo.hexagonal.ipo.application.port.in.AnalyzeIpoProfitRateCommand;
+import com.alzzaipo.hexagonal.ipo.application.port.in.AnalyzeIpoProfitRateQuery;
+import com.alzzaipo.hexagonal.ipo.application.port.in.AnalyzeIpoProfitRateResult;
+import com.alzzaipo.hexagonal.ipo.application.port.out.FindAnalyzeIpoProfitRateTargetPort;
+import com.alzzaipo.hexagonal.ipo.domain.Ipo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class AnalyzeIpoProfitRateService implements AnalyzeIpoProfitRateQuery {
+
+    private final FindAnalyzeIpoProfitRateTargetPort findAnalyzeIpoProfitRateTargetPort;
+
+    @Override
+    public AnalyzeIpoProfitRateResult analyzeIpoProfitRate(AnalyzeIpoProfitRateCommand command) {
+        List<Ipo> targetIpos =
+                findAnalyzeIpoProfitRateTargetPort.findAnalyzeIpoProfitRateTarget(command);
+
+        int averageProfitRate = (int) targetIpos.stream()
+                .mapToInt(Ipo::getProfitRate)
+                .average()
+                .orElse(0.0);
+
+        return new AnalyzeIpoProfitRateResult(averageProfitRate, targetIpos);
+    }
+}

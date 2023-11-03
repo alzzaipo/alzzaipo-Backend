@@ -43,7 +43,7 @@ public class LocalAccountControllerTest {
                 .thenThrow(new AppException(ErrorCode.ACCOUNT_ID_DUPLICATED, "중복된 ID 입니다."));
 
         //then
-        mockMvc.perform(post("/api/member/register")
+        mockMvc.perform(post("/member/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new LocalAccountRegisterRequestDto())))
                 .andDo(print())
@@ -58,7 +58,7 @@ public class LocalAccountControllerTest {
                 .thenThrow(new AppException(ErrorCode.DUPLICATED_EMAIL, "중복된 email 입니다."));
 
         //then
-        mockMvc.perform(post("/api/member/register")
+        mockMvc.perform(post("/member/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new LocalAccountRegisterRequestDto())))
                 .andDo(print())
@@ -73,7 +73,7 @@ public class LocalAccountControllerTest {
                 .thenReturn("token");
 
         //then
-        mockMvc.perform(post("/api/member/login")
+        mockMvc.perform(post("/member/login")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new LocalAccountLoginRequestDto())))
@@ -89,7 +89,7 @@ public class LocalAccountControllerTest {
                 .thenThrow(new AppException(ErrorCode.INVALID_ACCOUNT_ID, "아이디를 확인해 주세요."));
 
         //then
-        mockMvc.perform(post("/api/member/login")
+        mockMvc.perform(post("/member/login")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new LocalAccountLoginRequestDto())))
@@ -105,7 +105,7 @@ public class LocalAccountControllerTest {
                 .thenThrow(new AppException(ErrorCode.UNAUTHORIZED, "비밀번호를 확인해 주세요"));
 
         //then
-        mockMvc.perform(post("/api/member/login")
+        mockMvc.perform(post("/member/login")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new LocalAccountLoginRequestDto())))

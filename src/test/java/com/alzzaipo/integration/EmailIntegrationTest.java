@@ -51,7 +51,7 @@ public class EmailIntegrationTest {
         EmailVerificationRequestDto dto = new EmailVerificationRequestDto(email, verificationCode);
 
         // then : 인증은 성공한다
-        mockMvc.perform(post("/api/member/validate-verification-code")
+        mockMvc.perform(post("/email/validate-verification-code")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(dto)))
                 .andExpect(status().isOk());
@@ -77,7 +77,7 @@ public class EmailIntegrationTest {
         // then : 올바른 인증정보를 입력해도 인증은 실패한다
         EmailVerificationRequestDto dto = new EmailVerificationRequestDto(email, verificationCode);
 
-        mockMvc.perform(post("/api/member/validate-verification-code")
+        mockMvc.perform(post("/email/validate-verification-code")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(dto)))
                 .andExpect(status().isUnauthorized());
@@ -102,7 +102,7 @@ public class EmailIntegrationTest {
         EmailVerificationRequestDto dto = new EmailVerificationRequestDto(email, incorrectVerificationCode);
 
         // then : 인증은 실패한다
-        mockMvc.perform(post("/api/member/validate-verification-code")
+        mockMvc.perform(post("/email/validate-verification-code")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(dto)))
                 .andExpect(status().isUnauthorized());
@@ -136,7 +136,7 @@ public class EmailIntegrationTest {
         EmailVerificationRequestDto dto = new EmailVerificationRequestDto(emailA, verificationCodeB);
 
         // then : 인증은 실패한다
-        mockMvc.perform(post("/api/member/validate-verification-code")
+        mockMvc.perform(post("/email/validate-verification-code")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(dto)))
                 .andExpect(status().isUnauthorized());
@@ -162,7 +162,7 @@ public class EmailIntegrationTest {
         EmailVerificationRequestDto dto = new EmailVerificationRequestDto(incorrectEmail, verificationCode);
 
         // then : 인증은 실패한다
-        mockMvc.perform(post("/api/member/validate-verification-code")
+        mockMvc.perform(post("/email/validate-verification-code")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(dto)))
                 .andExpect(status().isUnauthorized());
@@ -188,7 +188,7 @@ public class EmailIntegrationTest {
         EmailVerificationRequestDto dto = new EmailVerificationRequestDto(emptyEmail, verificationCode);
 
         // then : 인증은 실패한다
-        mockMvc.perform(post("/api/member/validate-verification-code")
+        mockMvc.perform(post("/email/validate-verification-code")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(dto)))
                 .andExpect(status().isBadRequest());
@@ -214,7 +214,7 @@ public class EmailIntegrationTest {
         EmailVerificationRequestDto dto = new EmailVerificationRequestDto(email, emptyVerificationCode);
 
         // then : 인증은 실패한다
-        mockMvc.perform(post("/api/member/validate-verification-code")
+        mockMvc.perform(post("/email/validate-verification-code")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(dto)))
                 .andExpect(status().isUnauthorized());
