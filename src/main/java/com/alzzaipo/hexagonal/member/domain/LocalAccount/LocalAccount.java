@@ -1,19 +1,19 @@
 package com.alzzaipo.hexagonal.member.domain.LocalAccount;
 
+import com.alzzaipo.hexagonal.common.Email;
+import com.alzzaipo.hexagonal.common.Uid;
 import lombok.Getter;
-
-import java.util.UUID;
 
 @Getter
 public class LocalAccount {
 
-    private final UUID memberUUID;
+    private final Uid memberUID;
     private final LocalAccountId accountId;
     private final LocalAccountPassword accountPassword;
-    private final String email;
+    private final Email email;
 
-    public LocalAccount(UUID memberUUID, LocalAccountId accountId, LocalAccountPassword accountPassword, String email) {
-        this.memberUUID = memberUUID;
+    public LocalAccount(Uid memberUID, LocalAccountId accountId, LocalAccountPassword accountPassword, Email email) {
+        this.memberUID = memberUID;
         this.accountId = accountId;
         this.accountPassword = accountPassword;
         this.email = email;

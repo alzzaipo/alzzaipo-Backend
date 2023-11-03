@@ -6,7 +6,7 @@ public class UidGenerator {
 
     private static final SecureRandom random = new SecureRandom();
 
-    public static long generate() {
-        return random.nextLong();
+    public static Uid generate() {
+        return new Uid(random.nextLong());
     }
 }
