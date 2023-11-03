@@ -13,10 +13,10 @@ public class RegisterLocalAccountCommand {
     private final Email email;
     private final String nickname;
 
-    public RegisterLocalAccountCommand(LocalAccountId localAccountId, LocalAccountPassword localAccountPassword, Email email, String nickname) {
-        this.localAccountId = localAccountId;
-        this.localAccountPassword = localAccountPassword;
-        this.email = email;
+    public RegisterLocalAccountCommand(String accountId, String accountPassword, String email, String nickname) {
+        this.localAccountId = new LocalAccountId(accountId);
+        this.localAccountPassword = new LocalAccountPassword(accountPassword);
+        this.email = new Email(email);
         this.nickname = nickname;
     }
 }
