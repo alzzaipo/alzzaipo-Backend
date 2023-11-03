@@ -1,10 +1,7 @@
 package com.alzzaipo.hexagonal.email.adapter.out.persistence;
 
-import com.alzzaipo.hexagonal.email.application.port.out.DeleteOldEmailVerificationHistoryPort;
-import com.alzzaipo.hexagonal.email.application.port.out.FindEmailVerificationCodePort;
-import com.alzzaipo.hexagonal.email.application.port.out.SaveEmailVerificationHistoryPort;
-import com.alzzaipo.hexagonal.email.application.port.out.SetEmailVerificationHistoryVerifiedPort;
 import com.alzzaipo.hexagonal.common.Email;
+import com.alzzaipo.hexagonal.email.application.port.out.*;
 import com.alzzaipo.hexagonal.email.domain.EmailVerificationCode;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +17,8 @@ public class EmailVerificationPersistenceAdapter implements
         SaveEmailVerificationHistoryPort,
         FindEmailVerificationCodePort,
         DeleteOldEmailVerificationHistoryPort,
-        SetEmailVerificationHistoryVerifiedPort {
+        SetEmailVerificationHistoryVerifiedPort,
+        CheckEmailVerifiedPort {
 
     private final EntityManager entityManager;
     private final EmailVerificationHistoryRepository emailVerificationHistoryRepository;
@@ -56,5 +54,14 @@ public class EmailVerificationPersistenceAdapter implements
                     entity.setVerified();
                     entityManager.flush();
                 });
+    }
+
+    @Override
+    public boolean checkEmailVerified(Email email) {
+        Optional<EmailVerificationHistoryJpaEntity> emailVerificationHistoryJpaEntity
+                = emailVerificationHistoryRepository.findByEmail(email.get());
+
+        return emailVerificationHistoryJpaEntity.isPresent()
+                && emailVerificationHistoryJpaEntity.get().isVerified();
     }
 }
