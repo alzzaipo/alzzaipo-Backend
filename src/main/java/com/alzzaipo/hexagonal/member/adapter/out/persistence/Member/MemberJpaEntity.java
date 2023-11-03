@@ -17,7 +17,8 @@ public class MemberJpaEntity {
     @Column(nullable = false)
     private String nickname;
 
-    public MemberJpaEntity(String nickname) {
+    public MemberJpaEntity(Long uid, String nickname) {
+        this.uid = uid;
         this.nickname = nickname;
     }
 }
