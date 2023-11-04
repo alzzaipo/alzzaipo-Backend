@@ -1,7 +1,7 @@
 package com.alzzaipo.hexagonal.ipo;
 
 import com.alzzaipo.hexagonal.ipo.adapter.out.persistence.IpoJpaEntity;
-import com.alzzaipo.hexagonal.ipo.application.port.out.ScrapeIpoResult;
+import com.alzzaipo.hexagonal.ipo.application.port.out.dto.ScrapeIpoResult;
 import com.alzzaipo.hexagonal.ipo.domain.Ipo;
 import org.springframework.stereotype.Component;
 

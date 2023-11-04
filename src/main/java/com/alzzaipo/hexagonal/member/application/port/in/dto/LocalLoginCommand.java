@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.member.application.port.in;
+package com.alzzaipo.hexagonal.member.application.port.in.dto;
 
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountPassword;

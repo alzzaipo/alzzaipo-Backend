@@ -3,6 +3,8 @@ package com.alzzaipo.hexagonal.ipo.application.service;
 import com.alzzaipo.hexagonal.ipo.IpoMapper;
 import com.alzzaipo.hexagonal.ipo.application.port.in.ScrapeAndRegisterIposUseCase;
 import com.alzzaipo.hexagonal.ipo.application.port.out.*;
+import com.alzzaipo.hexagonal.ipo.application.port.out.dto.ScrapeIpoResult;
+import com.alzzaipo.hexagonal.ipo.application.port.out.dto.ScrapeIposCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

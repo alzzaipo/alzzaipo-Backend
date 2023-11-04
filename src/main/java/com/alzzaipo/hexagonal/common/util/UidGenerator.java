@@ -1,4 +1,6 @@
-package com.alzzaipo.hexagonal.common;
+package com.alzzaipo.hexagonal.common.util;
+
+import com.alzzaipo.hexagonal.common.Uid;
 
 import java.security.SecureRandom;
 

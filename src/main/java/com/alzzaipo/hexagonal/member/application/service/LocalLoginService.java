@@ -2,11 +2,11 @@ package com.alzzaipo.hexagonal.member.application.service;
 
 import com.alzzaipo.hexagonal.common.LoginType;
 import com.alzzaipo.hexagonal.common.jwt.NewJwtUtil;
-import com.alzzaipo.hexagonal.member.application.port.in.LocalLoginCommand;
-import com.alzzaipo.hexagonal.member.application.port.in.LocalLoginResult;
+import com.alzzaipo.hexagonal.member.application.port.in.dto.LocalLoginCommand;
+import com.alzzaipo.hexagonal.member.application.port.in.dto.LocalLoginResult;
 import com.alzzaipo.hexagonal.member.application.port.in.LocalLoginUseCase;
 import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByAccountIdPort;
-import com.alzzaipo.hexagonal.member.application.port.out.SecureLocalAccount;
+import com.alzzaipo.hexagonal.member.application.port.out.dto.SecureLocalAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

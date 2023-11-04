@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.member.application.port.in;
+package com.alzzaipo.hexagonal.member.application.port.in.dto;
 
 import lombok.Getter;
 

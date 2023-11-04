@@ -1,10 +1,10 @@
 package com.alzzaipo.hexagonal.member.application.service;
 
-import com.alzzaipo.hexagonal.member.application.port.in.ChangeLocalAccountPasswordCommand;
+import com.alzzaipo.hexagonal.member.application.port.in.dto.ChangeLocalAccountPasswordCommand;
 import com.alzzaipo.hexagonal.member.application.port.in.ChangeLocalAccountPasswordUseCase;
 import com.alzzaipo.hexagonal.member.application.port.out.ChangeLocalAccountPasswordPort;
 import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByMemberUidPort;
-import com.alzzaipo.hexagonal.member.application.port.out.SecureLocalAccount;
+import com.alzzaipo.hexagonal.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountPassword;
 import lombok.RequiredArgsConstructor;

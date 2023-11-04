@@ -1,8 +1,8 @@
 package com.alzzaipo.hexagonal.ipo.application.service;
 
-import com.alzzaipo.hexagonal.ipo.application.port.in.AnalyzeIpoProfitRateCommand;
+import com.alzzaipo.hexagonal.ipo.application.port.in.dto.AnalyzeIpoProfitRateCommand;
 import com.alzzaipo.hexagonal.ipo.application.port.in.AnalyzeIpoProfitRateQuery;
-import com.alzzaipo.hexagonal.ipo.application.port.in.AnalyzeIpoProfitRateResult;
+import com.alzzaipo.hexagonal.ipo.application.port.in.dto.AnalyzeIpoProfitRateResult;
 import com.alzzaipo.hexagonal.ipo.application.port.out.FindAnalyzeIpoProfitRateTargetPort;
 import com.alzzaipo.hexagonal.ipo.domain.Ipo;
 import lombok.RequiredArgsConstructor;
