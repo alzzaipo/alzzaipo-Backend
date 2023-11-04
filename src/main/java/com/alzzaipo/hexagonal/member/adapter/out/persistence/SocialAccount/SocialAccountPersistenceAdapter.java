@@ -50,14 +50,14 @@ public class SocialAccountPersistenceAdapter implements
     private SocialAccountJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity, SocialAccount socialAccount) {
         return new SocialAccountJpaEntity(
                 socialAccount.getEmail().get(),
-                socialAccount.getLoginType(),
+                socialAccount.getLoginType().name(),
                 memberJpaEntity);
     }
 
     private SocialAccount toDomainEntity(SocialAccountJpaEntity socialAccountJpaEntity) {
         Uid memberUID = new Uid(socialAccountJpaEntity.getMemberJpaEntity().getUid());
         Email email = new Email(socialAccountJpaEntity.getEmail());
-        LoginType loginType = socialAccountJpaEntity.getLoginType();
+        LoginType loginType = LoginType.valueOf(socialAccountJpaEntity.getLoginType());
 
         return new SocialAccount(memberUID, email, loginType);
     }
