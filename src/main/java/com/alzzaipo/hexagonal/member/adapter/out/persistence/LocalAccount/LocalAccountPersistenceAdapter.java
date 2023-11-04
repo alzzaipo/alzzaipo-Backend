@@ -4,10 +4,7 @@ import com.alzzaipo.hexagonal.common.Email;
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.Member.MemberJpaEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.Member.NewMemberRepository;
-import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByAccountIdPort;
-import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByEmailPort;
-import com.alzzaipo.hexagonal.member.application.port.out.RegisterLocalAccountPort;
-import com.alzzaipo.hexagonal.member.application.port.out.SecureLocalAccount;
+import com.alzzaipo.hexagonal.member.application.port.out.*;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,7 +18,8 @@ import java.util.Optional;
 public class LocalAccountPersistenceAdapter implements
         FindLocalAccountByAccountIdPort,
         FindLocalAccountByEmailPort,
-        RegisterLocalAccountPort {
+        RegisterLocalAccountPort,
+        FindLocalAccountByMemberUidPort {
 
     private final NewLocalAccountRepository localAccountRepository;
     private final NewMemberRepository memberRepository;
@@ -48,6 +46,12 @@ public class LocalAccountPersistenceAdapter implements
         LocalAccountJpaEntity localAccountJpaEntity = toJpaEntity(memberJpaEntity, secureLocalAccount);
 
         localAccountRepository.save(localAccountJpaEntity);
+    }
+
+    @Override
+    public Optional<SecureLocalAccount> findLocalAccountByMemberUid(Uid memberUID) {
+        return localAccountRepository.findByMemberUID(memberUID.get())
+                .map(this::toSecureLocalAccount);
     }
 
     private SecureLocalAccount toSecureLocalAccount(LocalAccountJpaEntity jpaEntity) {
