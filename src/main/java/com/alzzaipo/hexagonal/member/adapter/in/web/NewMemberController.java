@@ -1,10 +1,7 @@
 package com.alzzaipo.hexagonal.member.adapter.in.web;
 
 import com.alzzaipo.hexagonal.common.Email;
-import com.alzzaipo.hexagonal.member.application.port.in.CheckLocalAccountEmailAvailabilityQuery;
-import com.alzzaipo.hexagonal.member.application.port.in.CheckLocalAccountIdAvailabilityQuery;
-import com.alzzaipo.hexagonal.member.application.port.in.RegisterLocalAccountCommand;
-import com.alzzaipo.hexagonal.member.application.port.in.RegisterLocalAccountUseCase;
+import com.alzzaipo.hexagonal.member.application.port.in.*;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +16,7 @@ public class NewMemberController {
     private final RegisterLocalAccountUseCase registerLocalAccountUseCase;
     private final CheckLocalAccountIdAvailabilityQuery checkLocalAccountIdAvailabilityQuery;
     private final CheckLocalAccountEmailAvailabilityQuery checkLocalAccountEmailAvailabilityQuery;
+    private final LocalLoginUseCase localLoginUseCase;
 
     @GetMapping("/verify-account-id")
     public ResponseEntity<String> checkLocalAccountIdAvailability(@RequestParam("accountId") String accountId) {
@@ -51,5 +49,22 @@ public class NewMemberController {
         registerLocalAccountUseCase.registerLocalAccount(command);
 
         return ResponseEntity.ok().body("가입 완료");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LocalLoginWebRequest dto) {
+        LocalLoginCommand localLoginCommand = new LocalLoginCommand(
+                dto.getAccountId(),
+                dto.getAccountPassword());
+
+        LocalLoginResult localLoginResult = localLoginUseCase.handleLocalLogin(localLoginCommand);
+
+        if (localLoginResult.isSuccess()) {
+            return ResponseEntity.ok()
+                    .header("Authorization", "Bearer " + localLoginResult.getToken())
+                    .body("로그인 성공");
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패");
     }
 }
