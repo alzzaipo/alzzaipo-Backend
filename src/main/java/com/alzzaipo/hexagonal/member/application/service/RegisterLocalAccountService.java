@@ -5,19 +5,22 @@ import com.alzzaipo.hexagonal.email.application.port.in.CheckEmailVerifiedQuery;
 import com.alzzaipo.hexagonal.email.application.port.out.DeleteOldEmailVerificationHistoryPort;
 import com.alzzaipo.hexagonal.member.application.port.in.CheckLocalAccountEmailAvailabilityQuery;
 import com.alzzaipo.hexagonal.member.application.port.in.CheckLocalAccountIdAvailabilityQuery;
-import com.alzzaipo.hexagonal.member.application.port.in.RegisterLocalAccountCommand;
+import com.alzzaipo.hexagonal.member.application.port.in.dto.RegisterLocalAccountCommand;
 import com.alzzaipo.hexagonal.member.application.port.in.RegisterLocalAccountUseCase;
 import com.alzzaipo.hexagonal.member.application.port.out.RegisterLocalAccountPort;
 import com.alzzaipo.hexagonal.member.application.port.out.RegisterMemberPort;
-import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccount;
+import com.alzzaipo.hexagonal.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
 import com.alzzaipo.hexagonal.member.domain.Member.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class RegisterLocalAccountService implements RegisterLocalAccountUseCase {
+
+    private final PasswordEncoder passwordEncoder;
 
     private final CheckLocalAccountIdAvailabilityQuery checkLocalAccountIdAvailabilityQuery;
     private final CheckLocalAccountEmailAvailabilityQuery checkLocalAccountEmailAvailabilityQuery;
@@ -26,26 +29,27 @@ public class RegisterLocalAccountService implements RegisterLocalAccountUseCase 
     private final RegisterLocalAccountPort registerLocalAccountPort;
     private final DeleteOldEmailVerificationHistoryPort deleteOldEmailVerificationHistoryPort;
 
-
     @Override
     public void registerLocalAccount(RegisterLocalAccountCommand command) {
+        String plainLocalAccountPassword = command.getLocalAccountPassword().get();
+        String encryptedLocalAccountPassword = passwordEncoder.encode(plainLocalAccountPassword);
+
         checkAccountIdAvailability(command.getLocalAccountId());
         checkEmailAvailability(command.getEmail());
         checkEmailVerified(command.getEmail());
 
         Member member = Member.create(command.getNickname());
 
-        LocalAccount localAccount = new LocalAccount(
+        SecureLocalAccount secureLocalAccount = new SecureLocalAccount(
                 member.getUid(),
                 command.getLocalAccountId(),
-                command.getLocalAccountPassword(),
+                encryptedLocalAccountPassword,
                 command.getEmail());
 
         registerMemberPort.registerMember(member);
-        registerLocalAccountPort.registerLocalAccountPort(localAccount);
+        registerLocalAccountPort.registerLocalAccountPort(secureLocalAccount);
 
         deleteOldEmailVerificationHistoryPort.deleteOldEmailVerificationHistory(command.getEmail());
-
     }
 
     private void checkAccountIdAvailability(LocalAccountId localAccountId) {
@@ -65,5 +69,4 @@ public class RegisterLocalAccountService implements RegisterLocalAccountUseCase 
             throw new IllegalArgumentException("인증되지 않은 이메일");
         }
     }
-
 }

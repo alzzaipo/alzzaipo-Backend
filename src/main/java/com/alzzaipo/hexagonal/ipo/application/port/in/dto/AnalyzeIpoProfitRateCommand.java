@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.ipo.application.port.in;
+package com.alzzaipo.hexagonal.ipo.application.port.in.dto;
 
 import lombok.Getter;
 

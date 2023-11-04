@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.email.adapter.in.web;
+package com.alzzaipo.hexagonal.email.adapter.in.web.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

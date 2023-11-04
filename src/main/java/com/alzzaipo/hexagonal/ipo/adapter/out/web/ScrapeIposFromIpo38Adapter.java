@@ -1,7 +1,7 @@
 package com.alzzaipo.hexagonal.ipo.adapter.out.web;
 
-import com.alzzaipo.hexagonal.ipo.application.port.out.ScrapeIpoResult;
-import com.alzzaipo.hexagonal.ipo.application.port.out.ScrapeIposCommand;
+import com.alzzaipo.hexagonal.ipo.application.port.out.dto.ScrapeIpoResult;
+import com.alzzaipo.hexagonal.ipo.application.port.out.dto.ScrapeIposCommand;
 import com.alzzaipo.hexagonal.ipo.application.port.out.ScrapeIposPort;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

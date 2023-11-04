@@ -1,7 +1,7 @@
 package com.alzzaipo.hexagonal.member.domain.Member;
 
 import com.alzzaipo.hexagonal.common.Uid;
-import com.alzzaipo.hexagonal.common.UidGenerator;
+import com.alzzaipo.hexagonal.common.util.UidGenerator;
 import lombok.Getter;
 
 @Getter

@@ -5,15 +5,18 @@ import com.alzzaipo.domain.account.local.LocalAccount;
 import com.alzzaipo.domain.account.local.LocalAccountRepository;
 import com.alzzaipo.domain.account.social.SocialAccountRepository;
 import com.alzzaipo.domain.member.Member;
+import com.alzzaipo.dto.account.local.LocalAccountLoginRequestDto;
+import com.alzzaipo.dto.account.local.LocalAccountPasswordChangeRequestDto;
+import com.alzzaipo.dto.account.local.LocalAccountPasswordDto;
+import com.alzzaipo.dto.account.local.LocalAccountRegisterRequestDto;
+import com.alzzaipo.enums.ErrorCode;
 import com.alzzaipo.enums.LoginType;
 import com.alzzaipo.enums.MemberType;
-import com.alzzaipo.dto.account.local.*;
 import com.alzzaipo.exception.AppException;
-import com.alzzaipo.enums.ErrorCode;
 import com.alzzaipo.util.DataFormatUtil;
 import com.alzzaipo.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +29,7 @@ public class LocalAccountService {
     private final SocialAccountRepository socialAccountRepository;
     private final MemberService memberService;
     private final EmailService emailService;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
     // 멤버 인덱스로 로컬 계정 조회, 실패 시 예외 발생 -> BAD_REQUEST
@@ -43,7 +46,7 @@ public class LocalAccountService {
 
     // 사용자 입력 비밀번호가 일치하지 않으면 예외 발생 -> Unauthorized 응답
     private void verifyLocalAccountPassword(String userInputAccountPassword, String storedAccountPassword) {
-        if(!checkLocalAccountPassword(userInputAccountPassword, storedAccountPassword)) {
+        if (!checkLocalAccountPassword(userInputAccountPassword, storedAccountPassword)) {
             throw new AppException(ErrorCode.INVALID_ACCOUNT_PASSWORD, "비밀번호를 확인해 주세요.");
         }
     }
@@ -91,7 +94,7 @@ public class LocalAccountService {
         verifyEmailUsability(email);
 
         // 이메일 인증 여부 확인
-        if(emailService.getEmailVerificationStatus(email) == false) {
+        if (emailService.getEmailVerificationStatus(email) == false) {
             throw new AppException(ErrorCode.UNAUTHORIZED, "인증되지 않은 이메일 입니다.");
         }
 
@@ -153,7 +156,7 @@ public class LocalAccountService {
         verifyLocalAccountPassword(userInputCurrentAccountPassword, storedAccountPassword);
 
         // 새로운 비밀번호가 기존의 비밀번호와 다르게 입력되었는지 검사
-        if(userInputCurrentAccountPassword.equals(userInputNewAccountPassword)) {
+        if (userInputCurrentAccountPassword.equals(userInputNewAccountPassword)) {
             throw new AppException(ErrorCode.INVALID_NEW_PASSWORD, "기존의 비밀번호와 같은 비밀번호 입니다.");
         }
 

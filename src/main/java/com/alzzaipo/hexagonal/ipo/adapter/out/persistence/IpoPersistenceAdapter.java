@@ -1,7 +1,7 @@
 package com.alzzaipo.hexagonal.ipo.adapter.out.persistence;
 
 import com.alzzaipo.hexagonal.ipo.IpoMapper;
-import com.alzzaipo.hexagonal.ipo.application.port.in.AnalyzeIpoProfitRateCommand;
+import com.alzzaipo.hexagonal.ipo.application.port.in.dto.AnalyzeIpoProfitRateCommand;
 import com.alzzaipo.hexagonal.ipo.application.port.out.FindAnalyzeIpoProfitRateTargetPort;
 import com.alzzaipo.hexagonal.ipo.application.port.out.FindIpoByStockCodePort;
 import com.alzzaipo.hexagonal.ipo.application.port.out.FindIpoListPort;

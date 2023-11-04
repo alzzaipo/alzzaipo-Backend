@@ -1,5 +1,7 @@
 package com.alzzaipo.hexagonal.email.adapter.in.web;
 
+import com.alzzaipo.hexagonal.email.adapter.in.web.dto.EmailDto;
+import com.alzzaipo.hexagonal.email.adapter.in.web.dto.VerifyEmailVerificationCodeWebRequest;
 import com.alzzaipo.hexagonal.email.application.port.in.SendEmailVerificationCodeUseCase;
 import com.alzzaipo.hexagonal.email.application.port.in.VerifyEmailVerificationCodeUseCase;
 import com.alzzaipo.hexagonal.common.Email;

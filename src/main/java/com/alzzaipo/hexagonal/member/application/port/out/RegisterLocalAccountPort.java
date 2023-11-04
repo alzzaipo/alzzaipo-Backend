@@ -1,8 +1,8 @@
 package com.alzzaipo.hexagonal.member.application.port.out;
 
-import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccount;
+import com.alzzaipo.hexagonal.member.application.port.out.dto.SecureLocalAccount;
 
 public interface RegisterLocalAccountPort {
 
-    void registerLocalAccountPort(LocalAccount localAccount);
+    void registerLocalAccountPort(SecureLocalAccount localAccount);
 }
