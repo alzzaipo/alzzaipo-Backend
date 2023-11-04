@@ -43,7 +43,7 @@ public class SocialAccountPersistenceAdapter implements
         LoginType loginType = command.getLoginType();
         String email = command.getEmail().get();
 
-        return socialAccountRepository.findByLoginTypeAndEmail(loginType, email)
+        return socialAccountRepository.findByLoginTypeAndEmail(loginType.name(), email)
                 .map(this::toDomainEntity);
     }
 
