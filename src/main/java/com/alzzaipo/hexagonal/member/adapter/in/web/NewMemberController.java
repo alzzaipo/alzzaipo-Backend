@@ -22,6 +22,7 @@ public class NewMemberController {
     private final CheckLocalAccountEmailAvailabilityQuery checkLocalAccountEmailAvailabilityQuery;
     private final LocalLoginUseCase localLoginUseCase;
     private final CheckLocalAccountPasswordQuery checkLocalAccountPasswordQuery;
+    private final ChangeLocalAccountPasswordUseCase changeLocalAccountPasswordUseCase;
 
     @GetMapping("/verify-account-id")
     public ResponseEntity<String> checkLocalAccountIdAvailability(@RequestParam("accountId") String accountId) {
@@ -82,5 +83,24 @@ public class NewMemberController {
             return ResponseEntity.ok().body("비밀번호 검증 성공");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호 검증 실패");
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @AuthenticationPrincipal MemberPrincipal principal,
+            @RequestBody ChangeLocalAccountPasswordWebRequest dto) {
+        Uid memberUID = principal.getMemberUID();
+        LocalAccountPassword currentAccountPassword = new LocalAccountPassword(dto.getCurrentAccountPassword());
+        LocalAccountPassword newAccountPassword = new LocalAccountPassword(dto.getNewAccountPassword());
+        ChangeLocalAccountPasswordCommand command = new ChangeLocalAccountPasswordCommand(memberUID, newAccountPassword);
+
+        if (!checkLocalAccountPasswordQuery.checkLocalAccountPassword(memberUID, currentAccountPassword)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호 검증 실패");
+        }
+
+        if (changeLocalAccountPasswordUseCase.changeLocalAccountPassword(command)) {
+            return ResponseEntity.ok().body("비밀번호 변경 완료");
+        }
+        return ResponseEntity.internalServerError().body("비밀번호 변경 실패");
     }
 }

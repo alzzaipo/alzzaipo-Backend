@@ -10,8 +10,8 @@ public class ChangeLocalAccountPasswordCommand {
     private final Uid memberUID;
     private final LocalAccountPassword newPassword;
 
-    public ChangeLocalAccountPasswordCommand(Uid memberUID, String newPassword) {
+    public ChangeLocalAccountPasswordCommand(Uid memberUID, LocalAccountPassword newPassword) {
         this.memberUID = memberUID;
-        this.newPassword = new LocalAccountPassword(newPassword);
+        this.newPassword = newPassword;
     }
 }
