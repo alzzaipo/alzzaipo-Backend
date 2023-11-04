@@ -6,6 +6,7 @@ import com.alzzaipo.hexagonal.member.adapter.out.persistence.Member.MemberJpaEnt
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.Member.NewMemberRepository;
 import com.alzzaipo.hexagonal.member.application.port.out.*;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,10 @@ public class LocalAccountPersistenceAdapter implements
         FindLocalAccountByAccountIdPort,
         FindLocalAccountByEmailPort,
         RegisterLocalAccountPort,
-        FindLocalAccountByMemberUidPort {
+        FindLocalAccountByMemberUidPort,
+        ChangeLocalAccountPasswordPort {
+
+    private final EntityManager entityManager;
 
     private final NewLocalAccountRepository localAccountRepository;
     private final NewMemberRepository memberRepository;
@@ -39,6 +43,13 @@ public class LocalAccountPersistenceAdapter implements
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Optional<SecureLocalAccount> findLocalAccountByMemberUid(Uid memberUID) {
+        return localAccountRepository.findByMemberUID(memberUID.get())
+                .map(this::toSecureLocalAccount);
+    }
+
+    @Override
     public void registerLocalAccountPort(SecureLocalAccount secureLocalAccount) {
         MemberJpaEntity memberJpaEntity = memberRepository.findByUid(secureLocalAccount.getMemberUID().get())
                 .orElseThrow(() -> new IllegalArgumentException("회원 엔티티 조회 실패"));
@@ -49,9 +60,16 @@ public class LocalAccountPersistenceAdapter implements
     }
 
     @Override
-    public Optional<SecureLocalAccount> findLocalAccountByMemberUid(Uid memberUID) {
-        return localAccountRepository.findByMemberUID(memberUID.get())
-                .map(this::toSecureLocalAccount);
+    public boolean changeLocalAccountPassword(LocalAccountId accountId, String encryptedNewAccountPassword) {
+        Optional<LocalAccountJpaEntity> optionalLocalAccountJpaEntity
+                = localAccountRepository.findByAccountId(accountId.get());
+
+        optionalLocalAccountJpaEntity.ifPresent(entity -> {
+            entity.changePassword(encryptedNewAccountPassword);
+            entityManager.flush();
+        });
+
+        return optionalLocalAccountJpaEntity.isPresent();
     }
 
     private SecureLocalAccount toSecureLocalAccount(LocalAccountJpaEntity jpaEntity) {
