@@ -1,11 +1,15 @@
 package com.alzzaipo.hexagonal.member.adapter.in.web;
 
 import com.alzzaipo.hexagonal.common.Email;
+import com.alzzaipo.hexagonal.common.MemberPrincipal;
+import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.application.port.in.*;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
+import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountPassword;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +21,7 @@ public class NewMemberController {
     private final CheckLocalAccountIdAvailabilityQuery checkLocalAccountIdAvailabilityQuery;
     private final CheckLocalAccountEmailAvailabilityQuery checkLocalAccountEmailAvailabilityQuery;
     private final LocalLoginUseCase localLoginUseCase;
+    private final CheckLocalAccountPasswordQuery checkLocalAccountPasswordQuery;
 
     @GetMapping("/verify-account-id")
     public ResponseEntity<String> checkLocalAccountIdAvailability(@RequestParam("accountId") String accountId) {
@@ -66,5 +71,16 @@ public class NewMemberController {
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패");
+    }
+
+    @PostMapping("/verify-password")
+    public ResponseEntity<String> verifyPassword(@AuthenticationPrincipal MemberPrincipal principal, @RequestBody LocalAccountPasswordDto dto) {
+        Uid memberUID = principal.getMemberUID();
+        LocalAccountPassword localAccountPassword = new LocalAccountPassword(dto.getAccountPassword());
+
+        if (checkLocalAccountPasswordQuery.checkLocalAccountPassword(memberUID, localAccountPassword)) {
+            return ResponseEntity.ok().body("비밀번호 검증 성공");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호 검증 실패");
     }
 }

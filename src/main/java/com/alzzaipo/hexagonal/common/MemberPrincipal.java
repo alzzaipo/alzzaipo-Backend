@@ -6,11 +6,12 @@ import java.io.Serializable;
 
 @Getter
 public class MemberPrincipal implements Serializable {
-    private final Uid memberId;
+
+    private final Uid memberUID;
     private final LoginType currentLoginType;
 
-    public MemberPrincipal(Uid memberId, LoginType currentLoginType) {
-        this.memberId = memberId;
+    public MemberPrincipal(Uid memberUID, LoginType currentLoginType) {
+        this.memberUID = memberUID;
         this.currentLoginType = currentLoginType;
     }
 }
