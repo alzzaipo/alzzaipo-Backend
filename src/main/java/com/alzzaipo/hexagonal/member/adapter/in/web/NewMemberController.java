@@ -8,10 +8,7 @@ import com.alzzaipo.hexagonal.member.adapter.in.web.dto.LocalAccountPasswordDto;
 import com.alzzaipo.hexagonal.member.adapter.in.web.dto.LocalLoginWebRequest;
 import com.alzzaipo.hexagonal.member.adapter.in.web.dto.RegisterLocalAccountWebRequest;
 import com.alzzaipo.hexagonal.member.application.port.in.*;
-import com.alzzaipo.hexagonal.member.application.port.in.dto.ChangeLocalAccountPasswordCommand;
-import com.alzzaipo.hexagonal.member.application.port.in.dto.LocalLoginCommand;
-import com.alzzaipo.hexagonal.member.application.port.in.dto.LoginResult;
-import com.alzzaipo.hexagonal.member.application.port.in.dto.RegisterLocalAccountCommand;
+import com.alzzaipo.hexagonal.member.application.port.in.dto.*;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountPassword;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +29,7 @@ public class NewMemberController {
     private final CheckLocalAccountPasswordQuery checkLocalAccountPasswordQuery;
     private final ChangeLocalAccountPasswordUseCase changeLocalAccountPasswordUseCase;
     private final FindMemberNicknameQuery findMemberNicknameQuery;
+    private final FindMemberProfileQuery findMemberProfileQuery;
 
     @GetMapping("/verify-account-id")
     public ResponseEntity<String> checkLocalAccountIdAvailability(@RequestParam("accountId") String accountId) {
@@ -117,5 +115,14 @@ public class NewMemberController {
     public ResponseEntity<String> findMemberNickname(@AuthenticationPrincipal MemberPrincipal principal) {
         String nickname = findMemberNicknameQuery.findMemberNickname(principal.getMemberUID());
         return ResponseEntity.ok().body(nickname);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<MemberProfile> findMemberProfile(@AuthenticationPrincipal MemberPrincipal principal) {
+        MemberProfile memberProfile = findMemberProfileQuery.findMemberProfile(
+                principal.getMemberUID(),
+                principal.getCurrentLoginType());
+
+        return ResponseEntity.ok().body(memberProfile);
     }
 }

@@ -1,7 +1,6 @@
 package com.alzzaipo.controller;
 
 import com.alzzaipo.config.MemberPrincipal;
-import com.alzzaipo.dto.member.MemberProfileDto;
 import com.alzzaipo.dto.member.MemberProfileUpdateRequestDto;
 import com.alzzaipo.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
-
-    @GetMapping("/profile")
-    public ResponseEntity<MemberProfileDto> getMemberProfile(@AuthenticationPrincipal MemberPrincipal memberInfo) {
-        MemberProfileDto memberProfileDto = memberService.getMemberProfileDto(memberInfo);
-        return ResponseEntity.ok().body(memberProfileDto);
-    }
 
     @PutMapping("/profile/update")
     public ResponseEntity<String> updateMemberProfile(@AuthenticationPrincipal MemberPrincipal memberInfo,
