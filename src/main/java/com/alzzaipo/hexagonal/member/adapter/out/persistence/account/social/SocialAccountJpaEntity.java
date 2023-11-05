@@ -23,7 +23,7 @@ public class SocialAccountJpaEntity {
     private String loginType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "member_uid")
+    @JoinColumn(name = "member_uid")
     private MemberJpaEntity memberJpaEntity;
 
     public SocialAccountJpaEntity(String email, String loginType, MemberJpaEntity memberJpaEntity) {
