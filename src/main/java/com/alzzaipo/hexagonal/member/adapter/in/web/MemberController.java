@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
-public class NewMemberController {
+public class MemberController {
 
     private final RegisterLocalAccountUseCase registerLocalAccountUseCase;
     private final CheckLocalAccountIdAvailabilityQuery checkLocalAccountIdAvailabilityQuery;
