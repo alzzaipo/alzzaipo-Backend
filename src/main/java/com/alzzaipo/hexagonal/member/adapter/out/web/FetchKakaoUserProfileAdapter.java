@@ -1,11 +1,12 @@
 package com.alzzaipo.hexagonal.member.adapter.out.web;
 
-import com.alzzaipo.hexagonal.member.application.port.out.oauth.FetchKakaoUserProfilePort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.AccessToken;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.UserProfile;
+import com.alzzaipo.hexagonal.member.application.port.out.oauth.FetchKakaoUserProfilePort;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,7 +19,8 @@ import java.io.IOException;
 @Component
 public class FetchKakaoUserProfileAdapter implements FetchKakaoUserProfilePort {
 
-    private static final String endPoint = "https://kapi.kakao.com/v2/user/me";
+    @Value("${kakao.URI.userInfo}")
+    private String endPoint;
 
     @Override
     public UserProfile fetchKakaoUserProfile(AccessToken accessToken) {
