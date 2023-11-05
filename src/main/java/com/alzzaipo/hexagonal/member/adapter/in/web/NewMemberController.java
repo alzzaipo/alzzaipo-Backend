@@ -3,10 +3,7 @@ package com.alzzaipo.hexagonal.member.adapter.in.web;
 import com.alzzaipo.hexagonal.common.Email;
 import com.alzzaipo.hexagonal.common.MemberPrincipal;
 import com.alzzaipo.hexagonal.common.Uid;
-import com.alzzaipo.hexagonal.member.adapter.in.web.dto.ChangeLocalAccountPasswordWebRequest;
-import com.alzzaipo.hexagonal.member.adapter.in.web.dto.LocalAccountPasswordDto;
-import com.alzzaipo.hexagonal.member.adapter.in.web.dto.LocalLoginWebRequest;
-import com.alzzaipo.hexagonal.member.adapter.in.web.dto.RegisterLocalAccountWebRequest;
+import com.alzzaipo.hexagonal.member.adapter.in.web.dto.*;
 import com.alzzaipo.hexagonal.member.application.port.in.*;
 import com.alzzaipo.hexagonal.member.application.port.in.dto.*;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
@@ -30,6 +27,7 @@ public class NewMemberController {
     private final ChangeLocalAccountPasswordUseCase changeLocalAccountPasswordUseCase;
     private final FindMemberNicknameQuery findMemberNicknameQuery;
     private final FindMemberProfileQuery findMemberProfileQuery;
+    private final UpdateMemberProfileUseCase updateMemberProfileUseCase;
 
     @GetMapping("/verify-account-id")
     public ResponseEntity<String> checkLocalAccountIdAvailability(@RequestParam("accountId") String accountId) {
@@ -93,9 +91,8 @@ public class NewMemberController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(
-            @AuthenticationPrincipal MemberPrincipal principal,
-            @RequestBody ChangeLocalAccountPasswordWebRequest dto) {
+    public ResponseEntity<String> changePassword(@AuthenticationPrincipal MemberPrincipal principal,
+                                                 @RequestBody ChangeLocalAccountPasswordWebRequest dto) {
         Uid memberUID = principal.getMemberUID();
         LocalAccountPassword currentAccountPassword = new LocalAccountPassword(dto.getCurrentAccountPassword());
         LocalAccountPassword newAccountPassword = new LocalAccountPassword(dto.getNewAccountPassword());
@@ -124,5 +121,18 @@ public class NewMemberController {
                 principal.getCurrentLoginType());
 
         return ResponseEntity.ok().body(memberProfile);
+    }
+
+    @PutMapping("/new/profile/update")
+    public ResponseEntity<String> updateMemberProfile(@AuthenticationPrincipal MemberPrincipal principal,
+                                                      @RequestBody UpdateMemberProfileWebRequest dto) {
+        UpdateMemberProfileCommand command = new UpdateMemberProfileCommand(
+                principal.getMemberUID(),
+                dto.getNickname(),
+                new Email(dto.getEmail()));
+
+        updateMemberProfileUseCase.updateMemberProfile(command);
+
+        return ResponseEntity.ok().body("프로필 수정 완료");
     }
 }
