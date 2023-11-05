@@ -16,12 +16,6 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/nickname")
-    public ResponseEntity<String> getMemberNickname(@AuthenticationPrincipal MemberPrincipal memberInfo) {
-        String nickname = memberService.getMemberNickname(memberInfo.getMemberId());
-        return ResponseEntity.ok().body(nickname);
-    }
-
     @GetMapping("/profile")
     public ResponseEntity<MemberProfileDto> getMemberProfile(@AuthenticationPrincipal MemberPrincipal memberInfo) {
         MemberProfileDto memberProfileDto = memberService.getMemberProfileDto(memberInfo);

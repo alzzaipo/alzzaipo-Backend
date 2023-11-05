@@ -31,6 +31,7 @@ public class NewMemberController {
     private final LocalLoginUseCase localLoginUseCase;
     private final CheckLocalAccountPasswordQuery checkLocalAccountPasswordQuery;
     private final ChangeLocalAccountPasswordUseCase changeLocalAccountPasswordUseCase;
+    private final FindMemberNicknameQuery findMemberNicknameQuery;
 
     @GetMapping("/verify-account-id")
     public ResponseEntity<String> checkLocalAccountIdAvailability(@RequestParam("accountId") String accountId) {
@@ -110,5 +111,11 @@ public class NewMemberController {
             return ResponseEntity.ok().body("비밀번호 변경 완료");
         }
         return ResponseEntity.internalServerError().body("비밀번호 변경 실패");
+    }
+
+    @GetMapping("/nickname")
+    public ResponseEntity<String> findMemberNickname(@AuthenticationPrincipal MemberPrincipal principal) {
+        String nickname = findMemberNicknameQuery.findMemberNickname(principal.getMemberUID());
+        return ResponseEntity.ok().body(nickname);
     }
 }
