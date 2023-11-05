@@ -1,8 +1,8 @@
 package com.alzzaipo.hexagonal.member.application.port.in.dto;
 
 import com.alzzaipo.hexagonal.common.Email;
-import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
-import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountPassword;
+import com.alzzaipo.hexagonal.member.domain.account.local.LocalAccountId;
+import com.alzzaipo.hexagonal.member.domain.account.local.LocalAccountPassword;
 import lombok.Getter;
 
 @Getter

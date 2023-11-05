@@ -2,8 +2,8 @@ package com.alzzaipo.hexagonal.member.adapter.in.web;
 
 import com.alzzaipo.hexagonal.common.MemberPrincipal;
 import com.alzzaipo.hexagonal.common.Uid;
-import com.alzzaipo.hexagonal.member.application.port.in.KakaoLoginUseCase;
-import com.alzzaipo.hexagonal.member.application.port.in.LinkKakaoAccountUseCase;
+import com.alzzaipo.hexagonal.member.application.port.in.oauth.KakaoLoginUseCase;
+import com.alzzaipo.hexagonal.member.application.port.in.oauth.LinkKakaoAccountUseCase;
 import com.alzzaipo.hexagonal.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.hexagonal.member.application.port.in.dto.LoginResult;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
 package com.alzzaipo.hexagonal.member.adapter.out.web;
 
 import com.alzzaipo.hexagonal.member.application.port.in.dto.AuthorizationCode;
-import com.alzzaipo.hexagonal.member.application.port.out.ExchangeKakaoAccessTokenPort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.AccessToken;
+import com.alzzaipo.hexagonal.member.application.port.out.oauth.ExchangeKakaoAccessTokenPort;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,8 @@ public class ExchangeKakaoAccessTokenAdapter implements ExchangeKakaoAccessToken
     @Value("${kakao.redirectURI.login}")
     private String redirectURI;
 
-    private String endPoint = "https://kauth.kakao.com/oauth/token";
+    @Value("${kakao.URI.accessToken}")
+    private String endPoint;
 
     @Override
     public AccessToken exchangeKakaoAccessToken(AuthorizationCode authorizationCode) {
@@ -52,7 +53,7 @@ public class ExchangeKakaoAccessTokenAdapter implements ExchangeKakaoAccessToken
                 httpEntity,
                 String.class);
 
-        if (responseEntity == null || responseEntity.getBody() == null || responseEntity.getBody().isBlank()) {
+        if (responseEntity.getBody() == null || responseEntity.getBody().isBlank()) {
             return "";
         }
 
@@ -61,7 +62,7 @@ public class ExchangeKakaoAccessTokenAdapter implements ExchangeKakaoAccessToken
                 .asText();
     }
 
-    private HttpEntity createHttpEntity(String authorizationCode) {
+    private HttpEntity<MultiValueMap<String, String>> createHttpEntity(String authorizationCode) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
