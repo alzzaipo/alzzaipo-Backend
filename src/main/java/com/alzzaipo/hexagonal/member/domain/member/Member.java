@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.member.domain.Member;
+package com.alzzaipo.hexagonal.member.domain.member;
 
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.common.util.UidGenerator;

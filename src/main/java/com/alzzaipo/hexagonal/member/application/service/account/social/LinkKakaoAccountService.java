@@ -11,7 +11,7 @@ import com.alzzaipo.hexagonal.member.application.port.out.account.social.Registe
 import com.alzzaipo.hexagonal.member.application.port.out.dto.AccessToken;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.FindSocialAccountCommand;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.UserProfile;
-import com.alzzaipo.hexagonal.member.domain.SocialAccount.SocialAccount;
+import com.alzzaipo.hexagonal.member.domain.account.social.SocialAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.member.adapter.out.persistence.LocalAccount;
+package com.alzzaipo.hexagonal.member.adapter.out.persistence.account.local;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

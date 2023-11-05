@@ -3,7 +3,7 @@ package com.alzzaipo.hexagonal.member.application.service.member;
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.application.port.in.member.FindMemberNicknameQuery;
 import com.alzzaipo.hexagonal.member.application.port.out.member.FindMemberPort;
-import com.alzzaipo.hexagonal.member.domain.Member.Member;
+import com.alzzaipo.hexagonal.member.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

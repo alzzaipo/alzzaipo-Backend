@@ -10,8 +10,8 @@ import com.alzzaipo.hexagonal.member.application.port.in.member.FindMemberNickna
 import com.alzzaipo.hexagonal.member.application.port.in.member.FindMemberProfileQuery;
 import com.alzzaipo.hexagonal.member.application.port.in.member.UpdateMemberProfileUseCase;
 import com.alzzaipo.hexagonal.member.application.port.in.member.WithdrawMemberUseCase;
-import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
-import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountPassword;
+import com.alzzaipo.hexagonal.member.domain.account.local.LocalAccountId;
+import com.alzzaipo.hexagonal.member.domain.account.local.LocalAccountPassword;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

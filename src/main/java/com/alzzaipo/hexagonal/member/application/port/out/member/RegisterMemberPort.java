@@ -1,6 +1,6 @@
 package com.alzzaipo.hexagonal.member.application.port.out.member;
 
-import com.alzzaipo.hexagonal.member.domain.Member.Member;
+import com.alzzaipo.hexagonal.member.domain.member.Member;
 
 public interface RegisterMemberPort {
 

@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.member.domain.LocalAccount;
+package com.alzzaipo.hexagonal.member.domain.account.local;
 
 import com.alzzaipo.hexagonal.common.Email;
 import com.alzzaipo.hexagonal.common.Uid;

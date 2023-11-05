@@ -1,11 +1,11 @@
-package com.alzzaipo.hexagonal.member.adapter.out.persistence.Member;
+package com.alzzaipo.hexagonal.member.adapter.out.persistence.member;
 
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.application.port.out.member.ChangeMemberNicknamePort;
 import com.alzzaipo.hexagonal.member.application.port.out.member.FindMemberPort;
 import com.alzzaipo.hexagonal.member.application.port.out.member.RegisterMemberPort;
 import com.alzzaipo.hexagonal.member.application.port.out.member.WithdrawMemberPort;
-import com.alzzaipo.hexagonal.member.domain.Member.Member;
+import com.alzzaipo.hexagonal.member.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,7 @@
-package com.alzzaipo.hexagonal.member.adapter.out.persistence.Member;
+package com.alzzaipo.hexagonal.member.adapter.out.persistence.member;
 
-import com.alzzaipo.hexagonal.member.adapter.out.persistence.LocalAccount.LocalAccountJpaEntity;
-import com.alzzaipo.hexagonal.member.adapter.out.persistence.SocialAccount.SocialAccountJpaEntity;
+import com.alzzaipo.hexagonal.member.adapter.out.persistence.account.local.LocalAccountJpaEntity;
+import com.alzzaipo.hexagonal.member.adapter.out.persistence.account.social.SocialAccountJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

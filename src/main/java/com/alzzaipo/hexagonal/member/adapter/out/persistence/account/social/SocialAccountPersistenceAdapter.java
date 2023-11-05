@@ -1,15 +1,15 @@
-package com.alzzaipo.hexagonal.member.adapter.out.persistence.SocialAccount;
+package com.alzzaipo.hexagonal.member.adapter.out.persistence.account.social;
 
 import com.alzzaipo.hexagonal.common.Email;
 import com.alzzaipo.hexagonal.common.LoginType;
 import com.alzzaipo.hexagonal.common.Uid;
-import com.alzzaipo.hexagonal.member.adapter.out.persistence.Member.MemberJpaEntity;
-import com.alzzaipo.hexagonal.member.adapter.out.persistence.Member.NewMemberRepository;
+import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
+import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.NewMemberRepository;
 import com.alzzaipo.hexagonal.member.application.port.out.member.FindMemberSocialAccountsPort;
 import com.alzzaipo.hexagonal.member.application.port.out.account.social.FindSocialAccountPort;
 import com.alzzaipo.hexagonal.member.application.port.out.account.social.RegisterSocialAccountPort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.FindSocialAccountCommand;
-import com.alzzaipo.hexagonal.member.domain.SocialAccount.SocialAccount;
+import com.alzzaipo.hexagonal.member.domain.account.social.SocialAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

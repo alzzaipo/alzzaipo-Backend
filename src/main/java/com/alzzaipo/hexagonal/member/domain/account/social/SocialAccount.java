@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.member.domain.SocialAccount;
+package com.alzzaipo.hexagonal.member.domain.account.social;
 
 import com.alzzaipo.hexagonal.common.Email;
 import com.alzzaipo.hexagonal.common.LoginType;

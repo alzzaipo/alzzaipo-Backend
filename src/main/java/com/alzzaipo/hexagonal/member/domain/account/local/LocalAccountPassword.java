@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.member.domain.LocalAccount;
+package com.alzzaipo.hexagonal.member.domain.account.local;
 
 import java.util.regex.Pattern;
 

@@ -9,8 +9,8 @@ import com.alzzaipo.hexagonal.member.application.port.out.account.local.FindLoca
 import com.alzzaipo.hexagonal.member.application.port.out.member.FindMemberPort;
 import com.alzzaipo.hexagonal.member.application.port.out.member.FindMemberSocialAccountsPort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.SecureLocalAccount;
-import com.alzzaipo.hexagonal.member.domain.Member.Member;
-import com.alzzaipo.hexagonal.member.domain.SocialAccount.SocialAccount;
+import com.alzzaipo.hexagonal.member.domain.member.Member;
+import com.alzzaipo.hexagonal.member.domain.account.social.SocialAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

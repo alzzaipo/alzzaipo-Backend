@@ -13,8 +13,8 @@ import com.alzzaipo.hexagonal.member.application.port.out.dto.UserProfile;
 import com.alzzaipo.hexagonal.member.application.port.out.member.RegisterMemberPort;
 import com.alzzaipo.hexagonal.member.application.port.out.oauth.ExchangeKakaoAccessTokenPort;
 import com.alzzaipo.hexagonal.member.application.port.out.oauth.FetchKakaoUserProfilePort;
-import com.alzzaipo.hexagonal.member.domain.Member.Member;
-import com.alzzaipo.hexagonal.member.domain.SocialAccount.SocialAccount;
+import com.alzzaipo.hexagonal.member.domain.member.Member;
+import com.alzzaipo.hexagonal.member.domain.account.social.SocialAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

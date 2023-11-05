@@ -10,7 +10,7 @@ import com.alzzaipo.hexagonal.member.application.port.out.member.ChangeMemberNic
 import com.alzzaipo.hexagonal.member.application.port.out.account.local.FindLocalAccountByMemberUidPort;
 import com.alzzaipo.hexagonal.member.application.port.out.member.FindMemberPort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.SecureLocalAccount;
-import com.alzzaipo.hexagonal.member.domain.Member.Member;
+import com.alzzaipo.hexagonal.member.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

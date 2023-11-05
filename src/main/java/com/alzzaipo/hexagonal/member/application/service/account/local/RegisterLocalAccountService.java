@@ -10,8 +10,8 @@ import com.alzzaipo.hexagonal.member.application.port.in.account.local.RegisterL
 import com.alzzaipo.hexagonal.member.application.port.out.account.local.RegisterLocalAccountPort;
 import com.alzzaipo.hexagonal.member.application.port.out.member.RegisterMemberPort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.SecureLocalAccount;
-import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
-import com.alzzaipo.hexagonal.member.domain.Member.Member;
+import com.alzzaipo.hexagonal.member.domain.account.local.LocalAccountId;
+import com.alzzaipo.hexagonal.member.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

@@ -5,8 +5,8 @@ import com.alzzaipo.hexagonal.member.application.port.in.account.local.ChangeLoc
 import com.alzzaipo.hexagonal.member.application.port.out.account.local.ChangeLocalAccountPasswordPort;
 import com.alzzaipo.hexagonal.member.application.port.out.account.local.FindLocalAccountByMemberUidPort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.SecureLocalAccount;
-import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
-import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountPassword;
+import com.alzzaipo.hexagonal.member.domain.account.local.LocalAccountId;
+import com.alzzaipo.hexagonal.member.domain.account.local.LocalAccountPassword;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
