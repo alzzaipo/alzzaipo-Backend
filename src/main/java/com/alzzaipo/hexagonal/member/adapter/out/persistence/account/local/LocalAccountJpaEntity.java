@@ -24,7 +24,7 @@ public class LocalAccountJpaEntity {
     private String email;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "uid")
+    @Column(name = "member_uid")
     private MemberJpaEntity memberJpaEntity;
 
     public LocalAccountJpaEntity(String accountId, String accountPassword, String email, MemberJpaEntity memberJpaEntity) {
