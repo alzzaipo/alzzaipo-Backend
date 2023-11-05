@@ -10,7 +10,7 @@ import com.alzzaipo.hexagonal.member.adapter.in.web.dto.RegisterLocalAccountWebR
 import com.alzzaipo.hexagonal.member.application.port.in.*;
 import com.alzzaipo.hexagonal.member.application.port.in.dto.ChangeLocalAccountPasswordCommand;
 import com.alzzaipo.hexagonal.member.application.port.in.dto.LocalLoginCommand;
-import com.alzzaipo.hexagonal.member.application.port.in.dto.LocalLoginResult;
+import com.alzzaipo.hexagonal.member.application.port.in.dto.LoginResult;
 import com.alzzaipo.hexagonal.member.application.port.in.dto.RegisterLocalAccountCommand;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountPassword;
@@ -71,11 +71,11 @@ public class NewMemberController {
                 dto.getAccountId(),
                 dto.getAccountPassword());
 
-        LocalLoginResult localLoginResult = localLoginUseCase.handleLocalLogin(localLoginCommand);
+        LoginResult loginResult = localLoginUseCase.handleLocalLogin(localLoginCommand);
 
-        if (localLoginResult.isSuccess()) {
+        if (loginResult.isSuccess()) {
             return ResponseEntity.ok()
-                    .header("Authorization", "Bearer " + localLoginResult.getToken())
+                    .header("Authorization", "Bearer " + loginResult.getToken())
                     .body("로그인 성공");
         }
 

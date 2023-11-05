@@ -3,7 +3,7 @@ package com.alzzaipo.hexagonal.member.application.service;
 import com.alzzaipo.hexagonal.common.LoginType;
 import com.alzzaipo.hexagonal.common.jwt.NewJwtUtil;
 import com.alzzaipo.hexagonal.member.application.port.in.dto.LocalLoginCommand;
-import com.alzzaipo.hexagonal.member.application.port.in.dto.LocalLoginResult;
+import com.alzzaipo.hexagonal.member.application.port.in.dto.LoginResult;
 import com.alzzaipo.hexagonal.member.application.port.in.LocalLoginUseCase;
 import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByAccountIdPort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.SecureLocalAccount;
@@ -23,16 +23,16 @@ public class LocalLoginService implements LocalLoginUseCase {
     private final FindLocalAccountByAccountIdPort findLocalAccountByAccountIdPort;
 
     @Override
-    public LocalLoginResult handleLocalLogin(LocalLoginCommand command) {
+    public LoginResult handleLocalLogin(LocalLoginCommand command) {
         Optional<SecureLocalAccount> optionalSecureLocalAccount
                 = findLocalAccountByAccountIdPort.findLocalAccountByAccountId(command.getLocalAccountId());
 
         if (optionalSecureLocalAccount.isPresent() && isPasswordValid(command, optionalSecureLocalAccount.get())) {
             String token = createJwtToken(optionalSecureLocalAccount.get());
-            return new LocalLoginResult(true, token);
+            return new LoginResult(true, token);
         }
 
-        return LocalLoginResult.getFailedResult();
+        return LoginResult.getFailedResult();
     }
 
     private boolean isPasswordValid(LocalLoginCommand command, SecureLocalAccount secureLocalAccount) {
