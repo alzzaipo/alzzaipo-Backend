@@ -22,7 +22,8 @@ public class LocalAccountPersistenceAdapter implements
         FindLocalAccountByEmailPort,
         RegisterLocalAccountPort,
         FindLocalAccountByMemberUidPort,
-        ChangeLocalAccountPasswordPort {
+        ChangeLocalAccountPasswordPort,
+        ChangeLocalAccountEmail {
 
     private final EntityManager entityManager;
 
@@ -71,6 +72,12 @@ public class LocalAccountPersistenceAdapter implements
         });
 
         return optionalLocalAccountJpaEntity.isPresent();
+    }
+
+    @Override
+    public void changeLocalAccountEmail(LocalAccountId localAccountId, Email email) {
+        localAccountRepository.findByAccountId(localAccountId.get())
+                .ifPresent(entity -> entity.changeEmail(email.get()));
     }
 
     private SecureLocalAccount toSecureLocalAccount(LocalAccountJpaEntity jpaEntity) {

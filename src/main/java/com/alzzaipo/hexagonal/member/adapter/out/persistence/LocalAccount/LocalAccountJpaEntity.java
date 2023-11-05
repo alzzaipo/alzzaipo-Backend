@@ -37,4 +37,8 @@ public class LocalAccountJpaEntity {
     public void changePassword(String newPassword) {
         this.accountPassword = newPassword;
     }
+
+    public void changeEmail(String email) {
+        this.email = email;
+    }
 }
