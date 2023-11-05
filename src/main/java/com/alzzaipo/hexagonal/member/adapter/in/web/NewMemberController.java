@@ -28,6 +28,7 @@ public class NewMemberController {
     private final FindMemberNicknameQuery findMemberNicknameQuery;
     private final FindMemberProfileQuery findMemberProfileQuery;
     private final UpdateMemberProfileUseCase updateMemberProfileUseCase;
+    private final WithdrawMemberUseCase withdrawMemberUseCase;
 
     @GetMapping("/verify-account-id")
     public ResponseEntity<String> checkLocalAccountIdAvailability(@RequestParam("accountId") String accountId) {
@@ -134,5 +135,11 @@ public class NewMemberController {
         updateMemberProfileUseCase.updateMemberProfile(command);
 
         return ResponseEntity.ok().body("프로필 수정 완료");
+    }
+
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<String> withdrawMember(@AuthenticationPrincipal MemberPrincipal principal) {
+        withdrawMemberUseCase.withdrawMember(principal.getMemberUID());
+        return ResponseEntity.ok().body("회원 탈퇴 완료");
     }
 }
