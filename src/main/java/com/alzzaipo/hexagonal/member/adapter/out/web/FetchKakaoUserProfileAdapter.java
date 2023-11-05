@@ -39,7 +39,7 @@ public class FetchKakaoUserProfileAdapter implements FetchKakaoUserProfilePort {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
 
-        HttpEntity httpEntity = createHttpEntity(accessToken.get());
+        HttpEntity<Void> httpEntity = createHttpEntity(accessToken.get());
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 endPoint,
@@ -55,7 +55,7 @@ public class FetchKakaoUserProfileAdapter implements FetchKakaoUserProfilePort {
         return new UserProfile(nickname, email);
     }
 
-    private HttpEntity createHttpEntity(String accessToken) {
+    private HttpEntity<Void> createHttpEntity(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
 
         headers.add("Authorization", "Bearer " + accessToken);

@@ -62,7 +62,7 @@ public class ExchangeKakaoAccessTokenAdapter implements ExchangeKakaoAccessToken
                 .asText();
     }
 
-    private HttpEntity createHttpEntity(String authorizationCode) {
+    private HttpEntity<MultiValueMap<String, String>> createHttpEntity(String authorizationCode) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
