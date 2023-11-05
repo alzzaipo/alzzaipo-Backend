@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.member.application.port.out;
+package com.alzzaipo.hexagonal.member.application.port.out.member;
 
 import com.alzzaipo.hexagonal.common.Uid;
 

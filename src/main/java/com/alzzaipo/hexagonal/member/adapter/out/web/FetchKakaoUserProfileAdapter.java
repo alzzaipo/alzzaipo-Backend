@@ -1,6 +1,6 @@
 package com.alzzaipo.hexagonal.member.adapter.out.web;
 
-import com.alzzaipo.hexagonal.member.application.port.out.FetchKakaoUserProfilePort;
+import com.alzzaipo.hexagonal.member.application.port.out.oauth.FetchKakaoUserProfilePort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.AccessToken;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.UserProfile;
 import com.fasterxml.jackson.core.JsonProcessingException;

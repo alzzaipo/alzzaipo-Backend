@@ -1,9 +1,9 @@
 package com.alzzaipo.hexagonal.member.application.service.account.local;
 
 import com.alzzaipo.hexagonal.member.application.port.in.dto.ChangeLocalAccountPasswordCommand;
-import com.alzzaipo.hexagonal.member.application.port.in.ChangeLocalAccountPasswordUseCase;
-import com.alzzaipo.hexagonal.member.application.port.out.ChangeLocalAccountPasswordPort;
-import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByMemberUidPort;
+import com.alzzaipo.hexagonal.member.application.port.in.account.local.ChangeLocalAccountPasswordUseCase;
+import com.alzzaipo.hexagonal.member.application.port.out.account.local.ChangeLocalAccountPasswordPort;
+import com.alzzaipo.hexagonal.member.application.port.out.account.local.FindLocalAccountByMemberUidPort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountPassword;

@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.member.application.port.out;
+package com.alzzaipo.hexagonal.member.application.port.out.oauth;
 
 import com.alzzaipo.hexagonal.member.application.port.out.dto.AccessToken;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.UserProfile;

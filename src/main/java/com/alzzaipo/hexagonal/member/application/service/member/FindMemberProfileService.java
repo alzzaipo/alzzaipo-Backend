@@ -2,12 +2,12 @@ package com.alzzaipo.hexagonal.member.application.service.member;
 
 import com.alzzaipo.hexagonal.common.LoginType;
 import com.alzzaipo.hexagonal.common.Uid;
-import com.alzzaipo.hexagonal.member.application.port.in.FindMemberProfileQuery;
+import com.alzzaipo.hexagonal.member.application.port.in.member.FindMemberProfileQuery;
 import com.alzzaipo.hexagonal.member.application.port.in.dto.MemberProfile;
 import com.alzzaipo.hexagonal.member.application.port.in.dto.MemberType;
-import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByMemberUidPort;
-import com.alzzaipo.hexagonal.member.application.port.out.FindMemberPort;
-import com.alzzaipo.hexagonal.member.application.port.out.FindMemberSocialAccountsPort;
+import com.alzzaipo.hexagonal.member.application.port.out.account.local.FindLocalAccountByMemberUidPort;
+import com.alzzaipo.hexagonal.member.application.port.out.member.FindMemberPort;
+import com.alzzaipo.hexagonal.member.application.port.out.member.FindMemberSocialAccountsPort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.hexagonal.member.domain.Member.Member;
 import com.alzzaipo.hexagonal.member.domain.SocialAccount.SocialAccount;

@@ -1,8 +1,8 @@
 package com.alzzaipo.hexagonal.member.application.service.member;
 
 import com.alzzaipo.hexagonal.common.Uid;
-import com.alzzaipo.hexagonal.member.application.port.in.WithdrawMemberUseCase;
-import com.alzzaipo.hexagonal.member.application.port.out.WithdrawMemberPort;
+import com.alzzaipo.hexagonal.member.application.port.in.member.WithdrawMemberUseCase;
+import com.alzzaipo.hexagonal.member.application.port.out.member.WithdrawMemberPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

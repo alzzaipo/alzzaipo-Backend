@@ -1,7 +1,7 @@
 package com.alzzaipo.hexagonal.member.adapter.out.web;
 
 import com.alzzaipo.hexagonal.member.application.port.in.dto.AuthorizationCode;
-import com.alzzaipo.hexagonal.member.application.port.out.ExchangeKakaoAccessTokenPort;
+import com.alzzaipo.hexagonal.member.application.port.out.oauth.ExchangeKakaoAccessTokenPort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.AccessToken;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

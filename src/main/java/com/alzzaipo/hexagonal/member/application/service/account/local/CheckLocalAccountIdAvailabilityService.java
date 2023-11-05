@@ -1,7 +1,7 @@
 package com.alzzaipo.hexagonal.member.application.service.account.local;
 
-import com.alzzaipo.hexagonal.member.application.port.in.CheckLocalAccountIdAvailabilityQuery;
-import com.alzzaipo.hexagonal.member.application.port.out.FindLocalAccountByAccountIdPort;
+import com.alzzaipo.hexagonal.member.application.port.in.account.local.CheckLocalAccountIdAvailabilityQuery;
+import com.alzzaipo.hexagonal.member.application.port.out.account.local.FindLocalAccountByAccountIdPort;
 import com.alzzaipo.hexagonal.member.domain.LocalAccount.LocalAccountId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

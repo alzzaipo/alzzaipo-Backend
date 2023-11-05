@@ -2,12 +2,12 @@ package com.alzzaipo.hexagonal.member.application.service.account.social;
 
 import com.alzzaipo.hexagonal.common.LoginType;
 import com.alzzaipo.hexagonal.common.Uid;
-import com.alzzaipo.hexagonal.member.application.port.in.LinkKakaoAccountUseCase;
+import com.alzzaipo.hexagonal.member.application.port.in.oauth.LinkKakaoAccountUseCase;
 import com.alzzaipo.hexagonal.member.application.port.in.dto.AuthorizationCode;
-import com.alzzaipo.hexagonal.member.application.port.out.ExchangeKakaoAccessTokenPort;
-import com.alzzaipo.hexagonal.member.application.port.out.FetchKakaoUserProfilePort;
-import com.alzzaipo.hexagonal.member.application.port.out.FindSocialAccountPort;
-import com.alzzaipo.hexagonal.member.application.port.out.RegisterSocialAccountPort;
+import com.alzzaipo.hexagonal.member.application.port.out.oauth.ExchangeKakaoAccessTokenPort;
+import com.alzzaipo.hexagonal.member.application.port.out.oauth.FetchKakaoUserProfilePort;
+import com.alzzaipo.hexagonal.member.application.port.out.account.social.FindSocialAccountPort;
+import com.alzzaipo.hexagonal.member.application.port.out.account.social.RegisterSocialAccountPort;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.AccessToken;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.FindSocialAccountCommand;
 import com.alzzaipo.hexagonal.member.application.port.out.dto.UserProfile;
