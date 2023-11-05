@@ -128,7 +128,7 @@ public class MemberController {
         return ResponseEntity.ok().body(memberProfile);
     }
 
-    @PutMapping("/new/profile/update")
+    @PutMapping("/profile/update")
     public ResponseEntity<String> updateMemberProfile(@AuthenticationPrincipal MemberPrincipal principal,
                                                       @RequestBody UpdateMemberProfileWebRequest dto) {
         UpdateMemberProfileCommand command = new UpdateMemberProfileCommand(
