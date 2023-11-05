@@ -53,7 +53,7 @@ public class ExchangeKakaoAccessTokenAdapter implements ExchangeKakaoAccessToken
                 httpEntity,
                 String.class);
 
-        if (responseEntity == null || responseEntity.getBody() == null || responseEntity.getBody().isBlank()) {
+        if (responseEntity.getBody() == null || responseEntity.getBody().isBlank()) {
             return "";
         }
 
