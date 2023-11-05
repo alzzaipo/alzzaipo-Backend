@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.member.application.service;
+package com.alzzaipo.hexagonal.member.application.service.member;
 
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.application.port.in.FindMemberNicknameQuery;

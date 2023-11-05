@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.member.application.service;
+package com.alzzaipo.hexagonal.member.application.service.account.local;
 
 import com.alzzaipo.hexagonal.member.application.port.in.dto.ChangeLocalAccountPasswordCommand;
 import com.alzzaipo.hexagonal.member.application.port.in.ChangeLocalAccountPasswordUseCase;
