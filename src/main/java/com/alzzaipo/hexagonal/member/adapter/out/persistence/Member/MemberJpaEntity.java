@@ -21,4 +21,8 @@ public class MemberJpaEntity {
         this.uid = uid;
         this.nickname = nickname;
     }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

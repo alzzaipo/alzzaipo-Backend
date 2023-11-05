@@ -1,6 +1,7 @@
 package com.alzzaipo.hexagonal.member.adapter.out.persistence.Member;
 
 import com.alzzaipo.hexagonal.common.Uid;
+import com.alzzaipo.hexagonal.member.application.port.out.ChangeMemberNicknamePort;
 import com.alzzaipo.hexagonal.member.application.port.out.FindMemberPort;
 import com.alzzaipo.hexagonal.member.application.port.out.RegisterMemberPort;
 import com.alzzaipo.hexagonal.member.domain.Member.Member;
@@ -13,9 +14,10 @@ import java.util.Optional;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class MemberPersistenceAdapter implements
+public class MemberPersistenceAdapterPort implements
         RegisterMemberPort,
-        FindMemberPort {
+        FindMemberPort,
+        ChangeMemberNicknamePort {
 
     private final NewMemberRepository memberRepository;
 
@@ -30,6 +32,12 @@ public class MemberPersistenceAdapter implements
     public Optional<Member> findMember(Uid uid) {
         return memberRepository.findByUid(uid.get())
                 .map(this::toDomainEntity);
+    }
+
+    @Override
+    public void changeMemberNickname(Uid memberUID, String nickname) {
+        memberRepository.findByUid(memberUID.get())
+                .ifPresent(entity -> entity.changeNickname(nickname));
     }
 
     private Member toDomainEntity(MemberJpaEntity memberJpaEntity) {
