@@ -25,15 +25,28 @@ public class Portfolio {
 
     private String memo;
 
-    public Portfolio(Uid memberUID, String stockName, int stockCode, int sharesCnt, Long profit, Long profitRate, String agents, String memo) {
-        this.portfolioUID = UidGenerator.generate();
-        this.stockName = stockName;
+    public Portfolio(Uid portfolioUID, Uid memberUID, String stockName, int stockCode, int sharesCnt, Long profit, Long profitRate, String agents, String memo) {
+        this.portfolioUID = portfolioUID;
         this.memberUID = memberUID;
+        this.stockName = stockName;
         this.stockCode = stockCode;
         this.sharesCnt = sharesCnt;
         this.profit = profit;
         this.profitRate = profitRate;
         this.agents = agents;
         this.memo = memo;
+    }
+
+    public static Portfolio create(Uid memberUID, String stockName, int stockCode, int sharesCnt, Long profit, Long profitRate, String agents, String memo) {
+        return new Portfolio(
+                UidGenerator.generate(),
+                memberUID,
+                stockName,
+                stockCode,
+                sharesCnt,
+                profit,
+                profitRate,
+                agents,
+                memo);
     }
 }

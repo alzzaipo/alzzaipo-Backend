@@ -32,7 +32,7 @@ public class RegisterPortfolioService implements RegisterPortfolioUseCase {
     }
 
     private Portfolio createPortfolio(RegisterPortfolioCommand command, Ipo ipo) {
-        return new Portfolio(
+        return Portfolio.create(
                 command.getMemberUID(),
                 ipo.getStockName(),
                 command.getStockCode(),
