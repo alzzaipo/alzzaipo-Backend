@@ -8,10 +8,10 @@ import com.alzzaipo.hexagonal.notification.application.port.dto.DeleteNotificati
 import com.alzzaipo.hexagonal.notification.application.port.dto.NotificationCriterionView;
 import com.alzzaipo.hexagonal.notification.application.port.dto.RegisterNotificationCriterionCommand;
 import com.alzzaipo.hexagonal.notification.application.port.dto.UpdateNotificationCriterionCommand;
-import com.alzzaipo.hexagonal.notification.application.port.in.DeleteNotificationCriterionUseCase;
-import com.alzzaipo.hexagonal.notification.application.port.in.FindMemberNotificationCriteriaQuery;
-import com.alzzaipo.hexagonal.notification.application.port.in.RegisterNotificationCriterionUseCase;
-import com.alzzaipo.hexagonal.notification.application.port.in.UpdateNotificationCriterionUseCase;
+import com.alzzaipo.hexagonal.notification.application.port.in.criterion.DeleteNotificationCriterionUseCase;
+import com.alzzaipo.hexagonal.notification.application.port.in.criterion.FindMemberNotificationCriteriaQuery;
+import com.alzzaipo.hexagonal.notification.application.port.in.criterion.RegisterNotificationCriterionUseCase;
+import com.alzzaipo.hexagonal.notification.application.port.in.criterion.UpdateNotificationCriterionUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

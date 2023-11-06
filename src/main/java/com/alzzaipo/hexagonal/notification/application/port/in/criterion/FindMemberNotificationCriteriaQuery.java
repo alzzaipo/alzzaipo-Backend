@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.notification.application.port.in;
+package com.alzzaipo.hexagonal.notification.application.port.in.criterion;
 
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.notification.application.port.dto.NotificationCriterionView;

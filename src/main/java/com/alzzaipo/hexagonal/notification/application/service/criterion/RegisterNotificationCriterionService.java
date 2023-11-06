@@ -1,12 +1,12 @@
-package com.alzzaipo.hexagonal.notification.application.service;
+package com.alzzaipo.hexagonal.notification.application.service.criterion;
 
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.application.port.out.member.FindMemberPort;
 import com.alzzaipo.hexagonal.notification.application.port.dto.RegisterNotificationCriterionCommand;
-import com.alzzaipo.hexagonal.notification.application.port.in.RegisterNotificationCriterionUseCase;
-import com.alzzaipo.hexagonal.notification.application.port.out.FindMemberNotificationCriteriaPort;
-import com.alzzaipo.hexagonal.notification.application.port.out.RegisterNotificationCriterionPort;
-import com.alzzaipo.hexagonal.notification.domain.NotificationCriterion;
+import com.alzzaipo.hexagonal.notification.application.port.in.criterion.RegisterNotificationCriterionUseCase;
+import com.alzzaipo.hexagonal.notification.application.port.out.criterion.FindMemberNotificationCriteriaPort;
+import com.alzzaipo.hexagonal.notification.application.port.out.criterion.RegisterNotificationCriterionPort;
+import com.alzzaipo.hexagonal.notification.domain.criterion.NotificationCriterion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

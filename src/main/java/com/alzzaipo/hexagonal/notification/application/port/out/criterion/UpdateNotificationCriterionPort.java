@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.notification.application.port.out;
+package com.alzzaipo.hexagonal.notification.application.port.out.criterion;
 
 import com.alzzaipo.hexagonal.notification.application.port.dto.UpdateNotificationCriterionCommand;
 

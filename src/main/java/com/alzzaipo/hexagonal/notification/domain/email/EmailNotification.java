@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.notification.domain;
+package com.alzzaipo.hexagonal.notification.domain.email;
 
 import com.alzzaipo.hexagonal.common.Email;
 import com.alzzaipo.hexagonal.common.Uid;

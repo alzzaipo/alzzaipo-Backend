@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.notification.domain;
+package com.alzzaipo.hexagonal.notification.domain.criterion;
 
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.common.util.UidGenerator;

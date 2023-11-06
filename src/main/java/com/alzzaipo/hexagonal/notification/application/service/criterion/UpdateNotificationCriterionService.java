@@ -1,31 +1,31 @@
-package com.alzzaipo.hexagonal.notification.application.service;
+package com.alzzaipo.hexagonal.notification.application.service.criterion;
 
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.application.port.out.member.FindMemberPort;
-import com.alzzaipo.hexagonal.notification.application.port.dto.DeleteNotificationCriterionCommand;
-import com.alzzaipo.hexagonal.notification.application.port.in.DeleteNotificationCriterionUseCase;
-import com.alzzaipo.hexagonal.notification.application.port.out.DeleteNotificationCriterionPort;
-import com.alzzaipo.hexagonal.notification.application.port.out.FindNotificationCriterionPort;
-import com.alzzaipo.hexagonal.notification.domain.NotificationCriterion;
+import com.alzzaipo.hexagonal.notification.application.port.dto.UpdateNotificationCriterionCommand;
+import com.alzzaipo.hexagonal.notification.application.port.in.criterion.UpdateNotificationCriterionUseCase;
+import com.alzzaipo.hexagonal.notification.application.port.out.criterion.FindNotificationCriterionPort;
+import com.alzzaipo.hexagonal.notification.application.port.out.criterion.UpdateNotificationCriterionPort;
+import com.alzzaipo.hexagonal.notification.domain.criterion.NotificationCriterion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class DeleteNotificationCriterionService implements DeleteNotificationCriterionUseCase {
+public class UpdateNotificationCriterionService implements UpdateNotificationCriterionUseCase {
 
     private final FindMemberPort findMemberPort;
     private final FindNotificationCriterionPort findNotificationCriterionPort;
-    private final DeleteNotificationCriterionPort deleteNotificationCriterionPort;
+    private final UpdateNotificationCriterionPort updateNotificationCriterionPort;
 
     @Override
-    public void deleteNotificationCriterion(DeleteNotificationCriterionCommand command) {
+    public void updateNotificationCriterion(UpdateNotificationCriterionCommand command) {
         validateMemberAndOwnership(command);
 
-        deleteNotificationCriterionPort.deleteNotificationCriterion(command.getNotificationCriterionUID());
+        updateNotificationCriterionPort.updateNotificationCriterion(command);
     }
 
-    private void validateMemberAndOwnership(DeleteNotificationCriterionCommand command) {
+    private void validateMemberAndOwnership(UpdateNotificationCriterionCommand command) {
         Uid memberUID = command.getMemberUID();
         Uid notificationCriterionUID = command.getNotificationCriterionUID();
 
