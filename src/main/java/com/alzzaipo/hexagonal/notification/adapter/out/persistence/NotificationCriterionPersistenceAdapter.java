@@ -4,10 +4,7 @@ import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.NewMemberRepository;
 import com.alzzaipo.hexagonal.notification.application.port.dto.UpdateNotificationCriterionCommand;
-import com.alzzaipo.hexagonal.notification.application.port.out.FindMemberNotificationCriteriaPort;
-import com.alzzaipo.hexagonal.notification.application.port.out.FindNotificationCriterionPort;
-import com.alzzaipo.hexagonal.notification.application.port.out.RegisterNotificationCriterionPort;
-import com.alzzaipo.hexagonal.notification.application.port.out.UpdateNotificationCriterionPort;
+import com.alzzaipo.hexagonal.notification.application.port.out.*;
 import com.alzzaipo.hexagonal.notification.domain.NotificationCriterion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,9 +21,10 @@ public class NotificationCriterionPersistenceAdapter implements
         RegisterNotificationCriterionPort,
         FindMemberNotificationCriteriaPort,
         FindNotificationCriterionPort,
-        UpdateNotificationCriterionPort {
+        UpdateNotificationCriterionPort,
+        DeleteNotificationCriterionPort {
 
-    private final NewNotificationCriterionRepository notificationCriteriaRepository;
+    private final NewNotificationCriterionRepository notificationCriterionRepository;
     private final NewMemberRepository memberRepository;
 
     @Override
@@ -35,13 +33,13 @@ public class NotificationCriterionPersistenceAdapter implements
                 .orElseThrow(() -> new RuntimeException("회원 조회 실패"));
 
         NotificationCriterionJpaEntity entity = toJpaEntity(notificationCriterion, memberJpaEntity);
-        notificationCriteriaRepository.save(entity);
+        notificationCriterionRepository.save(entity);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<NotificationCriterion> findMemberNotificationCriteria(Uid memberUID) {
-        return notificationCriteriaRepository.findByMemberUID(memberUID.get())
+        return notificationCriterionRepository.findByMemberUID(memberUID.get())
                 .stream()
                 .map(this::toDomainEntity)
                 .collect(Collectors.toList());
@@ -50,7 +48,7 @@ public class NotificationCriterionPersistenceAdapter implements
     @Override
     @Transactional(readOnly = true)
     public Optional<NotificationCriterion> findNotificationCriterion(Uid notifcationCriterionUID) {
-        return notificationCriteriaRepository.findByNotificationCriterionUID(notifcationCriterionUID.get())
+        return notificationCriterionRepository.findByNotificationCriterionUID(notifcationCriterionUID.get())
                 .map(this::toDomainEntity);
     }
 
@@ -58,11 +56,21 @@ public class NotificationCriterionPersistenceAdapter implements
     public void updateNotificationCriterion(UpdateNotificationCriterionCommand command) {
         Long uid = command.getNotificationCriterionUID().get();
 
-        NotificationCriterionJpaEntity entity = notificationCriteriaRepository.findByNotificationCriterionUID(uid)
+        NotificationCriterionJpaEntity entity = notificationCriterionRepository.findByNotificationCriterionUID(uid)
                 .orElseThrow(() -> new RuntimeException("알림 기준 조회 실패"));
 
         entity.changeMinCompetitionRate(command.getMinCompetitionRate());
         entity.changeMinLockupRate(command.getMinLockupRate());
+    }
+
+    @Override
+    public void deleteNotificationCriterion(Uid notificationCriterionUID) {
+        Long uid = notificationCriterionUID.get();
+
+        NotificationCriterionJpaEntity entity = notificationCriterionRepository.findByNotificationCriterionUID(uid)
+                .orElseThrow(() -> new RuntimeException("알림 기준 조회 실패"));
+
+        notificationCriterionRepository.delete(entity);
     }
 
     private NotificationCriterionJpaEntity toJpaEntity(NotificationCriterion domainEntity, MemberJpaEntity memberJpaEntity) {
