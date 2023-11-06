@@ -4,6 +4,7 @@ import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.NewMemberRepository;
 import com.alzzaipo.hexagonal.notification.application.port.out.FindMemberNotificationCriteriaPort;
+import com.alzzaipo.hexagonal.notification.application.port.out.FindNotificationCriterionPort;
 import com.alzzaipo.hexagonal.notification.application.port.out.RegisterNotificationCriterionPort;
 import com.alzzaipo.hexagonal.notification.domain.NotificationCriterion;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -18,7 +20,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NotificationCriterionPersistenceAdapter implements
         RegisterNotificationCriterionPort,
-        FindMemberNotificationCriteriaPort {
+        FindMemberNotificationCriteriaPort,
+        FindNotificationCriterionPort {
 
     private final NewNotificationCriterionRepository notificationCriteriaRepository;
     private final NewMemberRepository memberRepository;
@@ -40,6 +43,12 @@ public class NotificationCriterionPersistenceAdapter implements
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Optional<NotificationCriterion> findNotificationCriterion(Uid notifcationCriterionUID) {
+        return notificationCriteriaRepository.findByNotificationCriterionUID(notifcationCriterionUID.get())
+                .map(this::toDomainEntity);
+    }
+
     private NotificationCriterionJpaEntity toJpaEntity(NotificationCriterion domainEntity, MemberJpaEntity memberJpaEntity) {
         return new NotificationCriterionJpaEntity(
                 domainEntity.getNotificationCriterionUID().get(),
@@ -55,5 +64,4 @@ public class NotificationCriterionPersistenceAdapter implements
                 jpaEntity.getMinCompetitionRate(),
                 jpaEntity.getMinLockupRate());
     }
-
 }
