@@ -1,17 +1,24 @@
 package com.alzzaipo.hexagonal.notification.adapter.out.persistence;
 
+import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.NewMemberRepository;
+import com.alzzaipo.hexagonal.notification.application.port.out.FindMemberNotificationCriteriaPort;
 import com.alzzaipo.hexagonal.notification.application.port.out.RegisterNotificationCriterionPort;
 import com.alzzaipo.hexagonal.notification.domain.NotificationCriterion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class NotificationCriterionPersistenceAdapter implements RegisterNotificationCriterionPort {
+public class NotificationCriterionPersistenceAdapter implements
+        RegisterNotificationCriterionPort,
+        FindMemberNotificationCriteriaPort {
 
     private final NewNotificationCriterionRepository notificationCriteriaRepository;
     private final NewMemberRepository memberRepository;
@@ -25,11 +32,28 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
         notificationCriteriaRepository.save(entity);
     }
 
-    private NotificationCriterionJpaEntity toJpaEntity(NotificationCriterion notificationCriterion, MemberJpaEntity memberJpaEntity) {
+    @Override
+    public List<NotificationCriterion> findMemberNotificationCriteria(Uid memberUID) {
+        return notificationCriteriaRepository.findByMemberUID(memberUID.get())
+                .stream()
+                .map(this::toDomainEntity)
+                .collect(Collectors.toList());
+    }
+
+    private NotificationCriterionJpaEntity toJpaEntity(NotificationCriterion domainEntity, MemberJpaEntity memberJpaEntity) {
         return new NotificationCriterionJpaEntity(
-                notificationCriterion.getNotificationCriterionUID().get(),
-                notificationCriterion.getMinCompetitionRate(),
-                notificationCriterion.getMinLockupRate(),
+                domainEntity.getNotificationCriterionUID().get(),
+                domainEntity.getMinCompetitionRate(),
+                domainEntity.getMinLockupRate(),
                 memberJpaEntity);
     }
+
+    private NotificationCriterion toDomainEntity(NotificationCriterionJpaEntity jpaEntity) {
+        return new NotificationCriterion(
+                new Uid(jpaEntity.getNotificationCriterionUID()),
+                new Uid(jpaEntity.getMemberJpaEntity().getUid()),
+                jpaEntity.getMinCompetitionRate(),
+                jpaEntity.getMinLockupRate());
+    }
+
 }
