@@ -5,10 +5,7 @@ import com.alzzaipo.hexagonal.ipo.adapter.out.persistence.IpoJpaEntity;
 import com.alzzaipo.hexagonal.ipo.adapter.out.persistence.NewIpoRepository;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.NewMemberRepository;
-import com.alzzaipo.hexagonal.portfolio.application.out.FindMemberPortfoliosPort;
-import com.alzzaipo.hexagonal.portfolio.application.out.FindPortfolioPort;
-import com.alzzaipo.hexagonal.portfolio.application.out.RegisterPortfolioPort;
-import com.alzzaipo.hexagonal.portfolio.application.out.UpdatePortfolioPort;
+import com.alzzaipo.hexagonal.portfolio.application.out.*;
 import com.alzzaipo.hexagonal.portfolio.domain.Portfolio;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +23,8 @@ public class PortfolioPersistenceAdapter implements
         RegisterPortfolioPort,
         FindMemberPortfoliosPort,
         FindPortfolioPort,
-        UpdatePortfolioPort {
+        UpdatePortfolioPort,
+        DeletePortfolioPort {
 
     private final NewPortfolioRepository portfolioRepository;
     private final NewIpoRepository ipoRepository;
@@ -81,6 +79,14 @@ public class PortfolioPersistenceAdapter implements
         newEntity.setId(oldEntity.getId());
 
         entityManager.merge(newEntity);
+    }
+
+    @Override
+    public void deletePortfolio(Uid portfolioUID) {
+        PortfolioJpaEntity entity = portfolioRepository.findByPortfolioUID(portfolioUID.get())
+                .orElseThrow(() -> new RuntimeException("포트폴리오 조회 실패"));
+
+        portfolioRepository.delete(entity);
     }
 
     private PortfolioJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity,
