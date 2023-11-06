@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.notification.adapter.out.persistence;
+package com.alzzaipo.hexagonal.notification.adapter.out.persistence.criterion;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

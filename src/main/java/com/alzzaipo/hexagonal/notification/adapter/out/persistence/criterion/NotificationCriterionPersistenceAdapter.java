@@ -1,4 +1,4 @@
-package com.alzzaipo.hexagonal.notification.adapter.out.persistence;
+package com.alzzaipo.hexagonal.notification.adapter.out.persistence.criterion;
 
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
