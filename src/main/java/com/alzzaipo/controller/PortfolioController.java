@@ -1,7 +1,6 @@
 package com.alzzaipo.controller;
 
 import com.alzzaipo.config.MemberPrincipal;
-import com.alzzaipo.dto.portfolio.PortfolioListDto;
 import com.alzzaipo.dto.portfolio.PortfolioUpdateRequestDto;
 import com.alzzaipo.service.PortfolioService;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class PortfolioController {
 
     private final PortfolioService portfolioService;
-
-    @GetMapping("/list")
-    public ResponseEntity<PortfolioListDto> getMemberPortfolios(@AuthenticationPrincipal MemberPrincipal memberInfo) {
-        PortfolioListDto portfolioListDto = portfolioService.getPortfolioListDto(memberInfo.getMemberId());
-        return ResponseEntity.ok(portfolioListDto);
-    }
 
     @PutMapping("/update")
     public ResponseEntity<String> updateMemberPortfolio(@AuthenticationPrincipal MemberPrincipal memberInfo,
