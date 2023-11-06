@@ -1,7 +1,6 @@
 package com.alzzaipo.controller;
 
 import com.alzzaipo.config.MemberPrincipal;
-import com.alzzaipo.dto.portfolio.PortfolioCreateRequestDto;
 import com.alzzaipo.dto.portfolio.PortfolioListDto;
 import com.alzzaipo.dto.portfolio.PortfolioUpdateRequestDto;
 import com.alzzaipo.service.PortfolioService;
@@ -21,13 +20,6 @@ public class PortfolioController {
     public ResponseEntity<PortfolioListDto> getMemberPortfolios(@AuthenticationPrincipal MemberPrincipal memberInfo) {
         PortfolioListDto portfolioListDto = portfolioService.getPortfolioListDto(memberInfo.getMemberId());
         return ResponseEntity.ok(portfolioListDto);
-    }
-
-    @PostMapping("/create")
-    public ResponseEntity<String> createMemberPortfolio(@AuthenticationPrincipal MemberPrincipal memberInfo,
-                                                        @RequestBody PortfolioCreateRequestDto portfolioCreateRequestDto) {
-        portfolioService.create(memberInfo.getMemberId(), portfolioCreateRequestDto);
-        return ResponseEntity.ok().body("포트폴리오 생성 완료");
     }
 
     @PutMapping("/update")
