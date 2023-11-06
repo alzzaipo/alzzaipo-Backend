@@ -35,4 +35,12 @@ public class NotificationCriterionJpaEntity {
         this.minLockupRate = minLockupRate;
         this.memberJpaEntity = memberJpaEntity;
     }
+
+    public void changeMinCompetitionRate(int minCompetitionRate) {
+        this.minCompetitionRate = minCompetitionRate;
+    }
+
+    public void changeMinLockupRate(int minLockupRate) {
+        this.minLockupRate = minLockupRate;
+    }
 }
