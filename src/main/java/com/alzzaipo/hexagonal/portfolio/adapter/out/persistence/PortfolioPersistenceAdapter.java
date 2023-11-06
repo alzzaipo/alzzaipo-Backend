@@ -6,6 +6,7 @@ import com.alzzaipo.hexagonal.ipo.adapter.out.persistence.NewIpoRepository;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.NewMemberRepository;
 import com.alzzaipo.hexagonal.portfolio.application.out.FindMemberPortfoliosPort;
+import com.alzzaipo.hexagonal.portfolio.application.out.FindPortfolioPort;
 import com.alzzaipo.hexagonal.portfolio.application.out.RegisterPortfolioPort;
 import com.alzzaipo.hexagonal.portfolio.domain.Portfolio;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -20,7 +22,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PortfolioPersistenceAdapter implements
         RegisterPortfolioPort,
-        FindMemberPortfoliosPort {
+        FindMemberPortfoliosPort,
+        FindPortfolioPort {
 
     private final NewPortfolioRepository portfolioRepository;
     private final NewIpoRepository ipoRepository;
@@ -49,6 +52,12 @@ public class PortfolioPersistenceAdapter implements
                 .stream()
                 .map(this::toDomainEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Portfolio> findPortfolio(Uid portfolioUID) {
+        return portfolioRepository.findByPortfolioUID(portfolioUID.get())
+                .map(this::toDomainEntity);
     }
 
     private PortfolioJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity,
