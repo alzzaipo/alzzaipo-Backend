@@ -4,9 +4,11 @@ import com.alzzaipo.hexagonal.common.MemberPrincipal;
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.portfolio.adapter.in.web.dto.RegisterPortfolioWebRequest;
 import com.alzzaipo.hexagonal.portfolio.adapter.in.web.dto.UpdatePortfolioWebRequest;
+import com.alzzaipo.hexagonal.portfolio.application.dto.DeletePortfolioCommand;
 import com.alzzaipo.hexagonal.portfolio.application.dto.MemberPortfolioSummary;
 import com.alzzaipo.hexagonal.portfolio.application.dto.RegisterPortfolioCommand;
 import com.alzzaipo.hexagonal.portfolio.application.dto.UpdatePortfolioCommand;
+import com.alzzaipo.hexagonal.portfolio.application.in.DeletePortfolioUseCase;
 import com.alzzaipo.hexagonal.portfolio.application.in.FindMemberPortfoliosQuery;
 import com.alzzaipo.hexagonal.portfolio.application.in.RegisterPortfolioUseCase;
 import com.alzzaipo.hexagonal.portfolio.application.in.UpdatePortfolioUseCase;
@@ -23,6 +25,7 @@ public class NewPortfolioController {
     private final RegisterPortfolioUseCase registerPortfolioUseCase;
     private final FindMemberPortfoliosQuery findMemberPortfoliosQuery;
     private final UpdatePortfolioUseCase updatePortfolioUseCase;
+    private final DeletePortfolioUseCase deletePortfolioUseCase;
 
     @PostMapping("/create")
     public ResponseEntity<String> createPortfolio(@AuthenticationPrincipal MemberPrincipal principal,
@@ -50,6 +53,18 @@ public class NewPortfolioController {
         updatePortfolioUseCase.updatePortfolio(command);
 
         return ResponseEntity.ok().body("포트폴리오 수정 완료");
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> delete(@AuthenticationPrincipal MemberPrincipal principal,
+                                         @RequestParam("uid") Long portfolioUID) {
+        DeletePortfolioCommand command = new DeletePortfolioCommand(
+                principal.getMemberUID(),
+                new Uid(portfolioUID));
+
+        deletePortfolioUseCase.deletePortfolio(command);
+
+        return ResponseEntity.ok().body("포트폴리오 삭제 완료");
     }
 
     private RegisterPortfolioCommand toRegisterPortfolioCommand(MemberPrincipal principal, RegisterPortfolioWebRequest registerPortfolioWebRequest) {
