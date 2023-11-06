@@ -4,14 +4,8 @@ import com.alzzaipo.hexagonal.common.MemberPrincipal;
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.portfolio.adapter.in.web.dto.RegisterPortfolioWebRequest;
 import com.alzzaipo.hexagonal.portfolio.adapter.in.web.dto.UpdatePortfolioWebRequest;
-import com.alzzaipo.hexagonal.portfolio.application.dto.DeletePortfolioCommand;
-import com.alzzaipo.hexagonal.portfolio.application.dto.MemberPortfolioSummary;
-import com.alzzaipo.hexagonal.portfolio.application.dto.RegisterPortfolioCommand;
-import com.alzzaipo.hexagonal.portfolio.application.dto.UpdatePortfolioCommand;
-import com.alzzaipo.hexagonal.portfolio.application.in.DeletePortfolioUseCase;
-import com.alzzaipo.hexagonal.portfolio.application.in.FindMemberPortfoliosQuery;
-import com.alzzaipo.hexagonal.portfolio.application.in.RegisterPortfolioUseCase;
-import com.alzzaipo.hexagonal.portfolio.application.in.UpdatePortfolioUseCase;
+import com.alzzaipo.hexagonal.portfolio.application.dto.*;
+import com.alzzaipo.hexagonal.portfolio.application.in.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +20,7 @@ public class NewPortfolioController {
     private final FindMemberPortfoliosQuery findMemberPortfoliosQuery;
     private final UpdatePortfolioUseCase updatePortfolioUseCase;
     private final DeletePortfolioUseCase deletePortfolioUseCase;
+    private final FindPortfolioQuery findPortfolioQuery;
 
     @PostMapping("/create")
     public ResponseEntity<String> createPortfolio(@AuthenticationPrincipal MemberPrincipal principal,
@@ -35,6 +30,18 @@ public class NewPortfolioController {
         registerPortfolioUseCase.registerPortfolio(command);
 
         return ResponseEntity.ok().body("포트폴리오 생성 완료");
+    }
+
+    @GetMapping
+    public ResponseEntity<PortfolioView> find(@AuthenticationPrincipal MemberPrincipal principal,
+                                              @RequestParam("uid") Long portfolioUID) {
+        FindPortfolioCommand command = new FindPortfolioCommand(
+                principal.getMemberUID(),
+                new Uid(portfolioUID));
+
+        PortfolioView portfolio = findPortfolioQuery.findPortfolio(command);
+
+        return ResponseEntity.ok().body(portfolio);
     }
 
     @GetMapping("/list")
