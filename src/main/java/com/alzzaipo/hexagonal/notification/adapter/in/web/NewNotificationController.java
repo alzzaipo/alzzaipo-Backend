@@ -1,11 +1,15 @@
 package com.alzzaipo.hexagonal.notification.adapter.in.web;
 
 import com.alzzaipo.hexagonal.common.MemberPrincipal;
+import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.notification.adapter.in.web.dto.RegisterNotificationCriterionWebRequest;
+import com.alzzaipo.hexagonal.notification.adapter.in.web.dto.UpdateNotificationCriterionWebRequest;
 import com.alzzaipo.hexagonal.notification.application.port.dto.NotificationCriterionView;
 import com.alzzaipo.hexagonal.notification.application.port.dto.RegisterNotificationCriterionCommand;
+import com.alzzaipo.hexagonal.notification.application.port.dto.UpdateNotificationCriterionCommand;
 import com.alzzaipo.hexagonal.notification.application.port.in.FindMemberNotificationCriteriaQuery;
 import com.alzzaipo.hexagonal.notification.application.port.in.RegisterNotificationCriterionUseCase;
+import com.alzzaipo.hexagonal.notification.application.port.in.UpdateNotificationCriterionUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +24,7 @@ public class NewNotificationController {
 
     private final RegisterNotificationCriterionUseCase registerNotificationCriterionUseCase;
     private final FindMemberNotificationCriteriaQuery findMemberNotificationCriteriaQuery;
+    private final UpdateNotificationCriterionUseCase updateNotificationCriterionUseCase;
 
     @PostMapping("/criteria/add")
     public ResponseEntity<String> add(@AuthenticationPrincipal MemberPrincipal principal,
@@ -43,4 +48,19 @@ public class NewNotificationController {
 
         return ResponseEntity.ok().body(memberNotificationCriteria);
     }
+
+    @PutMapping("/criteria/update")
+    public ResponseEntity<String> updateNotificationCriteria(@AuthenticationPrincipal MemberPrincipal principal,
+                                                             @RequestBody UpdateNotificationCriterionWebRequest dto) {
+        UpdateNotificationCriterionCommand command = new UpdateNotificationCriterionCommand(
+                principal.getMemberUID(),
+                new Uid(dto.getUid()),
+                dto.getCompetitionRate(),
+                dto.getLockupRate());
+
+        updateNotificationCriterionUseCase.updateNotificationCriterion(command);
+
+        return ResponseEntity.ok().body("알림 기준 수정 완료");
+    }
+
 }
