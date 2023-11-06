@@ -4,13 +4,13 @@ import com.alzzaipo.hexagonal.common.Uid;
 import lombok.Getter;
 
 @Getter
-public class RegisterNotificationCriteriaCommand {
+public class RegisterNotificationCriterionCommand {
 
     private final Uid memberUID;
     private final int minCompetitionRate;
     private final int minLockupRate;
 
-    public RegisterNotificationCriteriaCommand(Uid memberUID, int minCompetitionRate, int minLockupRate) {
+    public RegisterNotificationCriterionCommand(Uid memberUID, int minCompetitionRate, int minLockupRate) {
         this.memberUID = memberUID;
         this.minCompetitionRate = minCompetitionRate;
         this.minLockupRate = minLockupRate;

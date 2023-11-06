@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class NotificationCriteriaJpaEntity {
+public class NotificationCriterionJpaEntity {
 
     @Id
     @GeneratedValue
@@ -26,7 +26,7 @@ public class NotificationCriteriaJpaEntity {
     @JoinColumn(name = "member_uid", nullable = false)
     private MemberJpaEntity memberJpaEntity;
 
-    public NotificationCriteriaJpaEntity(int minCompetitionRate, int minLockupRate, MemberJpaEntity memberJpaEntity) {
+    public NotificationCriterionJpaEntity(int minCompetitionRate, int minLockupRate, MemberJpaEntity memberJpaEntity) {
         this.minCompetitionRate = minCompetitionRate;
         this.minLockupRate = minLockupRate;
         this.memberJpaEntity = memberJpaEntity;
