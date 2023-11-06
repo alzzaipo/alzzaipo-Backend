@@ -47,4 +47,8 @@ public class PortfolioJpaEntity {
         this.memberJpaEntity = memberJpaEntity;
         this.ipoJpaEntity = ipoJpaEntity;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

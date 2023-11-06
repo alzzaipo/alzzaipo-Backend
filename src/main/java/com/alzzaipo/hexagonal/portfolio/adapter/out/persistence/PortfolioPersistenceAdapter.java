@@ -8,7 +8,9 @@ import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.NewMemberRep
 import com.alzzaipo.hexagonal.portfolio.application.out.FindMemberPortfoliosPort;
 import com.alzzaipo.hexagonal.portfolio.application.out.FindPortfolioPort;
 import com.alzzaipo.hexagonal.portfolio.application.out.RegisterPortfolioPort;
+import com.alzzaipo.hexagonal.portfolio.application.out.UpdatePortfolioPort;
 import com.alzzaipo.hexagonal.portfolio.domain.Portfolio;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +25,13 @@ import java.util.stream.Collectors;
 public class PortfolioPersistenceAdapter implements
         RegisterPortfolioPort,
         FindMemberPortfoliosPort,
-        FindPortfolioPort {
+        FindPortfolioPort,
+        UpdatePortfolioPort {
 
     private final NewPortfolioRepository portfolioRepository;
     private final NewIpoRepository ipoRepository;
     private final NewMemberRepository memberRepository;
+    private final EntityManager entityManager;
 
     @Override
     public void registerPortfolio(Portfolio portfolio) {
@@ -55,9 +59,28 @@ public class PortfolioPersistenceAdapter implements
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Portfolio> findPortfolio(Uid portfolioUID) {
         return portfolioRepository.findByPortfolioUID(portfolioUID.get())
                 .map(this::toDomainEntity);
+    }
+
+    @Override
+    public void updatePortfolio(Portfolio portfolio) {
+        PortfolioJpaEntity oldEntity = portfolioRepository.findByPortfolioUID(portfolio.getPortfolioUID().get())
+                .orElseThrow(() -> new RuntimeException("포트폴리오 조회 실패"));
+
+        IpoJpaEntity newIpoJpaEntity = ipoRepository.findByStockCode(portfolio.getStockCode())
+                .orElseThrow(() -> new RuntimeException("공모주 조회 실패"));
+
+        PortfolioJpaEntity newEntity = toJpaEntity(
+                oldEntity.getMemberJpaEntity(),
+                newIpoJpaEntity,
+                portfolio);
+
+        newEntity.setId(oldEntity.getId());
+
+        entityManager.merge(newEntity);
     }
 
     private PortfolioJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity,
