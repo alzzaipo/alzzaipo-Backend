@@ -3,7 +3,6 @@ package com.alzzaipo.controller;
 import com.alzzaipo.config.MemberPrincipal;
 import com.alzzaipo.dto.email.EmailDto;
 import com.alzzaipo.dto.notification.EmailNotificationStatusResponseDto;
-import com.alzzaipo.dto.notification.NotificationCriteriaListDto;
 import com.alzzaipo.dto.notification.NotificationCriteriaUpdateRequestDto;
 import com.alzzaipo.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class NotificationController {
 
     private final NotificationService notificationService;
-
-    @GetMapping("/criteria/list")
-    public ResponseEntity<NotificationCriteriaListDto> getNotificationCriteriaList(@AuthenticationPrincipal MemberPrincipal memberInfo) {
-        NotificationCriteriaListDto dto = notificationService.getNotificationCriteriaListDto(memberInfo);
-        return ResponseEntity.ok().body(dto);
-    }
 
     @PutMapping("/criteria/update")
     public ResponseEntity<Void> updateNotificationCriteria(@AuthenticationPrincipal MemberPrincipal memberInfo,
