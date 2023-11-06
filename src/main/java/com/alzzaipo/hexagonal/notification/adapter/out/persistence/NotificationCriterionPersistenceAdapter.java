@@ -27,6 +27,7 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 
     private NotificationCriterionJpaEntity toJpaEntity(NotificationCriterion notificationCriterion, MemberJpaEntity memberJpaEntity) {
         return new NotificationCriterionJpaEntity(
+                notificationCriterion.getNotificationCriterionUID().get(),
                 notificationCriterion.getMinCompetitionRate(),
                 notificationCriterion.getMinLockupRate(),
                 memberJpaEntity);

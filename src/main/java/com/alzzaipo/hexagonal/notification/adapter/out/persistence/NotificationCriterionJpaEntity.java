@@ -14,6 +14,9 @@ public class NotificationCriterionJpaEntity {
     @GeneratedValue
     private Long id;
 
+    @Column(name = "notification_criterion_uid", unique = true, nullable = false)
+    private Long notificationCriterionUID;
+
     @Column(name = "min_competition_rate", nullable = false,
             columnDefinition = "INT CHECK (min_competition_rate >= 0 AND min_competition_rate <= 10000)")
     private int minCompetitionRate;
@@ -26,7 +29,8 @@ public class NotificationCriterionJpaEntity {
     @JoinColumn(name = "member_uid", nullable = false)
     private MemberJpaEntity memberJpaEntity;
 
-    public NotificationCriterionJpaEntity(int minCompetitionRate, int minLockupRate, MemberJpaEntity memberJpaEntity) {
+    public NotificationCriterionJpaEntity(Long notificationCriterionUID, int minCompetitionRate, int minLockupRate, MemberJpaEntity memberJpaEntity) {
+        this.notificationCriterionUID = notificationCriterionUID;
         this.minCompetitionRate = minCompetitionRate;
         this.minLockupRate = minLockupRate;
         this.memberJpaEntity = memberJpaEntity;
