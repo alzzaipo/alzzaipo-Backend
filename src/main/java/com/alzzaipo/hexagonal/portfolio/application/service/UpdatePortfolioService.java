@@ -4,6 +4,7 @@ import com.alzzaipo.hexagonal.ipo.application.port.out.FindIpoByStockCodePort;
 import com.alzzaipo.hexagonal.ipo.domain.Ipo;
 import com.alzzaipo.hexagonal.portfolio.application.dto.UpdatePortfolioCommand;
 import com.alzzaipo.hexagonal.portfolio.application.in.UpdatePortfolioUseCase;
+import com.alzzaipo.hexagonal.portfolio.application.out.FindPortfolioPort;
 import com.alzzaipo.hexagonal.portfolio.application.out.UpdatePortfolioPort;
 import com.alzzaipo.hexagonal.portfolio.domain.Portfolio;
 import lombok.RequiredArgsConstructor;
@@ -13,17 +14,25 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UpdatePortfolioService implements UpdatePortfolioUseCase {
 
+    private final FindPortfolioPort findPortfolioPort;
     private final FindIpoByStockCodePort findIpoByStockCodePort;
     private final UpdatePortfolioPort updatePortfolioPort;
 
     @Override
     public void updatePortfolio(UpdatePortfolioCommand command) {
+        Portfolio targetPortfolio = findPortfolioPort.findPortfolio(command.getPortfolioUID())
+                .orElseThrow(() -> new RuntimeException("포트폴리오 조회 실패"));
+
+        if (!targetPortfolio.getMemberUID().equals(command.getMemberUID())) {
+            throw new RuntimeException("포트폴리오 권한 없음");
+        }
+
         Ipo ipo = findIpoByStockCodePort.findIpoByStockCodePort(command.getStockCode())
                 .orElseThrow(() -> new RuntimeException("공모주 조회 실패"));
 
-        Portfolio portfolio = createPortfolio(command, ipo);
+        Portfolio newPortfolio = createPortfolio(command, ipo);
 
-        updatePortfolioPort.updatePortfolio(portfolio);
+        updatePortfolioPort.updatePortfolio(newPortfolio);
     }
 
     private Portfolio createPortfolio(UpdatePortfolioCommand command, Ipo ipo) {

@@ -4,5 +4,5 @@ import com.alzzaipo.hexagonal.portfolio.application.dto.UpdatePortfolioCommand;
 
 public interface UpdatePortfolioUseCase {
 
-    void updatePortfolio(UpdatePortfolioCommand updatePortfolioCommand);
+    void updatePortfolio(UpdatePortfolioCommand command);
 }
