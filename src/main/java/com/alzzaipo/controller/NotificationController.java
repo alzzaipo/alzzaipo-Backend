@@ -16,13 +16,6 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @DeleteMapping("/criteria/delete")
-    public ResponseEntity<Void> deleteNotificationCriteria(@AuthenticationPrincipal MemberPrincipal memberInfo,
-                                                           @RequestParam("id") Long notificationCriteriaId) {
-        notificationService.deleteNotificationCriteria(memberInfo, notificationCriteriaId);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/email/status")
     public ResponseEntity<EmailNotificationStatusResponseDto> getEmailNotificationStatus(@AuthenticationPrincipal MemberPrincipal memberInfo) {
         EmailNotificationStatusResponseDto dto = notificationService.getEmailNotificationStatusResponseDto(memberInfo);
