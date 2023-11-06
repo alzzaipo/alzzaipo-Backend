@@ -1,9 +1,8 @@
 package com.alzzaipo.controller;
 
 import com.alzzaipo.config.MemberPrincipal;
-import com.alzzaipo.dto.notification.EmailNotificationStatusResponseDto;
-import com.alzzaipo.dto.notification.NotificationCriteriaAddRequestDto;
 import com.alzzaipo.dto.email.EmailDto;
+import com.alzzaipo.dto.notification.EmailNotificationStatusResponseDto;
 import com.alzzaipo.dto.notification.NotificationCriteriaListDto;
 import com.alzzaipo.dto.notification.NotificationCriteriaUpdateRequestDto;
 import com.alzzaipo.service.NotificationService;
@@ -18,13 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class NotificationController {
 
     private final NotificationService notificationService;
-
-    @PostMapping("/criteria/add")
-    public ResponseEntity<Void> addNotificationCriteria(@AuthenticationPrincipal MemberPrincipal memberInfo,
-                                                        @RequestBody NotificationCriteriaAddRequestDto dto) {
-        notificationService.addNotificationCriteria(memberInfo, dto);
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/criteria/list")
     public ResponseEntity<NotificationCriteriaListDto> getNotificationCriteriaList(@AuthenticationPrincipal MemberPrincipal memberInfo) {
@@ -54,7 +46,7 @@ public class NotificationController {
 
     @PostMapping("/email/subscribe")
     public ResponseEntity<Void> subscribeEmailNotification(@AuthenticationPrincipal MemberPrincipal memberInfo,
-                                                             @RequestBody EmailDto dto) {
+                                                           @RequestBody EmailDto dto) {
         notificationService.subscribeEmailNotification(memberInfo, dto);
         return ResponseEntity.ok().build();
     }
