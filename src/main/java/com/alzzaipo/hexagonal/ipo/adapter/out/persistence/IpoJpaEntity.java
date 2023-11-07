@@ -61,6 +61,9 @@ public class IpoJpaEntity {
     // 수익률
     private int profitRate;
 
+    // 상장 여부
+    private boolean listed;
+
     public IpoJpaEntity(String stockName, int stockCode, int expectedOfferingPriceMin, int expectedOfferingPriceMax, int fixedOfferingPrice, int totalAmount, int competitionRate, int lockupRate, String agents, LocalDate subscribeStartDate, LocalDate subscribeEndDate, LocalDate listedDate, int initialMarketPrice, int profitRate) {
         this.stockName = stockName;
         this.stockCode = stockCode;
@@ -76,5 +79,17 @@ public class IpoJpaEntity {
         this.listedDate = listedDate;
         this.initialMarketPrice = initialMarketPrice;
         this.profitRate = profitRate;
+    }
+
+    public void changeProfitRate(int profitRate) {
+        this.profitRate = profitRate;
+    }
+
+    public void changeInitialMarketPrice(int initialMarketPrice) {
+        this.initialMarketPrice = initialMarketPrice;
+    }
+
+    public void setListed() {
+        this.listed = true;
     }
 }

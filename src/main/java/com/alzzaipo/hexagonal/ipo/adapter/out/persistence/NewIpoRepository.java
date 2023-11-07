@@ -24,4 +24,7 @@ public interface NewIpoRepository extends JpaRepository<IpoJpaEntity, Long> {
             @Param("to") int to,
             @Param("minCompetitionRate") int minCompetitionRate,
             @Param("minLockupRate") int minLockupRate);
+
+    @Query("SELECT i FROM IpoJpaEntity i WHERE i.listed = false")
+    List<IpoJpaEntity> findNotListedIpos();
 }
