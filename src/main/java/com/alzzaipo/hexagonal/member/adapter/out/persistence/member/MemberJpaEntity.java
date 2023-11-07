@@ -2,7 +2,7 @@ package com.alzzaipo.hexagonal.member.adapter.out.persistence.member;
 
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.account.local.LocalAccountJpaEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.account.social.SocialAccountJpaEntity;
-import com.alzzaipo.hexagonal.notification.adapter.out.persistence.NotificationCriterionJpaEntity;
+import com.alzzaipo.hexagonal.notification.adapter.out.persistence.criterion.NotificationCriterionJpaEntity;
 import com.alzzaipo.hexagonal.portfolio.adapter.out.persistence.PortfolioJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
