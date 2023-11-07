@@ -4,6 +4,7 @@ import com.alzzaipo.hexagonal.common.Email;
 import com.alzzaipo.hexagonal.common.Uid;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.NewMemberRepository;
+import com.alzzaipo.hexagonal.notification.application.port.out.UnsubscribeEmailNotificationPort;
 import com.alzzaipo.hexagonal.notification.application.port.out.email.FindEmailNotificationPort;
 import com.alzzaipo.hexagonal.notification.application.port.out.email.RegisterEmailNotificationPort;
 import com.alzzaipo.hexagonal.notification.application.port.out.email.UpdateEmailNotificataionPort;
@@ -20,7 +21,8 @@ import java.util.Optional;
 public class EmailNotificationPersistenceAdapter implements
         FindEmailNotificationPort,
         RegisterEmailNotificationPort,
-        UpdateEmailNotificataionPort {
+        UpdateEmailNotificataionPort,
+        UnsubscribeEmailNotificationPort {
 
     private final NewEmailNotificationRepository emailNotificationRepository;
     private final NewMemberRepository memberRepository;
@@ -48,6 +50,15 @@ public class EmailNotificationPersistenceAdapter implements
                         .orElseThrow(() -> new RuntimeException("이메일 알림 조회 실패"));
 
         entity.changeEmail(emailNotification.getEmail().get());
+    }
+
+    @Override
+    public void unsubscribeEmailNotification(Uid memberUID) {
+        EmailNotificationJpaEntity entity =
+                emailNotificationRepository.findByMemberUID(memberUID.get())
+                        .orElseThrow(() -> new RuntimeException("이메일 알림 조회 실패"));
+
+        emailNotificationRepository.delete(entity);
     }
 
     private EmailNotification toDomainEntity(EmailNotificationJpaEntity jpaEntity) {
