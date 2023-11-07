@@ -2,18 +2,26 @@ package com.alzzaipo.hexagonal.notification.adapter.out.persistence.email;
 
 import com.alzzaipo.hexagonal.common.Email;
 import com.alzzaipo.hexagonal.common.Uid;
+import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
+import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.NewMemberRepository;
 import com.alzzaipo.hexagonal.notification.application.port.out.email.FindEmailNotificationPort;
+import com.alzzaipo.hexagonal.notification.application.port.out.email.RegisterEmailNotificationPort;
 import com.alzzaipo.hexagonal.notification.domain.email.EmailNotification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Component
+@Transactional
 @RequiredArgsConstructor
-public class EmailNotificationPersistenceAdapter implements FindEmailNotificationPort {
+public class EmailNotificationPersistenceAdapter implements
+        FindEmailNotificationPort,
+        RegisterEmailNotificationPort {
 
     private final NewEmailNotificationRepository emailNotificationRepository;
+    private final NewMemberRepository memberRepository;
 
     @Override
     public Optional<EmailNotification> findEmailNotification(Uid memberUID) {
@@ -21,9 +29,24 @@ public class EmailNotificationPersistenceAdapter implements FindEmailNotificatio
                 .map(this::toDomainEntity);
     }
 
+    @Override
+    public void registerEmailNotification(EmailNotification emailNotification) {
+        MemberJpaEntity memberJpaEntity = memberRepository.findByUid(emailNotification.getMemberUID().get())
+                .orElseThrow(() -> new RuntimeException("회원 조회 실패"));
+
+        EmailNotificationJpaEntity emailNotificationJpaEntity = toJpaEntity(emailNotification, memberJpaEntity);
+        emailNotificationRepository.save(emailNotificationJpaEntity);
+    }
+
     private EmailNotification toDomainEntity(EmailNotificationJpaEntity jpaEntity) {
         return new EmailNotification(
                 new Uid(jpaEntity.getMemberJpaEntity().getUid()),
                 new Email(jpaEntity.getEmail()));
+    }
+
+    private EmailNotificationJpaEntity toJpaEntity(EmailNotification domainEntity, MemberJpaEntity memberJpaEntity) {
+        return new EmailNotificationJpaEntity(
+                domainEntity.getEmail().get(),
+                memberJpaEntity);
     }
 }
