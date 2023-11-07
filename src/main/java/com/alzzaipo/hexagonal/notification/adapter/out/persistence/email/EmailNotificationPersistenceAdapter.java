@@ -6,6 +6,7 @@ import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEnt
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.NewMemberRepository;
 import com.alzzaipo.hexagonal.notification.application.port.out.email.FindEmailNotificationPort;
 import com.alzzaipo.hexagonal.notification.application.port.out.email.RegisterEmailNotificationPort;
+import com.alzzaipo.hexagonal.notification.application.port.out.email.UpdateEmailNotificataionPort;
 import com.alzzaipo.hexagonal.notification.domain.email.EmailNotification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,12 +19,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmailNotificationPersistenceAdapter implements
         FindEmailNotificationPort,
-        RegisterEmailNotificationPort {
+        RegisterEmailNotificationPort,
+        UpdateEmailNotificataionPort {
 
     private final NewEmailNotificationRepository emailNotificationRepository;
     private final NewMemberRepository memberRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<EmailNotification> findEmailNotification(Uid memberUID) {
         return emailNotificationRepository.findByMemberUID(memberUID.get())
                 .map(this::toDomainEntity);
@@ -36,6 +39,15 @@ public class EmailNotificationPersistenceAdapter implements
 
         EmailNotificationJpaEntity emailNotificationJpaEntity = toJpaEntity(emailNotification, memberJpaEntity);
         emailNotificationRepository.save(emailNotificationJpaEntity);
+    }
+
+    @Override
+    public void updateEmailNotificataion(EmailNotification emailNotification) {
+        EmailNotificationJpaEntity entity =
+                emailNotificationRepository.findByMemberUID(emailNotification.getMemberUID().get())
+                        .orElseThrow(() -> new RuntimeException("이메일 알림 조회 실패"));
+
+        entity.changeEmail(emailNotification.getEmail().get());
     }
 
     private EmailNotification toDomainEntity(EmailNotificationJpaEntity jpaEntity) {
