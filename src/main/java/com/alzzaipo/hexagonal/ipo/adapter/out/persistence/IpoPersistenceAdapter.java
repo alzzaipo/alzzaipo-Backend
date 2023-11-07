@@ -3,6 +3,7 @@ package com.alzzaipo.hexagonal.ipo.adapter.out.persistence;
 import com.alzzaipo.hexagonal.ipo.IpoMapper;
 import com.alzzaipo.hexagonal.ipo.application.port.in.dto.AnalyzeIpoProfitRateCommand;
 import com.alzzaipo.hexagonal.ipo.application.port.out.*;
+import com.alzzaipo.hexagonal.ipo.application.port.out.dto.UpdateListedIpoCommand;
 import com.alzzaipo.hexagonal.ipo.domain.Ipo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,8 @@ public class IpoPersistenceAdapter implements
         FindIpoByStockCodePort,
         FindIpoListPort,
         FindAnalyzeIpoProfitRateTargetPort,
-        FindNotListedIposPort {
+        FindNotListedIposPort,
+        UpdateListedIpoPort {
 
     private final NewIpoRepository ipoRepository;
     private final IpoMapper ipoMapper;
@@ -79,6 +81,17 @@ public class IpoPersistenceAdapter implements
                 .stream()
                 .map(this::toDomainEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void updateListedIpo(UpdateListedIpoCommand command) {
+        ipoRepository.findByStockCode(command.getStockCode())
+                .ifPresent(entity -> {
+                    entity.changeProfitRate(command.getProfitRate());
+                    entity.changeInitialMarketPrice(command.getInitialMarketPrice());
+                    entity.setListed();
+                });
     }
 
     private Ipo toDomainEntity(IpoJpaEntity jpaEntity) {

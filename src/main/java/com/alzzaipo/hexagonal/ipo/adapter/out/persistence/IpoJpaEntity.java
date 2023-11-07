@@ -80,4 +80,16 @@ public class IpoJpaEntity {
         this.initialMarketPrice = initialMarketPrice;
         this.profitRate = profitRate;
     }
+
+    public void changeProfitRate(int profitRate) {
+        this.profitRate = profitRate;
+    }
+
+    public void changeInitialMarketPrice(int initialMarketPrice) {
+        this.initialMarketPrice = initialMarketPrice;
+    }
+
+    public void setListed() {
+        this.listed = true;
+    }
 }
