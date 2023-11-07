@@ -1,0 +1,30 @@
+package com.alzzaipo.ipo.adapter.out.persistence;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface NewIpoRepository extends JpaRepository<IpoJpaEntity, Long> {
+
+    @Query("SELECT i FROM IpoJpaEntity i WHERE i.stockCode = ?1")
+    Optional<IpoJpaEntity> findByStockCode(int stockCode);
+
+    @Query("SELECT i FROM IpoJpaEntity i " +
+            "WHERE i.initialMarketPrice > 0 " +
+            "   AND YEAR(i.listedDate) >= :from " +
+            "   AND YEAR(i.listedDate) <= :to " +
+            "   AND i.competitionRate >= :minCompetitionRate " +
+            "   AND i.lockupRate >= :minLockupRate"
+    )
+    List<IpoJpaEntity> findAnalyzeIpoProfitRateTarget(
+            @Param("from") int from,
+            @Param("to") int to,
+            @Param("minCompetitionRate") int minCompetitionRate,
+            @Param("minLockupRate") int minLockupRate);
+
+    @Query("SELECT i FROM IpoJpaEntity i WHERE i.listed = false")
+    List<IpoJpaEntity> findNotListedIpos();
+}
