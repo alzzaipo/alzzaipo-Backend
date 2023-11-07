@@ -6,6 +6,7 @@ import com.alzzaipo.hexagonal.notification.adapter.in.web.email.dto.EmailDto;
 import com.alzzaipo.hexagonal.notification.application.port.dto.EmailNotificationStatus;
 import com.alzzaipo.hexagonal.notification.application.port.in.email.FindEmailNotificationStatusQuery;
 import com.alzzaipo.hexagonal.notification.application.port.in.email.SubscribeEmailNotificationUseCase;
+import com.alzzaipo.hexagonal.notification.application.port.in.email.UnsubscribeEmailNotificationUseCase;
 import com.alzzaipo.hexagonal.notification.application.port.in.email.UpdateEmailNotificationUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ public class EmailNotificationController {
     private final SubscribeEmailNotificationUseCase subscribeEmailNotificationUseCase;
     private final FindEmailNotificationStatusQuery findEmailNotificationStatusQuery;
     private final UpdateEmailNotificationUseCase updateEmailNotificationUseCase;
+    private final UnsubscribeEmailNotificationUseCase unsubscribeEmailNotificationUseCase;
 
     @PostMapping("/subscribe")
     public ResponseEntity<String> subscribeEmailNotification(@AuthenticationPrincipal MemberPrincipal principal,
@@ -51,4 +53,10 @@ public class EmailNotificationController {
         return ResponseEntity.ok("수정 완료");
     }
 
+    @DeleteMapping("/unsubscribe")
+    public ResponseEntity<String> unsubscribeEmailNotification(@AuthenticationPrincipal MemberPrincipal principal) {
+        unsubscribeEmailNotificationUseCase.unsubscribeEmailNotification(principal.getMemberUID());
+
+        return ResponseEntity.ok("해지 완료");
+    }
 }
