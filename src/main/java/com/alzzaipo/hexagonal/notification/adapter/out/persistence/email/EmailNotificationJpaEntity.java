@@ -25,4 +25,8 @@ public class EmailNotificationJpaEntity {
         this.email = email;
         this.memberJpaEntity = memberJpaEntity;
     }
+
+    void changeEmail(String email) {
+        this.email = email;
+    }
 }
