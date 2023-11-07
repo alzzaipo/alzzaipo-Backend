@@ -20,7 +20,8 @@ public class UpdateListedIposService {
     private final QueryInitialMarketPricePort queryInitialMarketPricePort;
     private final UpdateListedIpoPort updateListedIpoPort;
 
-    public void updateListedIpos() {
+    @Scheduled(cron = "0 0 18 ? * MON-FRI")
+    private void updateListedIpos() {
         LocalDate currentDate = LocalDate.now();
 
         findNotListedIposPort.findNotListedIpos()
