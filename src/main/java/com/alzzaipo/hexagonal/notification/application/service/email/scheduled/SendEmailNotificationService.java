@@ -9,6 +9,7 @@ import com.alzzaipo.hexagonal.notification.application.port.out.email.FindEmailN
 import com.alzzaipo.hexagonal.notification.domain.criterion.NotificationCriterion;
 import com.alzzaipo.hexagonal.notification.domain.email.EmailNotification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ public class SendEmailNotificationService {
     private final FindEmailNotificationPort findEmailNotificationPort;
     private final SendCustomEmail sendCustomEmail;
 
+    @Scheduled(cron = "0 0 10 ? * MON-FRI")
     private void scheduledTask() {
         List<Ipo> todaySubscriptionOpenedIpos = findTodaySubscriptionOpenedIpos();
 
