@@ -2,7 +2,6 @@ package com.alzzaipo.controller;
 
 import com.alzzaipo.config.MemberPrincipal;
 import com.alzzaipo.dto.email.EmailDto;
-import com.alzzaipo.dto.notification.EmailNotificationStatusResponseDto;
 import com.alzzaipo.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class NotificationController {
 
     private final NotificationService notificationService;
-
-    @GetMapping("/email/status")
-    public ResponseEntity<EmailNotificationStatusResponseDto> getEmailNotificationStatus(@AuthenticationPrincipal MemberPrincipal memberInfo) {
-        EmailNotificationStatusResponseDto dto = notificationService.getEmailNotificationStatusResponseDto(memberInfo);
-        return ResponseEntity.ok().body(dto);
-    }
 
     @PutMapping("/email/update")
     public ResponseEntity<Void> updateEmailNotification(@AuthenticationPrincipal MemberPrincipal memberInfo,
