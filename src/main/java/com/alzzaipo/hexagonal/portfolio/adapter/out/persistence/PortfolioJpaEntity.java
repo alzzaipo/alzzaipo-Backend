@@ -1,5 +1,6 @@
 package com.alzzaipo.hexagonal.portfolio.adapter.out.persistence;
 
+import com.alzzaipo.hexagonal.common.BaseTimeEntity;
 import com.alzzaipo.hexagonal.ipo.adapter.out.persistence.IpoJpaEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
 import jakarta.persistence.*;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class PortfolioJpaEntity {
+public class PortfolioJpaEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

@@ -1,5 +1,6 @@
 package com.alzzaipo.hexagonal.notification.adapter.out.persistence.email;
 
+import com.alzzaipo.hexagonal.common.BaseTimeEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class EmailNotificationJpaEntity {
+public class EmailNotificationJpaEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

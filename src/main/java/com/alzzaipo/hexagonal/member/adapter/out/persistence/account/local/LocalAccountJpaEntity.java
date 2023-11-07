@@ -1,5 +1,6 @@
 package com.alzzaipo.hexagonal.member.adapter.out.persistence.account.local;
 
+import com.alzzaipo.hexagonal.common.BaseTimeEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class LocalAccountJpaEntity {
+public class LocalAccountJpaEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

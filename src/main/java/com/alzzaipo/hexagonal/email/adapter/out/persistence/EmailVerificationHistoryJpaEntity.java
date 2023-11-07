@@ -1,5 +1,6 @@
 package com.alzzaipo.hexagonal.email.adapter.out.persistence;
 
+import com.alzzaipo.hexagonal.common.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class EmailVerificationHistoryJpaEntity {
+public class EmailVerificationHistoryJpaEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue
     private Long id;

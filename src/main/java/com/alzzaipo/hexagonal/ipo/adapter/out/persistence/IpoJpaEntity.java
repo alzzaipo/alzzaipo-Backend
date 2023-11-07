@@ -1,5 +1,6 @@
 package com.alzzaipo.hexagonal.ipo.adapter.out.persistence;
 
+import com.alzzaipo.hexagonal.common.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @Entity
-public class IpoJpaEntity {
+public class IpoJpaEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

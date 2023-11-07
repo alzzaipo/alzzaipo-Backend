@@ -1,5 +1,6 @@
 package com.alzzaipo.hexagonal.member.adapter.out.persistence.account.social;
 
+import com.alzzaipo.hexagonal.common.BaseTimeEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.member.MemberJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "social_account_jpa_entity",
         uniqueConstraints = {@UniqueConstraint(name = "uidx-email-login_type", columnNames = {"email", "login_type"})})
-public class SocialAccountJpaEntity {
+public class SocialAccountJpaEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

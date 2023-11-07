@@ -1,5 +1,6 @@
 package com.alzzaipo.hexagonal.member.adapter.out.persistence.member;
 
+import com.alzzaipo.hexagonal.common.BaseTimeEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.account.local.LocalAccountJpaEntity;
 import com.alzzaipo.hexagonal.member.adapter.out.persistence.account.social.SocialAccountJpaEntity;
 import com.alzzaipo.hexagonal.notification.adapter.out.persistence.criterion.NotificationCriterionJpaEntity;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class MemberJpaEntity {
+public class MemberJpaEntity extends BaseTimeEntity {
 
     @Id
     private Long uid;
