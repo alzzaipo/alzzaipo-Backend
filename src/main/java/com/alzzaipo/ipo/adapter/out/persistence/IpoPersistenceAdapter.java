@@ -28,6 +28,7 @@ public class IpoPersistenceAdapter implements
     private final IpoMapper ipoMapper;
 
     @Override
+    @Transactional
     public void registerIpo(Ipo ipo) {
         IpoJpaEntity ipoJpaEntity = new IpoJpaEntity(
                 ipo.getStockName(),
