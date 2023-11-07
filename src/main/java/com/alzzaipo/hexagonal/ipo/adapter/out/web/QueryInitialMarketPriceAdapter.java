@@ -87,6 +87,6 @@ public class QueryInitialMarketPriceAdapter implements QueryInitialMarketPricePo
         JSONArray jsonItem = (JSONArray) jsonItems.get("item");
         JSONObject stockInfo = (JSONObject) jsonItem.get(0);
 
-        return Integer.valueOf((String) stockInfo.get("mkp"));
+        return Integer.parseInt((String) stockInfo.get("mkp"));
     }
 }
