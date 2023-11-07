@@ -1,6 +1,5 @@
-package com.alzzaipo.exception;
+package com.alzzaipo.hexagonal.common;
 
-import com.alzzaipo.enums.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

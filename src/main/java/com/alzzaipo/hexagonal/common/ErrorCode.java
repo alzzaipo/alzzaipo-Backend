@@ -1,4 +1,4 @@
-package com.alzzaipo.enums;
+package com.alzzaipo.hexagonal.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
