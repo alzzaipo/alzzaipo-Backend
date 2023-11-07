@@ -22,7 +22,8 @@ public class NotificationCriterionPersistenceAdapter implements
         FindMemberNotificationCriteriaPort,
         FindNotificationCriterionPort,
         UpdateNotificationCriterionPort,
-        DeleteNotificationCriterionPort {
+        DeleteNotificationCriterionPort,
+        FindAllNotificationCriterionPort {
 
     private final NewNotificationCriterionRepository notificationCriterionRepository;
     private final NewMemberRepository memberRepository;
@@ -71,6 +72,14 @@ public class NotificationCriterionPersistenceAdapter implements
                 .orElseThrow(() -> new RuntimeException("알림 기준 조회 실패"));
 
         notificationCriterionRepository.delete(entity);
+    }
+
+    @Override
+    public List<NotificationCriterion> findAllNotificationCriterion() {
+        return notificationCriterionRepository.findAll()
+                .stream()
+                .map(this::toDomainEntity)
+                .collect(Collectors.toList());
     }
 
     private NotificationCriterionJpaEntity toJpaEntity(NotificationCriterion domainEntity, MemberJpaEntity memberJpaEntity) {
