@@ -22,13 +22,6 @@ public class NotificationController {
         return ResponseEntity.ok().body(dto);
     }
 
-    @PostMapping("/email/subscribe")
-    public ResponseEntity<Void> subscribeEmailNotification(@AuthenticationPrincipal MemberPrincipal memberInfo,
-                                                           @RequestBody EmailDto dto) {
-        notificationService.subscribeEmailNotification(memberInfo, dto);
-        return ResponseEntity.ok().build();
-    }
-
     @PutMapping("/email/update")
     public ResponseEntity<Void> updateEmailNotification(@AuthenticationPrincipal MemberPrincipal memberInfo,
                                                         @RequestBody EmailDto dto) {
