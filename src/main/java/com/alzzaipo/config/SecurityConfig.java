@@ -1,6 +1,7 @@
 package com.alzzaipo.config;
 
-import com.alzzaipo.util.JwtUtil;
+import com.alzzaipo.common.jwt.JwtFilter;
+import com.alzzaipo.common.jwt.NewJwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,18 +14,19 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
-    private final JwtUtil jwtUtil;
+    private final NewJwtUtil newJwtUtil;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("https://alzzaipo.com");
-        config.addAllowedOrigin("http://localhost:3000");
+        config.setAllowedOrigins(List.of("https://alzzaipo.com", "http://localhost:3000"));
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);
@@ -37,25 +39,30 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
+        httpSecurity
                 .httpBasic().disable()
                 .csrf().disable()
                 .cors().and()
-                .authorizeHttpRequests()
-                .requestMatchers("/member/verify-account-id").permitAll()
-                .requestMatchers("/member/verify-email").permitAll()
-                .requestMatchers("/member/register").permitAll()
-                .requestMatchers("/member/login").permitAll()
-                .requestMatchers("/portfolio/**").authenticated()
-                .requestMatchers("/member/**").authenticated()
-                .requestMatchers("/social/kakao/connect").authenticated()
-                .requestMatchers("/notification/**").authenticated()
-                .requestMatchers("/**").permitAll()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/member/verify-account-id",
+                                "/member/verify-email",
+                                "/member/register",
+                                "/member/login",
+                                "/**"
+                        ).permitAll()
+                        .requestMatchers(
+                                "/portfolio/**",
+                                "/member/**",
+                                "/social/kakao/connect",
+                                "/notification/**"
+                        ).authenticated()
+                )
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .addFilterBefore(new JwtFilter(newJwtUtil), UsernamePasswordAuthenticationFilter.class);
+
+        return httpSecurity.build();
     }
 }
