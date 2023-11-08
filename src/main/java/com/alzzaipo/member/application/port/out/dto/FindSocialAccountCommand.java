@@ -1,0 +1,17 @@
+package com.alzzaipo.member.application.port.out.dto;
+
+import com.alzzaipo.common.Email;
+import com.alzzaipo.common.LoginType;
+import lombok.Getter;
+
+@Getter
+public class FindSocialAccountCommand {
+
+    private final LoginType loginType;
+    private final Email email;
+
+    public FindSocialAccountCommand(LoginType loginType, Email email) {
+        this.loginType = loginType;
+        this.email = email;
+    }
+}
