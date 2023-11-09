@@ -1,4 +1,4 @@
-package com.alzzaipo.config;
+package com.alzzaipo.common.config;
 
 import com.alzzaipo.common.AppException;
 import org.springframework.http.ResponseEntity;

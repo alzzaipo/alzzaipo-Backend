@@ -1,4 +1,4 @@
-package com.alzzaipo.config;
+package com.alzzaipo.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

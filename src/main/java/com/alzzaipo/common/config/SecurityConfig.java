@@ -1,4 +1,4 @@
-package com.alzzaipo.config;
+package com.alzzaipo.common.config;
 
 import com.alzzaipo.common.jwt.JwtFilter;
 import com.alzzaipo.common.jwt.NewJwtUtil;
