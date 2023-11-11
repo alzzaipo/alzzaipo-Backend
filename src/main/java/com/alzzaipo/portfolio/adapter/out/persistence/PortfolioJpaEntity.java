@@ -13,9 +13,6 @@ import lombok.NoArgsConstructor;
 public class PortfolioJpaEntity extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
-    private Long id;
-
     @Column(name = "portfolio_uid", unique = true)
     private Long portfolioUID;
 
@@ -49,7 +46,7 @@ public class PortfolioJpaEntity extends BaseTimeEntity {
         this.ipoJpaEntity = ipoJpaEntity;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setPortfolioUID(Long portfolioUID) {
+        this.portfolioUID = portfolioUID;
     }
 }

@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 public class NotificationCriterionJpaEntity extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
-    private Long id;
-
     @Column(name = "notification_criterion_uid", unique = true, nullable = false)
     private Long notificationCriterionUID;
 
