@@ -76,7 +76,7 @@ public class PortfolioPersistenceAdapter implements
                 newIpoJpaEntity,
                 portfolio);
 
-        newEntity.setId(oldEntity.getId());
+        newEntity.setPortfolioUID(oldEntity.getPortfolioUID());
 
         entityManager.merge(newEntity);
     }
