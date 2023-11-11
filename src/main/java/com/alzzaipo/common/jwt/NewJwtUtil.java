@@ -36,11 +36,6 @@ public class NewJwtUtil {
                 .compact();
     }
 
-    public boolean isExpired(String token) {
-        Date expiration = getClaims(token).getExpiration();
-        return expiration.before(new Date());
-    }
-
     public Uid getMemberUID(String token) {
         String serializedMemberUID = getClaims(token).get("memberUID", String.class);
         return Uid.fromJson(serializedMemberUID);
