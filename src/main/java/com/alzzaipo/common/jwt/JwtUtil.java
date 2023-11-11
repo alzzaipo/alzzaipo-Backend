@@ -19,7 +19,8 @@ public class JwtUtil {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    private final Long expireTimeMillis = 1000 * 60 * 30L;
+    @Value("${jwt.expirationTimeMillis}")
+    private Long expireTimeMillis;
 
     public String createToken(Uid memberUID, LoginType loginType) {
         Claims claims = Jwts.claims();
