@@ -1,7 +1,7 @@
 package com.alzzaipo.member.application.service.account.social;
 
 import com.alzzaipo.common.LoginType;
-import com.alzzaipo.common.jwt.NewJwtUtil;
+import com.alzzaipo.common.jwt.JwtUtil;
 import com.alzzaipo.member.application.port.in.oauth.KakaoLoginUseCase;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.in.dto.LoginResult;
@@ -30,7 +30,7 @@ public class NewKakaoLoginService implements KakaoLoginUseCase {
     private final RegisterMemberPort registerMemberPort;
     private final RegisterSocialAccountPort registerSocialAccountPort;
 
-    private final NewJwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Override
     public LoginResult handleLogin(AuthorizationCode authorizationCode) {

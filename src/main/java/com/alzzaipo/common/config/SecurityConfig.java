@@ -1,7 +1,7 @@
 package com.alzzaipo.common.config;
 
 import com.alzzaipo.common.jwt.JwtFilter;
-import com.alzzaipo.common.jwt.NewJwtUtil;
+import com.alzzaipo.common.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,7 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    private final NewJwtUtil newJwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JwtFilter(newJwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

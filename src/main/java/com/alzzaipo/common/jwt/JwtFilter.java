@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final NewJwtUtil newJwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -65,7 +65,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private MemberPrincipal createPrincipalFromToken(String token) {
         return new MemberPrincipal(
-                newJwtUtil.getMemberUID(token),
-                newJwtUtil.getLoginType(token));
+                jwtUtil.getMemberUID(token),
+                jwtUtil.getLoginType(token));
     }
 }

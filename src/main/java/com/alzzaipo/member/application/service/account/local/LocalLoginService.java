@@ -1,7 +1,7 @@
 package com.alzzaipo.member.application.service.account.local;
 
 import com.alzzaipo.common.LoginType;
-import com.alzzaipo.common.jwt.NewJwtUtil;
+import com.alzzaipo.common.jwt.JwtUtil;
 import com.alzzaipo.member.application.port.in.dto.LocalLoginCommand;
 import com.alzzaipo.member.application.port.in.dto.LoginResult;
 import com.alzzaipo.member.application.port.in.account.local.LocalLoginUseCase;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LocalLoginService implements LocalLoginUseCase {
 
-    private final NewJwtUtil newJwtUtil;
+    private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
     private final FindLocalAccountByAccountIdPort findLocalAccountByAccountIdPort;
@@ -42,6 +42,6 @@ public class LocalLoginService implements LocalLoginUseCase {
     }
 
     private String createJwtToken(SecureLocalAccount secureLocalAccount) {
-        return newJwtUtil.createToken(secureLocalAccount.getMemberUID(), LoginType.LOCAL);
+        return jwtUtil.createToken(secureLocalAccount.getMemberUID(), LoginType.LOCAL);
     }
 }
