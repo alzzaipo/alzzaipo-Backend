@@ -1,5 +1,8 @@
 package com.alzzaipo.member.domain.account.local;
 
+import com.alzzaipo.common.exception.CustomException;
+import org.springframework.http.HttpStatus;
+
 import java.util.regex.Pattern;
 
 public class LocalAccountId {
@@ -16,7 +19,7 @@ public class LocalAccountId {
         String regex = "^[a-z0-9_-]{5,20}$";
 
         if (!Pattern.matches(regex, accountId)) {
-            throw new IllegalArgumentException("아이디 형식 오류");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "아이디 형식 오류");
         }
     }
 

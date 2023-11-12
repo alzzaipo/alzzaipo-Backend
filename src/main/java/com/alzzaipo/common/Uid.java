@@ -1,8 +1,10 @@
 package com.alzzaipo.common;
 
+import com.alzzaipo.common.exception.CustomException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.util.Objects;
 
@@ -19,7 +21,11 @@ public class Uid {
 
     private void selfValidate() {
         if (uid == null) {
-            throw new IllegalArgumentException("UID Null");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "UID 오류 : null");
+        }
+
+        if (uid <= 0) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "UID 오류 : 0 이하 불가");
         }
     }
 

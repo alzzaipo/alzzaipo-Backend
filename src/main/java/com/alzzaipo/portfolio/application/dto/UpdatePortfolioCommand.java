@@ -1,7 +1,9 @@
 package com.alzzaipo.portfolio.application.dto;
 
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public class UpdatePortfolioCommand {
@@ -34,13 +36,13 @@ public class UpdatePortfolioCommand {
 
     private void requireZeroOrPositive(String propertyName, int value) {
         if (value < 0) {
-            throw new IllegalArgumentException(propertyName + " 오류 : 음수 불가");
+            throw new CustomException(HttpStatus.BAD_REQUEST, propertyName + " 오류 : 음수 불가");
         }
     }
 
     private void verifyMemoLength() {
         if (memo.length() > 200) {
-            throw new IllegalArgumentException("메모 글자수 초과 : 최대 200자");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "메모 글자수 초과 : 최대 200자");
         }
     }
 }

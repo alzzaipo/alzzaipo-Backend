@@ -1,5 +1,8 @@
 package com.alzzaipo.common;
 
+import com.alzzaipo.common.exception.CustomException;
+import org.springframework.http.HttpStatus;
+
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +28,7 @@ public class Email {
         Matcher matcher = pattern.matcher(email);
 
         if (!matcher.matches()) {
-            throw new IllegalArgumentException("이메일 형식 오류");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "이메일 형식 오류");
         }
     }
 

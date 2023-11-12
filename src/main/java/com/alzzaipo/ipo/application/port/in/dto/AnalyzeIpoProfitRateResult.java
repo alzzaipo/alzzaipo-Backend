@@ -14,9 +14,5 @@ public class AnalyzeIpoProfitRateResult {
     public AnalyzeIpoProfitRateResult(int averageProfitRate, List<Ipo> ipoDtoList) {
         this.averageProfitRate = averageProfitRate;
         this.ipoDtoList = ipoDtoList;
-
-        if (ipoDtoList == null) {
-            throw new IllegalArgumentException();
-        }
     }
 }

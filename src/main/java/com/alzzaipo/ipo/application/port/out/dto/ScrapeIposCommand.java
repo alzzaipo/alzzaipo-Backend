@@ -1,6 +1,8 @@
 package com.alzzaipo.ipo.application.port.out.dto;
 
+import com.alzzaipo.common.exception.CustomException;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public class ScrapeIposCommand {
@@ -16,17 +18,17 @@ public class ScrapeIposCommand {
     }
 
     private void selfValidate(int from, int to) {
-        requirePositive(from);
-        requirePositive(to);
+        requirePositive("from", from);
+        requirePositive("to", to);
 
-        if(from > to) {
-            throw new IllegalArgumentException();
+        if (from > to) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "from이 to보다 큽니다.");
         }
     }
 
-    private void requirePositive(int number) {
-        if(number <= 0) {
-            throw new IllegalArgumentException();
+    private void requirePositive(String parameter, int number) {
+        if (number <= 0) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, parameter + " : 0 이하 불가");
         }
     }
 }
