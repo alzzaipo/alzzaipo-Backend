@@ -75,6 +75,7 @@ public class SecurityConfig {
                 "/member/register",
                 "/member/login",
                 "/ipo/**",
-                "/email/**");
+                "/email/**",
+                "/scraper");
     }
 }
