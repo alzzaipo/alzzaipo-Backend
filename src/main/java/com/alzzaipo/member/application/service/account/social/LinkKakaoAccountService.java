@@ -5,6 +5,7 @@ import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.in.oauth.LinkKakaoAccountUseCase;
+import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberUidPort;
 import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountPort;
 import com.alzzaipo.member.application.port.out.account.social.RegisterSocialAccountPort;
 import com.alzzaipo.member.application.port.out.dto.AccessToken;
@@ -23,29 +24,25 @@ public class LinkKakaoAccountService implements LinkKakaoAccountUseCase {
 
     private static final LoginType KAKAO_LOGIN_TYPE = LoginType.KAKAO;
 
+    private final FindLocalAccountByMemberUidPort findLocalAccountByMemberUidPort;
     private final ExchangeKakaoAccessTokenPort exchangeKakaoAccessTokenPort;
     private final FetchKakaoUserProfilePort fetchKakaoUserProfilePort;
     private final FindSocialAccountPort findSocialAccountPort;
     private final RegisterSocialAccountPort registerSocialAccountPort;
 
     @Override
-    public boolean linkKakaoAccountUseCase(Uid memberUID, AuthorizationCode authorizationCode) {
-        boolean result;
+    public void linkKakaoAccount(Uid memberUID, AuthorizationCode authorizationCode) {
+        findLocalAccountByMemberUidPort.findLocalAccountByMemberUid(memberUID)
+                .orElseThrow(() -> new CustomException(HttpStatus.FORBIDDEN, "소셜 계정 연동은 로컬 계정에서만 가능합니다."));
 
-        try {
-            AccessToken accessToken = exchangeKakaoAccessTokenPort.exchangeKakaoAccessToken(authorizationCode);
+        AccessToken accessToken = exchangeKakaoAccessTokenPort.exchangeKakaoAccessToken(authorizationCode);
 
-            UserProfile userProfile = fetchKakaoUserProfilePort.fetchKakaoUserProfile(accessToken);
+        UserProfile userProfile = fetchKakaoUserProfilePort.fetchKakaoUserProfile(accessToken);
 
-            checkLinkedKakaoAccountExists(userProfile);
+        checkLinkedKakaoAccountExists(userProfile);
 
-            result = registerSocialAccountPort.registerSocialAccount(
-                    new SocialAccount(memberUID, userProfile.getEmail(), KAKAO_LOGIN_TYPE));
-        } catch (Exception e) {
-            result = false;
-        }
-
-        return result;
+        registerSocialAccountPort.registerSocialAccount(
+                new SocialAccount(memberUID, userProfile.getEmail(), KAKAO_LOGIN_TYPE));
     }
 
     private void checkLinkedKakaoAccountExists(UserProfile userProfile) {

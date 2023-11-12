@@ -3,6 +3,7 @@ package com.alzzaipo.member.adapter.out.persistence.account.social;
 import com.alzzaipo.common.Email;
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountByLoginTypePort;
@@ -12,6 +13,7 @@ import com.alzzaipo.member.application.port.out.dto.FindSocialAccountCommand;
 import com.alzzaipo.member.application.port.out.member.FindMemberSocialAccountsPort;
 import com.alzzaipo.member.domain.account.social.SocialAccount;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,16 +34,12 @@ public class SocialAccountPersistenceAdapterPort implements
     private final SocialAccountRepository socialAccountRepository;
 
     @Override
-    public boolean registerSocialAccount(SocialAccount socialAccount) {
-        Optional<MemberJpaEntity> optionalMemberJpaEntity
-                = memberRepository.findByUid(socialAccount.getMemberUID().get());
+    public void registerSocialAccount(SocialAccount socialAccount) {
+        MemberJpaEntity memberJpaEntity = memberRepository.findByUid(socialAccount.getMemberUID().get())
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
 
-        optionalMemberJpaEntity.ifPresent(memberJpaEntity -> {
-            SocialAccountJpaEntity socialAccountJpaEntity = toJpaEntity(memberJpaEntity, socialAccount);
-            socialAccountRepository.save(socialAccountJpaEntity);
-        });
-
-        return optionalMemberJpaEntity.isPresent();
+        SocialAccountJpaEntity socialAccountJpaEntity = toJpaEntity(memberJpaEntity, socialAccount);
+        socialAccountRepository.save(socialAccountJpaEntity);
     }
 
     @Override

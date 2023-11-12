@@ -5,5 +5,5 @@ import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 
 public interface LinkKakaoAccountUseCase {
 
-    boolean linkKakaoAccountUseCase(Uid memberUID, AuthorizationCode authorizationCode);
+    void linkKakaoAccount(Uid memberUID, AuthorizationCode authorizationCode);
 }
