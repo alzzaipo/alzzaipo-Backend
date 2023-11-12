@@ -1,5 +1,8 @@
 package com.alzzaipo.email.domain;
 
+import com.alzzaipo.common.exception.CustomException;
+import org.springframework.http.HttpStatus;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +25,7 @@ public class EmailVerificationCode {
         Matcher matcher = pattern.matcher(emailVerificationCode);
 
         if (!matcher.matches()) {
-            throw new IllegalArgumentException("이메일 인증코드 형식 오류");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "이메일 인증코드 형식 오류");
         }
     }
 

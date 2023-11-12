@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface NewMemberRepository extends JpaRepository<MemberJpaEntity, Long> {
+public interface MemberRepository extends JpaRepository<MemberJpaEntity, Long> {
 
     @Query("SELECT m FROM MemberJpaEntity m WHERE m.uid = :uid")
     Optional<MemberJpaEntity> findByUid(@Param("uid") Long uid);

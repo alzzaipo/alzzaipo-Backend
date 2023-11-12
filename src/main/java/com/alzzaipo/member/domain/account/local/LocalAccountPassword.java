@@ -1,5 +1,8 @@
 package com.alzzaipo.member.domain.account.local;
 
+import com.alzzaipo.common.exception.CustomException;
+import org.springframework.http.HttpStatus;
+
 import java.util.regex.Pattern;
 
 public class LocalAccountPassword {
@@ -20,7 +23,7 @@ public class LocalAccountPassword {
         String regex = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[~!@#$%^&*_\\-+=`|\\\\(){}\\[\\]:;\"'<>,.?/]).{8,16}$";
 
         if (!Pattern.matches(regex, accountPassword)) {
-            throw new IllegalArgumentException("비밀번호 형식 오류");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "비밀번호 형식 오류");
         }
     }
 }

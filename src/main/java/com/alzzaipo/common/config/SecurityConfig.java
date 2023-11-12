@@ -1,12 +1,13 @@
 package com.alzzaipo.common.config;
 
 import com.alzzaipo.common.jwt.JwtFilter;
-import com.alzzaipo.common.jwt.NewJwtUtil;
+import com.alzzaipo.common.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -21,7 +22,7 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    private final NewJwtUtil newJwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -61,8 +62,19 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JwtFilter(newJwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(
+                "/member/verify-account-id",
+                "/member/verify-email",
+                "/member/register",
+                "/member/login",
+                "/ipo/**",
+                "/email/**");
     }
 }

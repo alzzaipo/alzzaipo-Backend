@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface NewLocalAccountRepository extends JpaRepository<LocalAccountJpaEntity, Long> {
+public interface LocalAccountRepository extends JpaRepository<LocalAccountJpaEntity, Long> {
 
     @Query("SELECT l FROM LocalAccountJpaEntity l WHERE l.accountId = :accountId")
     Optional<LocalAccountJpaEntity> findByAccountId(@Param("accountId") String accountId);

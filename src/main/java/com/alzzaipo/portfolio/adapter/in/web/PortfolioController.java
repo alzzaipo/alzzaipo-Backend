@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/portfolio")
 @RequiredArgsConstructor
-public class NewPortfolioController {
+public class PortfolioController {
 
     private final RegisterPortfolioUseCase registerPortfolioUseCase;
     private final FindMemberPortfoliosQuery findMemberPortfoliosQuery;

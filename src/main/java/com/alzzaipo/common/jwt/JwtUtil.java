@@ -14,12 +14,13 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
-public class NewJwtUtil {
+public class JwtUtil {
 
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    private final Long expireTimeMillis = 1000 * 60 * 30L;
+    @Value("${jwt.expirationTimeMillis}")
+    private Long expireTimeMillis;
 
     public String createToken(Uid memberUID, LoginType loginType) {
         Claims claims = Jwts.claims();
@@ -34,11 +35,6 @@ public class NewJwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + expireTimeMillis))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
-    }
-
-    public boolean isExpired(String token) {
-        Date expiration = getClaims(token).getExpiration();
-        return expiration.before(new Date());
     }
 
     public Uid getMemberUID(String token) {

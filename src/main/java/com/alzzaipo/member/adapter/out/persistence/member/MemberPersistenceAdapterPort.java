@@ -1,12 +1,14 @@
 package com.alzzaipo.member.adapter.out.persistence.member;
 
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.out.member.ChangeMemberNicknamePort;
 import com.alzzaipo.member.application.port.out.member.FindMemberPort;
 import com.alzzaipo.member.application.port.out.member.RegisterMemberPort;
 import com.alzzaipo.member.application.port.out.member.WithdrawMemberPort;
 import com.alzzaipo.member.domain.member.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,7 @@ public class MemberPersistenceAdapterPort implements
         ChangeMemberNicknamePort,
         WithdrawMemberPort {
 
-    private final NewMemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public void registerMember(Member member) {
@@ -45,7 +47,7 @@ public class MemberPersistenceAdapterPort implements
     @Override
     public void withdrawMember(Uid memberUID) {
         MemberJpaEntity entity = memberRepository.findByUid(memberUID.get())
-                .orElseThrow(() -> new RuntimeException("회원 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
 
         memberRepository.delete(entity);
     }

@@ -2,16 +2,18 @@ package com.alzzaipo.member.application.service.member;
 
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.Uid;
-import com.alzzaipo.member.application.port.in.member.FindMemberProfileQuery;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.in.dto.MemberProfile;
 import com.alzzaipo.member.application.port.in.dto.MemberType;
+import com.alzzaipo.member.application.port.in.member.FindMemberProfileQuery;
 import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberUidPort;
+import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.member.application.port.out.member.FindMemberPort;
 import com.alzzaipo.member.application.port.out.member.FindMemberSocialAccountsPort;
-import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
-import com.alzzaipo.member.domain.member.Member;
 import com.alzzaipo.member.domain.account.social.SocialAccount;
+import com.alzzaipo.member.domain.member.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -29,15 +31,14 @@ public class FindMemberProfileService implements FindMemberProfileQuery {
     @Override
     public MemberProfile findMemberProfile(Uid memberUID, LoginType currentLoginType) {
         Member member = findMemberPort.findMember(memberUID)
-                .orElseThrow(() -> new RuntimeException("회원 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
 
-        Optional<SecureLocalAccount> localAccount
+        Optional<SecureLocalAccount> optionalLocalAccount
                 = findLocalAccountByMemberUidPort.findLocalAccountByMemberUid(memberUID);
 
-        if (localAccount.isPresent()) {
-            return findLocalMemberProfile(member, localAccount.get(), currentLoginType);
-        }
-        return findSocialMemberProfile(member, currentLoginType);
+        return optionalLocalAccount
+                .map(localAccount -> findLocalMemberProfile(member, localAccount, currentLoginType))
+                .orElseGet(() -> findSocialMemberProfile(member, currentLoginType));
     }
 
     private MemberProfile findLocalMemberProfile(Member member, SecureLocalAccount localAccount, LoginType currentLoginType) {
@@ -60,7 +61,7 @@ public class FindMemberProfileService implements FindMemberProfileQuery {
                 .stream()
                 .filter(socialAccount -> socialAccount.getLoginType() == currentLoginType)
                 .findAny()
-                .orElseThrow(() -> new RuntimeException("소셜 계정 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "소셜 계정 조회 실패"));
 
         return new MemberProfile(
                 MemberType.SOCIAL,

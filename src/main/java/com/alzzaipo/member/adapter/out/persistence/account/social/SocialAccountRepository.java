@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface NewSocialAccountRepository extends JpaRepository<SocialAccountJpaEntity, Long> {
+public interface SocialAccountRepository extends JpaRepository<SocialAccountJpaEntity, Long> {
 
     @Query("SELECT s FROM SocialAccountJpaEntity s WHERE s.loginType = :loginType AND s.email = :email")
     Optional<SocialAccountJpaEntity> findByLoginTypeAndEmail(

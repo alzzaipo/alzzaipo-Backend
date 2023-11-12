@@ -2,14 +2,16 @@ package com.alzzaipo.notification.adapter.out.persistence.email;
 
 import com.alzzaipo.common.Email;
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
-import com.alzzaipo.member.adapter.out.persistence.member.NewMemberRepository;
+import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import com.alzzaipo.notification.application.port.out.UnsubscribeEmailNotificationPort;
 import com.alzzaipo.notification.application.port.out.email.FindEmailNotificationPort;
 import com.alzzaipo.notification.application.port.out.email.RegisterEmailNotificationPort;
 import com.alzzaipo.notification.application.port.out.email.UpdateEmailNotificataionPort;
 import com.alzzaipo.notification.domain.email.EmailNotification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +26,8 @@ public class EmailNotificationPersistenceAdapter implements
         UpdateEmailNotificataionPort,
         UnsubscribeEmailNotificationPort {
 
-    private final NewEmailNotificationRepository emailNotificationRepository;
-    private final NewMemberRepository memberRepository;
+    private final EmailNotificationRepository emailNotificationRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -37,7 +39,7 @@ public class EmailNotificationPersistenceAdapter implements
     @Override
     public void registerEmailNotification(EmailNotification emailNotification) {
         MemberJpaEntity memberJpaEntity = memberRepository.findByUid(emailNotification.getMemberUID().get())
-                .orElseThrow(() -> new RuntimeException("회원 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
 
         EmailNotificationJpaEntity emailNotificationJpaEntity = toJpaEntity(emailNotification, memberJpaEntity);
         emailNotificationRepository.save(emailNotificationJpaEntity);
@@ -47,7 +49,7 @@ public class EmailNotificationPersistenceAdapter implements
     public void updateEmailNotificataion(EmailNotification emailNotification) {
         EmailNotificationJpaEntity entity =
                 emailNotificationRepository.findByMemberUID(emailNotification.getMemberUID().get())
-                        .orElseThrow(() -> new RuntimeException("이메일 알림 조회 실패"));
+                        .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "이메일 알림 조회 실패"));
 
         entity.changeEmail(emailNotification.getEmail().get());
     }
@@ -56,7 +58,7 @@ public class EmailNotificationPersistenceAdapter implements
     public void unsubscribeEmailNotification(Uid memberUID) {
         EmailNotificationJpaEntity entity =
                 emailNotificationRepository.findByMemberUID(memberUID.get())
-                        .orElseThrow(() -> new RuntimeException("이메일 알림 조회 실패"));
+                        .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "이메일 알림 조회 실패"));
 
         emailNotificationRepository.delete(entity);
     }

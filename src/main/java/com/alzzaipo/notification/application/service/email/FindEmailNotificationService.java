@@ -1,12 +1,14 @@
 package com.alzzaipo.notification.application.service.email;
 
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.out.member.FindMemberPort;
 import com.alzzaipo.notification.application.port.dto.EmailNotificationStatus;
 import com.alzzaipo.notification.application.port.in.email.FindEmailNotificationStatusQuery;
 import com.alzzaipo.notification.application.port.out.email.FindEmailNotificationPort;
 import com.alzzaipo.notification.domain.email.EmailNotification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -32,7 +34,7 @@ public class FindEmailNotificationService implements FindEmailNotificationStatus
 
     private void validateMember(Uid memberUID) {
         findMemberPort.findMember(memberUID)
-                .orElseThrow(() -> new RuntimeException("회원 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
     }
 
 }

@@ -4,7 +4,7 @@ import com.alzzaipo.common.Email;
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
-import com.alzzaipo.member.adapter.out.persistence.member.NewMemberRepository;
+import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import com.alzzaipo.member.application.port.out.member.FindMemberSocialAccountsPort;
 import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountPort;
 import com.alzzaipo.member.application.port.out.account.social.RegisterSocialAccountPort;
@@ -26,8 +26,8 @@ public class SocialAccountPersistenceAdapter implements
         FindSocialAccountPort,
         FindMemberSocialAccountsPort {
 
-    private final NewMemberRepository memberRepository;
-    private final NewSocialAccountRepository socialAccountRepository;
+    private final MemberRepository memberRepository;
+    private final SocialAccountRepository socialAccountRepository;
 
     @Override
     public boolean registerSocialAccount(SocialAccount socialAccount) {

@@ -1,5 +1,6 @@
 package com.alzzaipo.member.application.service.account.local;
 
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.email.application.port.in.CheckEmailVerifiedQuery;
 import com.alzzaipo.email.application.port.out.DeleteOldEmailVerificationHistoryPort;
 import com.alzzaipo.common.Email;
@@ -13,6 +14,7 @@ import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.member.domain.account.local.LocalAccountId;
 import com.alzzaipo.member.domain.member.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -54,19 +56,19 @@ public class RegisterLocalAccountService implements RegisterLocalAccountUseCase 
 
     private void checkAccountIdAvailability(LocalAccountId localAccountId) {
         if (!checkLocalAccountIdAvailabilityQuery.checkLocalAccountIdAvailability(localAccountId)) {
-            throw new IllegalArgumentException("아이디 중복");
+            throw new CustomException(HttpStatus.CONFLICT, "아이디 중복");
         }
     }
 
     private void checkEmailAvailability(Email email) {
         if (!checkLocalAccountEmailAvailabilityQuery.checkLocalAccountEmailAvailability(email)) {
-            throw new IllegalArgumentException("이메일 중복");
+            throw new CustomException(HttpStatus.CONFLICT, "이메일 중복");
         }
     }
 
     private void checkEmailVerified(Email email) {
         if (!checkEmailVerifiedQuery.checkEmailVerified(email)) {
-            throw new IllegalArgumentException("인증되지 않은 이메일");
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "인증되지 않은 이메일");
         }
     }
 }

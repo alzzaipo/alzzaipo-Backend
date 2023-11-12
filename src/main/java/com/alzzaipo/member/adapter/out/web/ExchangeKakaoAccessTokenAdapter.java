@@ -1,5 +1,6 @@
 package com.alzzaipo.member.adapter.out.web;
 
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.out.dto.AccessToken;
 import com.alzzaipo.member.application.port.out.oauth.ExchangeKakaoAccessTokenPort;
@@ -36,7 +37,7 @@ public class ExchangeKakaoAccessTokenAdapter implements ExchangeKakaoAccessToken
         try {
             accessToken = exchangeAccessToken(authorizationCode.get());
         } catch (IOException e) {
-            throw new RuntimeException("카카오 액세스 토큰 교환 오류", e);
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "카카오 액세스 토큰 교환 오류");
         }
 
         return new AccessToken(accessToken);

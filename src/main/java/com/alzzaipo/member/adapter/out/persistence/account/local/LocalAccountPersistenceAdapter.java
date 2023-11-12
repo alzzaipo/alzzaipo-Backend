@@ -2,13 +2,15 @@ package com.alzzaipo.member.adapter.out.persistence.account.local;
 
 import com.alzzaipo.common.Email;
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
-import com.alzzaipo.member.adapter.out.persistence.member.NewMemberRepository;
+import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import com.alzzaipo.member.application.port.out.account.local.*;
 import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.member.domain.account.local.LocalAccountId;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +29,8 @@ public class LocalAccountPersistenceAdapter implements
 
     private final EntityManager entityManager;
 
-    private final NewLocalAccountRepository localAccountRepository;
-    private final NewMemberRepository memberRepository;
+    private final LocalAccountRepository localAccountRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -54,7 +56,7 @@ public class LocalAccountPersistenceAdapter implements
     @Override
     public void registerLocalAccountPort(SecureLocalAccount secureLocalAccount) {
         MemberJpaEntity memberJpaEntity = memberRepository.findByUid(secureLocalAccount.getMemberUID().get())
-                .orElseThrow(() -> new IllegalArgumentException("회원 엔티티 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 엔티티 조회 실패"));
 
         LocalAccountJpaEntity localAccountJpaEntity = toJpaEntity(memberJpaEntity, secureLocalAccount);
 

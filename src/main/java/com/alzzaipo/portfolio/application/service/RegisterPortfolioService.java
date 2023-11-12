@@ -1,5 +1,6 @@
 package com.alzzaipo.portfolio.application.service;
 
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.ipo.application.port.out.FindIpoByStockCodePort;
 import com.alzzaipo.ipo.domain.Ipo;
 import com.alzzaipo.member.application.port.out.member.FindMemberPort;
@@ -8,6 +9,7 @@ import com.alzzaipo.portfolio.application.in.RegisterPortfolioUseCase;
 import com.alzzaipo.portfolio.application.out.RegisterPortfolioPort;
 import com.alzzaipo.portfolio.domain.Portfolio;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,10 +23,10 @@ public class RegisterPortfolioService implements RegisterPortfolioUseCase {
     @Override
     public void registerPortfolio(RegisterPortfolioCommand command) {
         findMemberPort.findMember(command.getMemberUID())
-                .orElseThrow(() -> new RuntimeException("멤버 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
 
         Ipo ipo = findIpoByStockCodePort.findIpoByStockCodePort(command.getStockCode())
-                .orElseThrow(() -> new RuntimeException("공모주 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "공모주 조회 실패"));
 
         Portfolio portfolio = createPortfolio(command, ipo);
 
