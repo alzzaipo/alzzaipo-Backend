@@ -4,6 +4,7 @@ import com.alzzaipo.common.Email;
 import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.notification.adapter.in.web.email.dto.EmailDto;
 import com.alzzaipo.notification.application.port.dto.EmailNotificationStatus;
+import com.alzzaipo.notification.application.port.dto.SubscribeEmailNotificationCommand;
 import com.alzzaipo.notification.application.port.in.email.FindEmailNotificationStatusQuery;
 import com.alzzaipo.notification.application.port.in.email.SubscribeEmailNotificationUseCase;
 import com.alzzaipo.notification.application.port.in.email.UnsubscribeEmailNotificationUseCase;
@@ -25,11 +26,11 @@ public class EmailNotificationController {
 
     @PostMapping("/subscribe")
     public ResponseEntity<String> subscribeEmailNotification(@AuthenticationPrincipal MemberPrincipal principal,
-                                                             @RequestBody EmailDto dto) {
+                                                             @RequestBody EmailDto emailDto) {
+        SubscribeEmailNotificationCommand command
+                = createSubscribeEmailNotificationCommand(principal, emailDto);
 
-        subscribeEmailNotificationUseCase.subscribeEmailNotification(
-                principal.getMemberUID(),
-                new Email(dto.getEmail()));
+        subscribeEmailNotificationUseCase.subscribeEmailNotification(command);
 
         return ResponseEntity.ok("신청 완료");
     }
@@ -58,5 +59,12 @@ public class EmailNotificationController {
         unsubscribeEmailNotificationUseCase.unsubscribeEmailNotification(principal.getMemberUID());
 
         return ResponseEntity.ok("해지 완료");
+    }
+
+    private SubscribeEmailNotificationCommand createSubscribeEmailNotificationCommand(MemberPrincipal principal, EmailDto emailDto) {
+        return new SubscribeEmailNotificationCommand(
+                principal.getMemberUID(),
+                principal.getCurrentLoginType(),
+                new Email(emailDto.getEmail()));
     }
 }
