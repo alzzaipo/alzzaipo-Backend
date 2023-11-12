@@ -4,5 +4,5 @@ import com.alzzaipo.member.domain.account.social.SocialAccount;
 
 public interface RegisterSocialAccountPort {
 
-    boolean registerSocialAccount(SocialAccount socialAccount);
+    void registerSocialAccount(SocialAccount socialAccount);
 }

@@ -1,11 +1,10 @@
 package com.alzzaipo.member.adapter.in.web;
 
 import com.alzzaipo.common.MemberPrincipal;
-import com.alzzaipo.common.Uid;
-import com.alzzaipo.member.application.port.in.oauth.KakaoLoginUseCase;
-import com.alzzaipo.member.application.port.in.oauth.LinkKakaoAccountUseCase;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.in.dto.LoginResult;
+import com.alzzaipo.member.application.port.in.oauth.KakaoLoginUseCase;
+import com.alzzaipo.member.application.port.in.oauth.LinkKakaoAccountUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,14 +40,10 @@ public class OAuthController {
     @GetMapping("/kakao/link")
     public ResponseEntity<String> kakaoLink(@AuthenticationPrincipal MemberPrincipal principal,
                                             @RequestParam("code") String authCode) {
-        AuthorizationCode authorizationCode = new AuthorizationCode(authCode);
-        Uid memberUID = principal.getMemberUID();
+        linkKakaoAccountUseCase.linkKakaoAccount(
+                principal.getMemberUID(),
+                new AuthorizationCode(authCode));
 
-        boolean success = linkKakaoAccountUseCase.linkKakaoAccountUseCase(memberUID, authorizationCode);
-
-        if (success) {
-            return ResponseEntity.ok().body("연동 완료");
-        }
-        return ResponseEntity.badRequest().body("연동 실패");
+        return ResponseEntity.ok().body("연동 완료");
     }
 }
