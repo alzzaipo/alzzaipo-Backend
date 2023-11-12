@@ -1,6 +1,7 @@
 package com.alzzaipo.portfolio.adapter.out.persistence;
 
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.ipo.adapter.out.persistence.IpoJpaEntity;
 import com.alzzaipo.ipo.adapter.out.persistence.NewIpoRepository;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
@@ -9,6 +10,7 @@ import com.alzzaipo.portfolio.application.out.*;
 import com.alzzaipo.portfolio.domain.Portfolio;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +36,10 @@ public class PortfolioPersistenceAdapter implements
     @Override
     public void registerPortfolio(Portfolio portfolio) {
         MemberJpaEntity memberJpaEntity = memberRepository.findByUid(portfolio.getMemberUID().get())
-                .orElseThrow(() -> new RuntimeException("회원 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
 
         IpoJpaEntity ipoJpaEntity = ipoRepository.findByStockCode(portfolio.getStockCode())
-                .orElseThrow(() -> new RuntimeException("공모주 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "공모주 조회 실패"));
 
         PortfolioJpaEntity portfolioJpaEntity = toJpaEntity(
                 memberJpaEntity,
@@ -66,10 +68,10 @@ public class PortfolioPersistenceAdapter implements
     @Override
     public void updatePortfolio(Portfolio portfolio) {
         PortfolioJpaEntity oldEntity = portfolioRepository.findByPortfolioUID(portfolio.getPortfolioUID().get())
-                .orElseThrow(() -> new RuntimeException("포트폴리오 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
 
         IpoJpaEntity newIpoJpaEntity = ipoRepository.findByStockCode(portfolio.getStockCode())
-                .orElseThrow(() -> new RuntimeException("공모주 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "공모주 조회 실패"));
 
         PortfolioJpaEntity newEntity = toJpaEntity(
                 oldEntity.getMemberJpaEntity(),
@@ -84,7 +86,7 @@ public class PortfolioPersistenceAdapter implements
     @Override
     public void deletePortfolio(Uid portfolioUID) {
         PortfolioJpaEntity entity = portfolioRepository.findByPortfolioUID(portfolioUID.get())
-                .orElseThrow(() -> new RuntimeException("포트폴리오 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
 
         portfolioRepository.delete(entity);
     }

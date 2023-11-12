@@ -2,6 +2,7 @@ package com.alzzaipo.notification.application.service.email;
 
 import com.alzzaipo.common.Email;
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.email.application.port.out.CheckEmailVerifiedPort;
 import com.alzzaipo.email.application.port.out.DeleteOldEmailVerificationHistoryPort;
 import com.alzzaipo.member.application.port.out.member.FindMemberPort;
@@ -10,6 +11,7 @@ import com.alzzaipo.notification.application.port.out.email.FindEmailNotificatio
 import com.alzzaipo.notification.application.port.out.email.UpdateEmailNotificataionPort;
 import com.alzzaipo.notification.domain.email.EmailNotification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,13 +37,13 @@ public class UpdateEmailNotificationService implements UpdateEmailNotificationUs
 
     private void validateMemberAndEmail(Uid memberUID, Email newEmail) {
         findMemberPort.findMember(memberUID)
-                .orElseThrow(() -> new RuntimeException("회원 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
 
         findEmailNotificationPort.findEmailNotification(memberUID)
-                .orElseThrow(() -> new RuntimeException("이메일 알림 내역 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "이메일 알림 내역 조회 실패"));
 
         if (!checkEmailVerifiedPort.checkEmailVerified(newEmail)) {
-            throw new RuntimeException("오류 : 이메일 미인증");
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "오류 : 이메일 미인증");
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.alzzaipo.ipo.adapter.out.web;
 
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.ipo.application.port.out.QueryInitialMarketPricePort;
 import com.alzzaipo.ipo.application.port.out.dto.QueryInitialMarketPriceResult;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -44,7 +46,7 @@ public class QueryInitialMarketPriceAdapter implements QueryInitialMarketPricePo
             conn.setRequestProperty("Content-type", "application/json");
 
             if (conn.getResponseCode() < 200 || conn.getResponseCode() >= 300) {
-                throw new RuntimeException();
+                throw new CustomException(HttpStatus.valueOf(conn.getResponseCode()), "시초가 조회 실패", conn.getResponseMessage());
             }
 
             String response = readApiResponse(conn);

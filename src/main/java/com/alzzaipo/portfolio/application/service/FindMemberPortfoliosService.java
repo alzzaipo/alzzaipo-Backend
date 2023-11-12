@@ -1,6 +1,7 @@
 package com.alzzaipo.portfolio.application.service;
 
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.out.member.FindMemberPort;
 import com.alzzaipo.portfolio.application.dto.MemberPortfolioSummary;
 import com.alzzaipo.portfolio.application.dto.PortfolioView;
@@ -8,6 +9,7 @@ import com.alzzaipo.portfolio.application.in.FindMemberPortfoliosQuery;
 import com.alzzaipo.portfolio.application.out.FindMemberPortfoliosPort;
 import com.alzzaipo.portfolio.domain.Portfolio;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public class FindMemberPortfoliosService implements FindMemberPortfoliosQuery {
     @Override
     public MemberPortfolioSummary findMemberPortfolios(Uid memberUID) {
         findMemberPort.findMember(memberUID)
-                .orElseThrow(() -> new RuntimeException("회원 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
 
         List<PortfolioView> portfolioList = findMemberPortfoliosPort.findMemberPortfolios(memberUID)
                 .stream()

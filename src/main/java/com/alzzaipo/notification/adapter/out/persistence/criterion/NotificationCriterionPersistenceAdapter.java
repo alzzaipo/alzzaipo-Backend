@@ -1,12 +1,14 @@
 package com.alzzaipo.notification.adapter.out.persistence.criterion;
 
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.NewMemberRepository;
 import com.alzzaipo.notification.application.port.dto.UpdateNotificationCriterionCommand;
 import com.alzzaipo.notification.application.port.out.criterion.*;
 import com.alzzaipo.notification.domain.criterion.NotificationCriterion;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +33,7 @@ public class NotificationCriterionPersistenceAdapter implements
     @Override
     public void registerNotificationCriterion(NotificationCriterion notificationCriterion) {
         MemberJpaEntity memberJpaEntity = memberRepository.findByUid(notificationCriterion.getMemberUID().get())
-                .orElseThrow(() -> new RuntimeException("회원 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
 
         NotificationCriterionJpaEntity entity = toJpaEntity(notificationCriterion, memberJpaEntity);
         notificationCriterionRepository.save(entity);
@@ -58,7 +60,7 @@ public class NotificationCriterionPersistenceAdapter implements
         Long uid = command.getNotificationCriterionUID().get();
 
         NotificationCriterionJpaEntity entity = notificationCriterionRepository.findByNotificationCriterionUID(uid)
-                .orElseThrow(() -> new RuntimeException("알림 기준 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "알림 기준 조회 실패"));
 
         entity.changeMinCompetitionRate(command.getMinCompetitionRate());
         entity.changeMinLockupRate(command.getMinLockupRate());
@@ -69,7 +71,7 @@ public class NotificationCriterionPersistenceAdapter implements
         Long uid = notificationCriterionUID.get();
 
         NotificationCriterionJpaEntity entity = notificationCriterionRepository.findByNotificationCriterionUID(uid)
-                .orElseThrow(() -> new RuntimeException("알림 기준 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "알림 기준 조회 실패"));
 
         notificationCriterionRepository.delete(entity);
     }

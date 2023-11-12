@@ -1,6 +1,7 @@
 package com.alzzaipo.notification.application.service.criterion;
 
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.out.member.FindMemberPort;
 import com.alzzaipo.notification.application.port.dto.RegisterNotificationCriterionCommand;
 import com.alzzaipo.notification.application.port.in.criterion.RegisterNotificationCriterionUseCase;
@@ -9,6 +10,7 @@ import com.alzzaipo.notification.application.port.out.criterion.RegisterNotifica
 import com.alzzaipo.notification.domain.criterion.NotificationCriterion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,7 +36,7 @@ public class RegisterNotificationCriterionService implements RegisterNotificatio
 
     private void verifyMemberUidValid(Uid memberUID) {
         findMemberPort.findMember(memberUID)
-                .orElseThrow(() -> new RuntimeException("회원 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
     }
 
     private void verifyNotificationCriteriaLimitReached(RegisterNotificationCriterionCommand command) {
@@ -42,7 +44,7 @@ public class RegisterNotificationCriterionService implements RegisterNotificatio
                 = findMemberNotificationCriteriaPort.findMemberNotificationCriteria(command.getMemberUID()).size();
 
         if (totalCount >= NOTIFICATION_CRITERIA_LIMIT) {
-            throw new RuntimeException("오류 : 알림 기준 최대 개수 도달");
+            throw new CustomException(HttpStatus.FORBIDDEN, "오류 : 알림 기준 최대 개수 도달");
         }
     }
 

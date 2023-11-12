@@ -2,17 +2,19 @@ package com.alzzaipo.member.application.service.account.social;
 
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.Uid;
-import com.alzzaipo.member.application.port.in.oauth.LinkKakaoAccountUseCase;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
-import com.alzzaipo.member.application.port.out.oauth.ExchangeKakaoAccessTokenPort;
-import com.alzzaipo.member.application.port.out.oauth.FetchKakaoUserProfilePort;
+import com.alzzaipo.member.application.port.in.oauth.LinkKakaoAccountUseCase;
 import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountPort;
 import com.alzzaipo.member.application.port.out.account.social.RegisterSocialAccountPort;
 import com.alzzaipo.member.application.port.out.dto.AccessToken;
 import com.alzzaipo.member.application.port.out.dto.FindSocialAccountCommand;
 import com.alzzaipo.member.application.port.out.dto.UserProfile;
+import com.alzzaipo.member.application.port.out.oauth.ExchangeKakaoAccessTokenPort;
+import com.alzzaipo.member.application.port.out.oauth.FetchKakaoUserProfilePort;
 import com.alzzaipo.member.domain.account.social.SocialAccount;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -46,12 +48,12 @@ public class LinkKakaoAccountService implements LinkKakaoAccountUseCase {
         return result;
     }
 
-    private void checkLinkedKakaoAccountExists(UserProfile userProfile) throws RuntimeException {
+    private void checkLinkedKakaoAccountExists(UserProfile userProfile) {
         FindSocialAccountCommand findSocialAccountCommand
                 = new FindSocialAccountCommand(KAKAO_LOGIN_TYPE, userProfile.getEmail());
 
         if (findSocialAccountPort.findSocialAccount(findSocialAccountCommand).isPresent()) {
-            throw new RuntimeException("이미 연동된 계정이 존재합니다.");
+            throw new CustomException(HttpStatus.CONFLICT, "이미 연동된 계정이 존재합니다.");
         }
     }
 }

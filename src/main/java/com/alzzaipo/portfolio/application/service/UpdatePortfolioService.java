@@ -1,5 +1,6 @@
 package com.alzzaipo.portfolio.application.service;
 
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.ipo.application.port.out.FindIpoByStockCodePort;
 import com.alzzaipo.ipo.domain.Ipo;
 import com.alzzaipo.portfolio.application.dto.UpdatePortfolioCommand;
@@ -8,6 +9,7 @@ import com.alzzaipo.portfolio.application.out.FindPortfolioPort;
 import com.alzzaipo.portfolio.application.out.UpdatePortfolioPort;
 import com.alzzaipo.portfolio.domain.Portfolio;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,14 +23,14 @@ public class UpdatePortfolioService implements UpdatePortfolioUseCase {
     @Override
     public void updatePortfolio(UpdatePortfolioCommand command) {
         Portfolio targetPortfolio = findPortfolioPort.findPortfolio(command.getPortfolioUID())
-                .orElseThrow(() -> new RuntimeException("포트폴리오 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
 
         if (!targetPortfolio.getMemberUID().equals(command.getMemberUID())) {
-            throw new RuntimeException("포트폴리오 권한 없음");
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "포트폴리오 권한 없음");
         }
 
         Ipo ipo = findIpoByStockCodePort.findIpoByStockCodePort(command.getStockCode())
-                .orElseThrow(() -> new RuntimeException("공모주 조회 실패"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "공모주 조회 실패"));
 
         Portfolio newPortfolio = createPortfolio(command, ipo);
 

@@ -2,6 +2,7 @@ package com.alzzaipo.notification.application.service.email;
 
 import com.alzzaipo.common.Email;
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.email.application.port.out.CheckEmailVerifiedPort;
 import com.alzzaipo.email.application.port.out.DeleteOldEmailVerificationHistoryPort;
 import com.alzzaipo.notification.application.port.in.email.SubscribeEmailNotificationUseCase;
@@ -9,6 +10,7 @@ import com.alzzaipo.notification.application.port.out.email.FindEmailNotificatio
 import com.alzzaipo.notification.application.port.out.email.RegisterEmailNotificationPort;
 import com.alzzaipo.notification.domain.email.EmailNotification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -36,11 +38,11 @@ public class SubscribeEmailNotificationService implements SubscribeEmailNotifica
         Optional<EmailNotification> optionalEmailNotification = findEmailNotificationPort.findEmailNotification(memberUID);
 
         if (optionalEmailNotification.isPresent()) {
-            throw new RuntimeException("오류 : 이미 구독된 상태");
+            throw new CustomException(HttpStatus.CONFLICT, "오류 : 이미 구독된 상태");
         }
 
         if (!checkEmailVerifiedPort.checkEmailVerified(email)) {
-            throw new RuntimeException("오류 : 미인증 이메일");
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "오류 : 미인증 이메일");
         }
     }
 }

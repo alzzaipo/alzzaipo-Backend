@@ -1,5 +1,6 @@
 package com.alzzaipo.member.adapter.out.web;
 
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.out.dto.AccessToken;
 import com.alzzaipo.member.application.port.out.dto.UserProfile;
 import com.alzzaipo.member.application.port.out.oauth.FetchKakaoUserProfilePort;
@@ -7,10 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,7 +27,7 @@ public class FetchKakaoUserProfileAdapter implements FetchKakaoUserProfilePort {
         try {
             userProfile = fetchUserProfile(accessToken);
         } catch (IOException e) {
-            throw new RuntimeException("카카오 사용자 프로필 조회 오류", e);
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "카카오 사용자 프로필 조회 오류");
         }
 
         return userProfile;
