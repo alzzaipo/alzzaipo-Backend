@@ -78,8 +78,8 @@ public class JwtFilter extends OncePerRequestFilter {
             "/member/verify-email",
             "/member/register",
             "/member/login",
-            "/ipo/*",
-            "/email/*",
+            "/ipo",
+            "/email",
             "/scraper",
             "/oauth/kakao/login");
 
