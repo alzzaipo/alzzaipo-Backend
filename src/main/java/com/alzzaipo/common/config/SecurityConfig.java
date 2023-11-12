@@ -50,12 +50,15 @@ public class SecurityConfig {
                                 "/member/verify-email",
                                 "/member/register",
                                 "/member/login",
-                                "/**"
+                                "/ipo/**",
+                                "/email/**",
+                                "/scraper",
+                                "/oauth/kakao/login"
                         ).permitAll()
                         .requestMatchers(
                                 "/portfolio/**",
                                 "/member/**",
-                                "/social/kakao/connect",
+                                "/oauth/kakao/*",
                                 "/notification/**"
                         ).authenticated()
                 )
@@ -76,6 +79,7 @@ public class SecurityConfig {
                 "/member/login",
                 "/ipo/**",
                 "/email/**",
-                "/scraper");
+                "/scraper",
+                "/oauth/kakao/login");
     }
 }
