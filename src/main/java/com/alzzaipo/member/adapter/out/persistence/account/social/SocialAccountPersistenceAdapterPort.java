@@ -6,6 +6,7 @@ import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
+import com.alzzaipo.member.application.port.out.account.social.DeleteSocialAccountPort;
 import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountByLoginTypePort;
 import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountPort;
 import com.alzzaipo.member.application.port.out.account.social.RegisterSocialAccountPort;
@@ -28,7 +29,8 @@ public class SocialAccountPersistenceAdapterPort implements
         RegisterSocialAccountPort,
         FindSocialAccountPort,
         FindMemberSocialAccountsPort,
-        FindSocialAccountByLoginTypePort {
+        FindSocialAccountByLoginTypePort,
+        DeleteSocialAccountPort {
 
     private final MemberRepository memberRepository;
     private final SocialAccountRepository socialAccountRepository;
@@ -43,6 +45,7 @@ public class SocialAccountPersistenceAdapterPort implements
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<SocialAccount> findSocialAccount(FindSocialAccountCommand command) {
         LoginType loginType = command.getLoginType();
         String email = command.getEmail().get();
@@ -52,6 +55,7 @@ public class SocialAccountPersistenceAdapterPort implements
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SocialAccount> findMemberSocialAccounts(Uid memberUID) {
         return socialAccountRepository.findByMemberUID(memberUID.get())
                 .stream()
@@ -60,9 +64,21 @@ public class SocialAccountPersistenceAdapterPort implements
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<SocialAccount> findSocialAccountByLoginType(Uid memberUID, LoginType loginType) {
         return socialAccountRepository.findByLoginType(memberUID.get(), loginType.name())
                 .map(this::toDomainEntity);
+    }
+
+    @Override
+    public void deleteSocialAccount(Uid memberUID, LoginType loginType) {
+        memberRepository.findByUid(memberUID.get())
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
+
+        SocialAccountJpaEntity socialAccountJpaEntity = socialAccountRepository.findByLoginType(memberUID.get(), loginType.name())
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "계정 조회 실패"));
+
+        socialAccountRepository.delete(socialAccountJpaEntity);
     }
 
     private SocialAccountJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity, SocialAccount socialAccount) {
