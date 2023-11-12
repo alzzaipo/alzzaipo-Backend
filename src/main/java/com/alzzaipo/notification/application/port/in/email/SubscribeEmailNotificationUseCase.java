@@ -1,9 +1,8 @@
 package com.alzzaipo.notification.application.port.in.email;
 
-import com.alzzaipo.common.Email;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.notification.application.port.dto.SubscribeEmailNotificationCommand;
 
 public interface SubscribeEmailNotificationUseCase {
 
-    void subscribeEmailNotification(Uid memberUID, Email email);
+    void subscribeEmailNotification(SubscribeEmailNotificationCommand command);
 }
