@@ -23,7 +23,7 @@ public class MemberPersistenceAdapterPort implements
         ChangeMemberNicknamePort,
         WithdrawMemberPort {
 
-    private final NewMemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public void registerMember(Member member) {

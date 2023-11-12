@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class NewKakaoLoginService implements KakaoLoginUseCase {
+public class KakaoLoginService implements KakaoLoginUseCase {
 
     private final static LoginType LOGIN_TYPE = LoginType.KAKAO;
 

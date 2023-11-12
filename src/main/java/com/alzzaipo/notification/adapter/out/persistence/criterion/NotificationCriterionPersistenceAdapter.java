@@ -3,7 +3,7 @@ package com.alzzaipo.notification.adapter.out.persistence.criterion;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
-import com.alzzaipo.member.adapter.out.persistence.member.NewMemberRepository;
+import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import com.alzzaipo.notification.application.port.dto.UpdateNotificationCriterionCommand;
 import com.alzzaipo.notification.application.port.out.criterion.*;
 import com.alzzaipo.notification.domain.criterion.NotificationCriterion;
@@ -27,8 +27,8 @@ public class NotificationCriterionPersistenceAdapter implements
         DeleteNotificationCriterionPort,
         FindAllNotificationCriterionPort {
 
-    private final NewNotificationCriterionRepository notificationCriterionRepository;
-    private final NewMemberRepository memberRepository;
+    private final NotificationCriterionRepository notificationCriterionRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public void registerNotificationCriterion(NotificationCriterion notificationCriterion) {

@@ -4,7 +4,7 @@ import com.alzzaipo.common.Email;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
-import com.alzzaipo.member.adapter.out.persistence.member.NewMemberRepository;
+import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import com.alzzaipo.notification.application.port.out.UnsubscribeEmailNotificationPort;
 import com.alzzaipo.notification.application.port.out.email.FindEmailNotificationPort;
 import com.alzzaipo.notification.application.port.out.email.RegisterEmailNotificationPort;
@@ -26,8 +26,8 @@ public class EmailNotificationPersistenceAdapter implements
         UpdateEmailNotificataionPort,
         UnsubscribeEmailNotificationPort {
 
-    private final NewEmailNotificationRepository emailNotificationRepository;
-    private final NewMemberRepository memberRepository;
+    private final EmailNotificationRepository emailNotificationRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional(readOnly = true)

@@ -4,7 +4,7 @@ import com.alzzaipo.common.Email;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
-import com.alzzaipo.member.adapter.out.persistence.member.NewMemberRepository;
+import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import com.alzzaipo.member.application.port.out.account.local.*;
 import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.member.domain.account.local.LocalAccountId;
@@ -29,8 +29,8 @@ public class LocalAccountPersistenceAdapter implements
 
     private final EntityManager entityManager;
 
-    private final NewLocalAccountRepository localAccountRepository;
-    private final NewMemberRepository memberRepository;
+    private final LocalAccountRepository localAccountRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional(readOnly = true)

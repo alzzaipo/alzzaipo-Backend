@@ -3,9 +3,9 @@ package com.alzzaipo.portfolio.adapter.out.persistence;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.ipo.adapter.out.persistence.IpoJpaEntity;
-import com.alzzaipo.ipo.adapter.out.persistence.NewIpoRepository;
+import com.alzzaipo.ipo.adapter.out.persistence.IpoRepository;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
-import com.alzzaipo.member.adapter.out.persistence.member.NewMemberRepository;
+import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import com.alzzaipo.portfolio.application.out.*;
 import com.alzzaipo.portfolio.domain.Portfolio;
 import jakarta.persistence.EntityManager;
@@ -28,9 +28,9 @@ public class PortfolioPersistenceAdapter implements
         UpdatePortfolioPort,
         DeletePortfolioPort {
 
-    private final NewPortfolioRepository portfolioRepository;
-    private final NewIpoRepository ipoRepository;
-    private final NewMemberRepository memberRepository;
+    private final PortfolioRepository portfolioRepository;
+    private final IpoRepository ipoRepository;
+    private final MemberRepository memberRepository;
     private final EntityManager entityManager;
 
     @Override

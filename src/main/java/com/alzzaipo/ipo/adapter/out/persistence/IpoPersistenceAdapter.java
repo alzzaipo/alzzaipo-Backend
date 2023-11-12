@@ -24,7 +24,7 @@ public class IpoPersistenceAdapter implements
         FindNotListedIposPort,
         UpdateListedIpoPort {
 
-    private final NewIpoRepository ipoRepository;
+    private final IpoRepository ipoRepository;
     private final IpoMapper ipoMapper;
 
     @Override
