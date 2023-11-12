@@ -5,10 +5,11 @@ import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
-import com.alzzaipo.member.application.port.out.member.FindMemberSocialAccountsPort;
+import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountByLoginTypePort;
 import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountPort;
 import com.alzzaipo.member.application.port.out.account.social.RegisterSocialAccountPort;
 import com.alzzaipo.member.application.port.out.dto.FindSocialAccountCommand;
+import com.alzzaipo.member.application.port.out.member.FindMemberSocialAccountsPort;
 import com.alzzaipo.member.domain.account.social.SocialAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,10 +22,11 @@ import java.util.stream.Collectors;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class SocialAccountPersistenceAdapter implements
+public class SocialAccountPersistenceAdapterPort implements
         RegisterSocialAccountPort,
         FindSocialAccountPort,
-        FindMemberSocialAccountsPort {
+        FindMemberSocialAccountsPort,
+        FindSocialAccountByLoginTypePort {
 
     private final MemberRepository memberRepository;
     private final SocialAccountRepository socialAccountRepository;
@@ -57,6 +59,12 @@ public class SocialAccountPersistenceAdapter implements
                 .stream()
                 .map(this::toDomainEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<SocialAccount> findSocialAccountByLoginType(Uid memberUID, LoginType loginType) {
+        return socialAccountRepository.findByLoginType(memberUID.get(), loginType.name())
+                .map(this::toDomainEntity);
     }
 
     private SocialAccountJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity, SocialAccount socialAccount) {
