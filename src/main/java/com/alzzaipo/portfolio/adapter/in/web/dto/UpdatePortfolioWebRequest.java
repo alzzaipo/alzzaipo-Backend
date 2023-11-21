@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UpdatePortfolioWebRequest {
 
-    private Long uid;
+    private String uid;
     private int stockCode;
     private int sharesCnt;
     private Long profit;

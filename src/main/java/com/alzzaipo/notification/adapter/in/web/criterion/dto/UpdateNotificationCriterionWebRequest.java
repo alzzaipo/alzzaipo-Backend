@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UpdateNotificationCriterionWebRequest {
 
-    private Long uid;
+    private String uid;
     private int competitionRate;
     private int lockupRate;
 }

@@ -1,6 +1,7 @@
 package com.alzzaipo.portfolio.adapter.in.web;
 
 import com.alzzaipo.common.MemberPrincipal;
+import com.alzzaipo.common.TsidUtil;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.portfolio.adapter.in.web.dto.RegisterPortfolioWebRequest;
 import com.alzzaipo.portfolio.adapter.in.web.dto.UpdatePortfolioWebRequest;
@@ -64,10 +65,10 @@ public class PortfolioController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(@AuthenticationPrincipal MemberPrincipal principal,
-                                         @RequestParam("uid") Long portfolioUID) {
+                                         @RequestParam("uid") String uid) {
         DeletePortfolioCommand command = new DeletePortfolioCommand(
                 principal.getMemberUID(),
-                new Uid(portfolioUID));
+                new Uid(TsidUtil.toLong(uid)));
 
         deletePortfolioUseCase.deletePortfolio(command);
 
@@ -86,7 +87,7 @@ public class PortfolioController {
 
     private UpdatePortfolioCommand toUpdateMemberPortfolioCommand(MemberPrincipal principal, UpdatePortfolioWebRequest dto) {
         return new UpdatePortfolioCommand(
-                new Uid(dto.getUid()),
+                new Uid(TsidUtil.toLong(dto.getUid())),
                 principal.getMemberUID(),
                 dto.getStockCode(),
                 dto.getSharesCnt(),

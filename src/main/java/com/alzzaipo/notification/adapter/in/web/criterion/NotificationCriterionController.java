@@ -1,6 +1,7 @@
 package com.alzzaipo.notification.adapter.in.web.criterion;
 
 import com.alzzaipo.common.MemberPrincipal;
+import com.alzzaipo.common.TsidUtil;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.notification.adapter.in.web.criterion.dto.RegisterNotificationCriterionWebRequest;
 import com.alzzaipo.notification.adapter.in.web.criterion.dto.UpdateNotificationCriterionWebRequest;
@@ -57,7 +58,7 @@ public class NotificationCriterionController {
                                                               @RequestBody UpdateNotificationCriterionWebRequest dto) {
         UpdateNotificationCriterionCommand command = new UpdateNotificationCriterionCommand(
                 principal.getMemberUID(),
-                new Uid(dto.getUid()),
+                new Uid(TsidUtil.toLong(dto.getUid())),
                 dto.getCompetitionRate(),
                 dto.getLockupRate());
 
@@ -68,10 +69,10 @@ public class NotificationCriterionController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
-                                                              @RequestParam("uid") Long notificationCriterionUID) {
+                                                              @RequestParam("uid") String uid) {
         DeleteNotificationCriterionCommand command = new DeleteNotificationCriterionCommand(
                 principal.getMemberUID(),
-                new Uid(notificationCriterionUID));
+                new Uid(TsidUtil.toLong(uid)));
 
         deleteNotificationCriterionUseCase.deleteNotificationCriterion(command);
 

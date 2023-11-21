@@ -1,11 +1,12 @@
 package com.alzzaipo.portfolio.application.dto;
 
+import com.alzzaipo.common.TsidUtil;
 import lombok.Getter;
 
 @Getter
 public class PortfolioView {
 
-    private final Long uid;
+    private final String uid;
 
     private final String stockName;
 
@@ -22,7 +23,7 @@ public class PortfolioView {
     private final String memo;
 
     public PortfolioView(Long uid, String stockName, int stockCode, int sharesCnt, Long profit, Long profitRate, String agents, String memo) {
-        this.uid = uid;
+        this.uid = TsidUtil.toString(uid);
         this.stockName = stockName;
         this.stockCode = stockCode;
         this.sharesCnt = sharesCnt;
