@@ -30,16 +30,16 @@ public class QueryInitialMarketPriceAdapter implements QueryInitialMarketPricePo
     private final String endpoint = "http://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo";
 
     @Override
-    public QueryInitialMarketPriceResult queryInitialMarketPrice(int stockCode, LocalDate date) {
+    public QueryInitialMarketPriceResult queryInitialMarketPrice(int stockCode, LocalDate listedDate) {
         boolean success = true;
         int initialMarketPrice = 0;
 
-        if (date.isAfter(LocalDate.now())) {
+        if (listedDate.isBefore(LocalDate.now())) {
             return new QueryInitialMarketPriceResult(false, 0);
         }
 
         try {
-            URL url = buildURL(date, stockCode);
+            URL url = buildURL(listedDate, stockCode);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
