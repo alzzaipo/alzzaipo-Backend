@@ -1,5 +1,6 @@
 package com.alzzaipo.portfolio.adapter.in.web.dto;
 
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,9 +10,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RegisterPortfolioWebRequest {
 
-    private int stockCode;
-    private int sharesCnt;
-    private Long profit;
-    private String agents;
-    private String memo;
+	@Min(value = 1)
+	private int stockCode;
+
+	@Min(value = 0)
+	private int sharesCnt;
+
+	private long profit;
+
+	private String agents;
+
+	private String memo;
 }

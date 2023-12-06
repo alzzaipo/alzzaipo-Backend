@@ -13,69 +13,83 @@ import com.alzzaipo.notification.application.port.in.criterion.DeleteNotificatio
 import com.alzzaipo.notification.application.port.in.criterion.FindMemberNotificationCriteriaQuery;
 import com.alzzaipo.notification.application.port.in.criterion.RegisterNotificationCriterionUseCase;
 import com.alzzaipo.notification.application.port.in.criterion.UpdateNotificationCriterionUseCase;
+import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/notification/criteria")
 @RequiredArgsConstructor
 public class NotificationCriterionController {
 
-    private final RegisterNotificationCriterionUseCase registerNotificationCriterionUseCase;
-    private final FindMemberNotificationCriteriaQuery findMemberNotificationCriteriaQuery;
-    private final UpdateNotificationCriterionUseCase updateNotificationCriterionUseCase;
-    private final DeleteNotificationCriterionUseCase deleteNotificationCriterionUseCase;
+	private final RegisterNotificationCriterionUseCase registerNotificationCriterionUseCase;
+	private final FindMemberNotificationCriteriaQuery findMemberNotificationCriteriaQuery;
+	private final UpdateNotificationCriterionUseCase updateNotificationCriterionUseCase;
+	private final DeleteNotificationCriterionUseCase deleteNotificationCriterionUseCase;
 
-    @PostMapping("add")
-    public ResponseEntity<String> addNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
-                                                           @RequestBody RegisterNotificationCriterionWebRequest dto) {
-        RegisterNotificationCriterionCommand command = new RegisterNotificationCriterionCommand(
-                principal.getMemberUID(),
-                dto.getCompetitionRate(),
-                dto.getLockupRate());
+	@PostMapping("add")
+	public ResponseEntity<String> addNotificationCriterion(
+		@AuthenticationPrincipal MemberPrincipal principal,
+		@Valid @RequestBody RegisterNotificationCriterionWebRequest dto) {
 
-        registerNotificationCriterionUseCase.registerNotificationCriterion(command);
+		RegisterNotificationCriterionCommand command = new RegisterNotificationCriterionCommand(
+			principal.getMemberUID(),
+			dto.getCompetitionRate(),
+			dto.getLockupRate());
 
-        return ResponseEntity.ok().body("알림 기준 추가 완료");
-    }
+		registerNotificationCriterionUseCase.registerNotificationCriterion(command);
 
-    @GetMapping("/list")
-    public ResponseEntity<List<NotificationCriterionView>> findMemberNotificationCriteria(
-            @AuthenticationPrincipal MemberPrincipal principal) {
+		return ResponseEntity.ok().body("알림 기준 추가 완료");
+	}
 
-        List<NotificationCriterionView> memberNotificationCriteria
-                = findMemberNotificationCriteriaQuery.findMemberNotificationCriteria(principal.getMemberUID());
+	@GetMapping("/list")
+	public ResponseEntity<List<NotificationCriterionView>> findMemberNotificationCriteria(
+		@AuthenticationPrincipal MemberPrincipal principal) {
 
-        return ResponseEntity.ok().body(memberNotificationCriteria);
-    }
+		List<NotificationCriterionView> memberNotificationCriteria
+			= findMemberNotificationCriteriaQuery.findMemberNotificationCriteria(
+			principal.getMemberUID());
 
-    @PutMapping("/update")
-    public ResponseEntity<String> updateNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
-                                                              @RequestBody UpdateNotificationCriterionWebRequest dto) {
-        UpdateNotificationCriterionCommand command = new UpdateNotificationCriterionCommand(
-                principal.getMemberUID(),
-                new Uid(TsidUtil.toLong(dto.getUid())),
-                dto.getCompetitionRate(),
-                dto.getLockupRate());
+		return ResponseEntity.ok().body(memberNotificationCriteria);
+	}
 
-        updateNotificationCriterionUseCase.updateNotificationCriterion(command);
+	@PutMapping("/update")
+	public ResponseEntity<String> updateNotificationCriterion(
+		@AuthenticationPrincipal MemberPrincipal principal,
+		@Valid @RequestBody UpdateNotificationCriterionWebRequest dto) {
 
-        return ResponseEntity.ok().body("알림 기준 수정 완료");
-    }
+		UpdateNotificationCriterionCommand command = new UpdateNotificationCriterionCommand(
+			principal.getMemberUID(),
+			new Uid(TsidUtil.toLong(dto.getUid())),
+			dto.getCompetitionRate(),
+			dto.getLockupRate());
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
-                                                              @RequestParam("uid") String uid) {
-        DeleteNotificationCriterionCommand command = new DeleteNotificationCriterionCommand(
-                principal.getMemberUID(),
-                new Uid(TsidUtil.toLong(uid)));
+		updateNotificationCriterionUseCase.updateNotificationCriterion(command);
 
-        deleteNotificationCriterionUseCase.deleteNotificationCriterion(command);
+		return ResponseEntity.ok().body("알림 기준 수정 완료");
+	}
 
-        return ResponseEntity.ok().body("알림 기준 삭제 완료");
-    }
+	@DeleteMapping("/delete")
+	public ResponseEntity<String> deleteNotificationCriterion(
+		@AuthenticationPrincipal MemberPrincipal principal,
+		@RequestParam("uid") String uid) {
+
+		DeleteNotificationCriterionCommand command = new DeleteNotificationCriterionCommand(
+			principal.getMemberUID(),
+			new Uid(TsidUtil.toLong(uid)));
+
+		deleteNotificationCriterionUseCase.deleteNotificationCriterion(command);
+
+		return ResponseEntity.ok().body("알림 기준 삭제 완료");
+	}
 }

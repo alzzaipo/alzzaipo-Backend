@@ -1,11 +1,12 @@
 package com.alzzaipo.email.adapter.in.web;
 
+import com.alzzaipo.common.Email;
 import com.alzzaipo.email.adapter.in.web.dto.EmailDto;
 import com.alzzaipo.email.adapter.in.web.dto.VerifyEmailVerificationCodeWebRequest;
 import com.alzzaipo.email.application.port.in.SendEmailVerificationCodeUseCase;
 import com.alzzaipo.email.application.port.in.VerifyEmailVerificationCodeUseCase;
-import com.alzzaipo.common.Email;
 import com.alzzaipo.email.domain.EmailVerificationCode;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,24 +20,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class EmailController {
 
-    private final SendEmailVerificationCodeUseCase sendEmailVerificationCodeUseCase;
-    private final VerifyEmailVerificationCodeUseCase verifyEmailVerificationCodeUseCase;
+	private final SendEmailVerificationCodeUseCase sendEmailVerificationCodeUseCase;
+	private final VerifyEmailVerificationCodeUseCase verifyEmailVerificationCodeUseCase;
 
-    @PostMapping("/send-verification-code")
-    public ResponseEntity<String> sendVerificationCode(@RequestBody EmailDto dto) {
-        sendEmailVerificationCodeUseCase.sendEmailVerificationCode(new Email(dto.getEmail()));
-        return ResponseEntity.ok().body("인증메일 전송 완료");
-    }
+	@PostMapping("/send-verification-code")
+	public ResponseEntity<String> sendVerificationCode(@Valid @RequestBody EmailDto dto) {
+		sendEmailVerificationCodeUseCase.sendEmailVerificationCode(new Email(dto.getEmail()));
+		return ResponseEntity.ok().body("인증메일 전송 완료");
+	}
 
-    @PostMapping("/validate-verification-code")
-    public ResponseEntity<String> validateVerificationCode(@RequestBody VerifyEmailVerificationCodeWebRequest dto) {
-        Email email = new Email(dto.getEmail());
-        EmailVerificationCode verificationCode = new EmailVerificationCode(dto.getVerificationCode());
+	@PostMapping("/validate-verification-code")
+	public ResponseEntity<String> validateVerificationCode(
+		@Valid @RequestBody VerifyEmailVerificationCodeWebRequest dto) {
 
-        if (!verifyEmailVerificationCodeUseCase.verifyEmailVerificationCode(email, verificationCode)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
-        }
+		Email email = new Email(dto.getEmail());
 
-        return ResponseEntity.ok().body("인증 성공");
-    }
+		EmailVerificationCode verificationCode = new EmailVerificationCode(
+			dto.getVerificationCode());
+
+		if (!verifyEmailVerificationCodeUseCase.verifyEmailVerificationCode(email,
+			verificationCode)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
+		}
+
+		return ResponseEntity.ok().body("인증 성공");
+	}
 }
