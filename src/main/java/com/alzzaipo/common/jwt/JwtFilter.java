@@ -2,7 +2,6 @@ package com.alzzaipo.common.jwt;
 
 import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.common.Uid;
-import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -16,7 +15,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 
 		if (authorization == null || !authorization.startsWith("Bearer ")) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 누락");
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증 실패");
 			return;
 		}
 
@@ -49,25 +47,27 @@ public class JwtFilter extends OncePerRequestFilter {
 		try {
 			MemberPrincipal memberPrincipal = createPrincipalFromToken(token);
 
-			validateMemberUid(memberPrincipal.getMemberUID());
+			if (!verifyMemberId(memberPrincipal.getMemberUID())) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "회원 조회 실패");
+				return;
+			}
 
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 				memberPrincipal,
 				null,
 				List.of(new SimpleGrantedAuthority("USER")));
 
-			authenticationToken.setDetails(
-				new WebAuthenticationDetailsSource().buildDetails(request));
+			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 		} catch (ExpiredJwtException e) {
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 만료");
 			return;
 		} catch (SignatureException e) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 검증 실패");
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증 실패");
 			return;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "토큰 오류");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "인증 실패");
 			return;
 		}
 
@@ -80,9 +80,8 @@ public class JwtFilter extends OncePerRequestFilter {
 			jwtUtil.getLoginType(token));
 	}
 
-	private void validateMemberUid(Uid memberUID) {
-		memberRepository.findById(memberUID.get())
-			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
+	private boolean verifyMemberId(Uid memberUID) {
+		return memberRepository.findById(memberUID.get()).isPresent();
 	}
 
 	@Override
