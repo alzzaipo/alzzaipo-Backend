@@ -38,8 +38,8 @@ public class EmailNotificationPersistenceAdapter implements
 
     @Override
     public void registerEmailNotification(EmailNotification emailNotification) {
-        MemberJpaEntity memberJpaEntity = memberRepository.findByUid(emailNotification.getMemberUID().get())
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
+        MemberJpaEntity memberJpaEntity =
+            memberRepository.findEntityById(emailNotification.getMemberUID().get());
 
         EmailNotificationJpaEntity emailNotificationJpaEntity = toJpaEntity(emailNotification, memberJpaEntity);
         emailNotificationRepository.save(emailNotificationJpaEntity);

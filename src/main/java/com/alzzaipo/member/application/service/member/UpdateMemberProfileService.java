@@ -31,8 +31,7 @@ public class UpdateMemberProfileService implements UpdateMemberProfileUseCase {
     @Override
     @Transactional
     public void updateMemberProfile(UpdateMemberProfileCommand command) {
-        Member member = findMemberPort.findMember(command.getMemberUID())
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
+        Member member = findMemberPort.findMember(command.getMemberUID());
 
         changeMemberNickname(command);
 

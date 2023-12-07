@@ -32,8 +32,8 @@ public class NotificationCriterionPersistenceAdapter implements
 
     @Override
     public void registerNotificationCriterion(NotificationCriterion notificationCriterion) {
-        MemberJpaEntity memberJpaEntity = memberRepository.findByUid(notificationCriterion.getMemberUID().get())
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
+        MemberJpaEntity memberJpaEntity
+            = memberRepository.findEntityById(notificationCriterion.getMemberUID().get());
 
         NotificationCriterionJpaEntity entity = toJpaEntity(notificationCriterion, memberJpaEntity);
         notificationCriterionRepository.save(entity);

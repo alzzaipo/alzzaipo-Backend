@@ -37,8 +37,7 @@ public class SocialAccountPersistenceAdapterPort implements
 	@Override
 	public void registerSocialAccount(SocialAccount socialAccount) {
 		MemberJpaEntity memberJpaEntity =
-			memberRepository.findByUid(socialAccount.getMemberUID().get())
-				.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
+			memberRepository.findEntityById(socialAccount.getMemberUID().get());
 
 		SocialAccountJpaEntity socialAccountJpaEntity = toJpaEntity(memberJpaEntity, socialAccount);
 		socialAccountRepository.save(socialAccountJpaEntity);
