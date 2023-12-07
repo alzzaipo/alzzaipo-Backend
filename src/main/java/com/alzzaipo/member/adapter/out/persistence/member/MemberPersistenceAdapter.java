@@ -17,7 +17,7 @@ import java.util.Optional;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class MemberPersistenceAdapterPort implements
+public class MemberPersistenceAdapter implements
         RegisterMemberPort,
         FindMemberPort,
         ChangeMemberNicknamePort,
