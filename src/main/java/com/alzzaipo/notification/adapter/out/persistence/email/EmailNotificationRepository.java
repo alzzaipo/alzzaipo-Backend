@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface EmailNotificationRepository extends JpaRepository<EmailNotificationJpaEntity, Long> {
 
     @Query("SELECT e FROM EmailNotificationJpaEntity e WHERE e.memberJpaEntity.uid = :memberUID")

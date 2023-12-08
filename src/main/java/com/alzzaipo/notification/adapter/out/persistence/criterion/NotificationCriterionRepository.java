@@ -6,7 +6,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface NotificationCriterionRepository extends JpaRepository<NotificationCriterionJpaEntity, Long> {
 
     @Query("SELECT n FROM NotificationCriterionJpaEntity n WHERE n.memberJpaEntity.uid = :memberUID")
