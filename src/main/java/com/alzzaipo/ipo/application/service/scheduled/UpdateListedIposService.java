@@ -1,4 +1,4 @@
-package com.alzzaipo.ipo.application.service;
+package com.alzzaipo.ipo.application.service.scheduled;
 
 import com.alzzaipo.ipo.application.port.out.FindNotListedIposPort;
 import com.alzzaipo.ipo.application.port.out.QueryInitialMarketPricePort;
