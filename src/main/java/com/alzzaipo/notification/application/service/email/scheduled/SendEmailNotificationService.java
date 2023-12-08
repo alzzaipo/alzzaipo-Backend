@@ -1,6 +1,6 @@
 package com.alzzaipo.notification.application.service.email.scheduled;
 
-import com.alzzaipo.email.application.port.in.SendCustomEmail;
+import com.alzzaipo.email.application.port.out.SendCustomEmail;
 import com.alzzaipo.common.Email;
 import com.alzzaipo.ipo.application.port.out.FindNotListedIposPort;
 import com.alzzaipo.ipo.domain.Ipo;
