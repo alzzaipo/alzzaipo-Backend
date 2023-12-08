@@ -6,7 +6,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface IpoRepository extends JpaRepository<IpoJpaEntity, Long> {
 
     @Query("SELECT i FROM IpoJpaEntity i WHERE i.stockCode = ?1")

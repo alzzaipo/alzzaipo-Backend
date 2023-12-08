@@ -6,7 +6,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface PortfolioRepository extends JpaRepository<PortfolioJpaEntity, Long> {
 
     @Query("SELECT p FROM PortfolioJpaEntity p WHERE p.memberJpaEntity.uid = :memberUID")

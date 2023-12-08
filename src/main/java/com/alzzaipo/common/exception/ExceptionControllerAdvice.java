@@ -3,6 +3,7 @@ package com.alzzaipo.common.exception;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
@@ -47,12 +48,18 @@ public class ExceptionControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
-        MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         logger.error("MethodArgumentNotValidException : {}", e.getMessage());
         String errorMessage = createValidationErrorMessage(e.getBindingResult());
         ErrorResponse errorResponse = new ErrorResponse("입력 유효성 오류", errorMessage);
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleDataAccessException(DataAccessException e) {
+        logger.error("DataAccessException : {}", e.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse("Internal Server Error");
+        return ResponseEntity.internalServerError().body(errorResponse);
     }
 
     @ExceptionHandler(CustomException.class)
@@ -66,7 +73,7 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception e) {
         logger.error("Exception: {}", e.getMessage());
         ErrorResponse errorResponse = new ErrorResponse("예상치 못한 오류 발생");
-        return ResponseEntity.badRequest().body(errorResponse);
+        return ResponseEntity.internalServerError().body(errorResponse);
     }
 
     private String createValidationErrorMessage(BindingResult bindingResult) {
