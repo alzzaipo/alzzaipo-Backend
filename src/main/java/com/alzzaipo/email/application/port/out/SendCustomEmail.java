@@ -1,4 +1,4 @@
-package com.alzzaipo.email.application.port.in;
+package com.alzzaipo.email.application.port.out;
 
 import com.alzzaipo.common.Email;
 

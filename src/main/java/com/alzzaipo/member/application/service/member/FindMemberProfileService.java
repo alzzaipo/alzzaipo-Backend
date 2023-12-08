@@ -30,8 +30,7 @@ public class FindMemberProfileService implements FindMemberProfileQuery {
 
     @Override
     public MemberProfile findMemberProfile(Uid memberUID, LoginType currentLoginType) {
-        Member member = findMemberPort.findMember(memberUID)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
+        Member member = findMemberPort.findMember(memberUID);
 
         Optional<SecureLocalAccount> optionalLocalAccount
                 = findLocalAccountByMemberUidPort.findLocalAccountByMemberUid(memberUID);

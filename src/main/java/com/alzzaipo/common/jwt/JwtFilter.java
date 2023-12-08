@@ -1,6 +1,8 @@
 package com.alzzaipo.common.jwt;
 
 import com.alzzaipo.common.MemberPrincipal;
+import com.alzzaipo.common.Uid;
+import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
@@ -17,75 +19,85 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
+@Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+	private final JwtUtil jwtUtil;
+	private final MemberRepository memberRepository;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-        FilterChain filterChain)
-        throws IOException, ServletException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+		FilterChain filterChain)
+		throws IOException, ServletException {
 
-        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 누락");
-            return;
-        }
+		if (authorization == null || !authorization.startsWith("Bearer ")) {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증 실패");
+			return;
+		}
 
-        String token = authorization.split(" ")[1];
+		String token = authorization.split(" ")[1];
 
-        try {
-            MemberPrincipal memberPrincipal = createPrincipalFromToken(token);
+		try {
+			MemberPrincipal memberPrincipal = createPrincipalFromToken(token);
 
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                memberPrincipal,
-                null,
-                List.of(new SimpleGrantedAuthority("USER")));
+			if (!verifyMemberId(memberPrincipal.getMemberUID())) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "회원 조회 실패");
+				return;
+			}
 
-            authenticationToken.setDetails(
-                new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        } catch (ExpiredJwtException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 만료");
-            return;
-        } catch (SignatureException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 검증 실패");
-            return;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "토큰 오류");
-            return;
-        }
+			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+				memberPrincipal,
+				null,
+				List.of(new SimpleGrantedAuthority("USER")));
 
-        filterChain.doFilter(request, response);
-    }
+			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+		} catch (ExpiredJwtException e) {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 만료");
+			return;
+		} catch (SignatureException e) {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증 실패");
+			return;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "인증 실패");
+			return;
+		}
 
-    private MemberPrincipal createPrincipalFromToken(String token) {
-        return new MemberPrincipal(
-            jwtUtil.getMemberUID(token),
-            jwtUtil.getLoginType(token));
-    }
+		filterChain.doFilter(request, response);
+	}
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        List<String> excludePath = Arrays.asList(
-            "/member/verify-account-id",
-            "/member/verify-email",
-            "/member/register",
-            "/member/login",
-            "/ipo",
-            "/email",
-            "/scraper",
-            "/oauth/kakao/login");
+	private MemberPrincipal createPrincipalFromToken(String token) {
+		return new MemberPrincipal(
+			jwtUtil.getMemberUID(token),
+			jwtUtil.getLoginType(token));
+	}
 
-        String path = request.getRequestURI();
+	private boolean verifyMemberId(Uid memberUID) {
+		return memberRepository.findById(memberUID.get()).isPresent();
+	}
 
-        return excludePath.stream().anyMatch(path::startsWith);
-    }
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		List<String> excludePath = Arrays.asList(
+			"/member/verify-account-id",
+			"/member/verify-email",
+			"/member/register",
+			"/member/login",
+			"/ipo",
+			"/email",
+			"/scraper",
+			"/oauth/kakao/login");
 
+		String path = request.getRequestURI();
+
+		return excludePath.stream().anyMatch(path::startsWith);
+	}
 }

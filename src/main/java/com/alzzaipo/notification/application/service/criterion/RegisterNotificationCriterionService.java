@@ -1,8 +1,6 @@
 package com.alzzaipo.notification.application.service.criterion;
 
-import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.exception.CustomException;
-import com.alzzaipo.member.application.port.out.member.FindMemberPort;
 import com.alzzaipo.notification.application.port.dto.RegisterNotificationCriterionCommand;
 import com.alzzaipo.notification.application.port.in.criterion.RegisterNotificationCriterionUseCase;
 import com.alzzaipo.notification.application.port.out.criterion.FindMemberNotificationCriteriaPort;
@@ -17,41 +15,37 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RegisterNotificationCriterionService implements RegisterNotificationCriterionUseCase {
 
-    @Value("${NOTIFICATION_CRITERIA_LIMIT}")
-    private int NOTIFICATION_CRITERIA_LIMIT;
+	@Value("${NOTIFICATION_CRITERIA_LIMIT}")
+	private int NOTIFICATION_CRITERIA_LIMIT;
 
-    private final FindMemberPort findMemberPort;
-    private final RegisterNotificationCriterionPort registerNotificationCriterionPort;
-    private final FindMemberNotificationCriteriaPort findMemberNotificationCriteriaPort;
+	private final RegisterNotificationCriterionPort registerNotificationCriterionPort;
+	private final FindMemberNotificationCriteriaPort findMemberNotificationCriteriaPort;
 
-    @Override
-    public void registerNotificationCriterion(RegisterNotificationCriterionCommand command) {
-        verifyMemberUidValid(command.getMemberUID());
-        verifyNotificationCriteriaLimitReached(command);
+	@Override
+	public void registerNotificationCriterion(RegisterNotificationCriterionCommand command) {
+		verifyNotificationCriteriaLimitReached(command);
 
-        NotificationCriterion notificationCriterion = createNotificationCriterion(command);
+		NotificationCriterion notificationCriterion = createNotificationCriterion(command);
 
-        registerNotificationCriterionPort.registerNotificationCriterion(notificationCriterion);
-    }
+		registerNotificationCriterionPort.registerNotificationCriterion(notificationCriterion);
+	}
 
-    private void verifyMemberUidValid(Uid memberUID) {
-        findMemberPort.findMember(memberUID)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "회원 조회 실패"));
-    }
+	private void verifyNotificationCriteriaLimitReached(
+		RegisterNotificationCriterionCommand command) {
+		int totalCount
+			= findMemberNotificationCriteriaPort.findMemberNotificationCriteria(
+			command.getMemberUID()).size();
 
-    private void verifyNotificationCriteriaLimitReached(RegisterNotificationCriterionCommand command) {
-        int totalCount
-                = findMemberNotificationCriteriaPort.findMemberNotificationCriteria(command.getMemberUID()).size();
+		if (totalCount >= NOTIFICATION_CRITERIA_LIMIT) {
+			throw new CustomException(HttpStatus.FORBIDDEN, "오류 : 알림 기준 최대 개수 도달");
+		}
+	}
 
-        if (totalCount >= NOTIFICATION_CRITERIA_LIMIT) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "오류 : 알림 기준 최대 개수 도달");
-        }
-    }
-
-    private NotificationCriterion createNotificationCriterion(RegisterNotificationCriterionCommand command) {
-        return NotificationCriterion.create(
-                command.getMemberUID(),
-                command.getMinCompetitionRate(),
-                command.getMinLockupRate());
-    }
+	private NotificationCriterion createNotificationCriterion(
+		RegisterNotificationCriterionCommand command) {
+		return NotificationCriterion.create(
+			command.getMemberUID(),
+			command.getMinCompetitionRate(),
+			command.getMinLockupRate());
+	}
 }

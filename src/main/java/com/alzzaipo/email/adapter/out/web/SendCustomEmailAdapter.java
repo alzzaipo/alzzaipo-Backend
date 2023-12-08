@@ -1,6 +1,6 @@
 package com.alzzaipo.email.adapter.out.web;
 
-import com.alzzaipo.email.application.port.in.SendCustomEmail;
+import com.alzzaipo.email.application.port.out.SendCustomEmail;
 import com.alzzaipo.common.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
