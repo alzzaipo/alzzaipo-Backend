@@ -73,7 +73,7 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception e) {
         logger.error("Exception: {}", e.getMessage());
         ErrorResponse errorResponse = new ErrorResponse("예상치 못한 오류 발생");
-        return ResponseEntity.badRequest().body(errorResponse);
+        return ResponseEntity.internalServerError().body(errorResponse);
     }
 
     private String createValidationErrorMessage(BindingResult bindingResult) {
