@@ -50,6 +50,7 @@ public class MemberPersistenceAdapter implements
 	private Member toDomainEntity(MemberJpaEntity memberJpaEntity) {
 		return new Member(
 			new Uid(memberJpaEntity.getUid()),
-			memberJpaEntity.getNickname());
+			memberJpaEntity.getNickname(),
+			memberJpaEntity.getRole());
 	}
 }

@@ -17,9 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LocalLoginService implements LocalLoginUseCase {
 
-    private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
-
     private final FindLocalAccountByAccountIdPort findLocalAccountByAccountIdPort;
 
     @Override
@@ -42,6 +40,6 @@ public class LocalLoginService implements LocalLoginUseCase {
     }
 
     private String createJwtToken(SecureLocalAccount secureLocalAccount) {
-        return jwtUtil.createToken(secureLocalAccount.getMemberUID(), LoginType.LOCAL);
+        return JwtUtil.createToken(secureLocalAccount.getMemberUID(), LoginType.LOCAL);
     }
 }
