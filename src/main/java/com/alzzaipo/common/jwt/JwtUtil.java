@@ -7,22 +7,22 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
 import java.util.Date;
+import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secretKey}")
-    private String secretKey;
+	private static JwtProperties jwtProperties;
 
-    @Value("${jwt.expirationTimeMillis}")
-    private Long expireTimeMillis;
+	@Autowired
+	private JwtUtil(JwtProperties jwtProperties) {
+		JwtUtil.jwtProperties = jwtProperties;
+	}
 
-    public String createToken(Uid memberUID, LoginType loginType) {
+    public static String createToken(Uid memberUID, LoginType loginType) {
         Claims claims = Jwts.claims();
         claims.put("memberUID", memberUID.toJson());
         claims.put("loginType", loginType.name());
@@ -37,20 +37,20 @@ public class JwtUtil {
                 .compact();
     }
 
-    public Uid getMemberUID(String token) {
+    public static Uid getMemberUID(String token) {
         String serializedMemberUID = getClaims(token).get("memberUID", String.class);
         return Uid.fromJson(serializedMemberUID);
     }
 
-    public LoginType getLoginType(String token) {
+    public static LoginType getLoginType(String token) {
         return LoginType.valueOf(getClaims(token).get("loginType", String.class));
     }
 
-    private Claims getClaims(String token) {
+    private static Claims getClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(getSecretKey()).build().parseClaimsJws(token).getBody();
     }
 
-    private SecretKey getSecretKey() {
+    private static SecretKey getSecretKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
