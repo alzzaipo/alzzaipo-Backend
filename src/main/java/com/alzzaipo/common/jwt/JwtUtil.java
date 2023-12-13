@@ -22,36 +22,38 @@ public class JwtUtil {
 		JwtUtil.jwtProperties = jwtProperties;
 	}
 
-    public static String createToken(Uid memberUID, LoginType loginType) {
-        Claims claims = Jwts.claims();
-        claims.put("memberUID", memberUID.toJson());
-        claims.put("loginType", loginType.name());
+	public static String createToken(Uid memberUID, LoginType loginType) {
+		Claims claims = Jwts.claims();
+		claims.setSubject(memberUID.toString());
+		claims.put("loginType", loginType.name());
 
-        SecretKey secretKey = getSecretKey();
+		return Jwts.builder()
+			.setClaims(claims)
+			.setIssuedAt(new Date())
+			.setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpirationTimeMillis()))
+			.signWith(getSecretKey(), SignatureAlgorithm.HS256)
+			.compact();
+	}
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expireTimeMillis))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
-                .compact();
-    }
+	public static Uid getMemberUID(String token) {
+		long memberId = Long.parseLong(getClaims(token).getSubject());
+		return new Uid(memberId);
+	}
 
-    public static Uid getMemberUID(String token) {
-        String serializedMemberUID = getClaims(token).get("memberUID", String.class);
-        return Uid.fromJson(serializedMemberUID);
-    }
+	public static LoginType getLoginType(String token) {
+		return LoginType.valueOf((getClaims(token).get("loginType", String.class)));
+	}
 
-    public static LoginType getLoginType(String token) {
-        return LoginType.valueOf(getClaims(token).get("loginType", String.class));
-    }
+	private static Claims getClaims(String token) {
+		return Jwts.parserBuilder()
+			.setSigningKey(getSecretKey())
+			.build()
+			.parseClaimsJws(token)
+			.getBody();
+	}
 
-    private static Claims getClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSecretKey()).build().parseClaimsJws(token).getBody();
-    }
-
-    private static SecretKey getSecretKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+	private static SecretKey getSecretKey() {
+		byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecretKey());
+		return Keys.hmacShaKeyFor(keyBytes);
+	}
 }
