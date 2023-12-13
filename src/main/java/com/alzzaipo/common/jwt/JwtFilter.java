@@ -1,7 +1,9 @@
 package com.alzzaipo.common.jwt;
 
+import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -12,76 +14,85 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-	private final JwtUtil jwtUtil;
 	private final MemberRepository memberRepository;
 
+	private static final Pattern authorizationPattern = Pattern.compile("^Bearer (?<token>[a-zA-Z0-9-._~+/]+=*)$",
+		Pattern.CASE_INSENSITIVE);
+
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-		FilterChain filterChain)
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 		throws IOException, ServletException {
 
-		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-		if (authorization == null || !authorization.startsWith("Bearer ")) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증 실패");
+		String token = resolveTokenFromAuthorizationHeader(request);
+		if (token == null) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("Token Not Found");
+			filterChain.doFilter(request, response);
 			return;
 		}
-
-		String token = authorization.split(" ")[1];
 
 		try {
-			MemberPrincipal memberPrincipal = createPrincipalFromToken(token);
+			MemberPrincipal principal = createPrincipal(token);
 
-			if (!verifyMemberId(memberPrincipal.getMemberUID())) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND, "회원 조회 실패");
-				return;
-			}
+			AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+				principal, null, List.of(new SimpleGrantedAuthority("ROLE_" + principal.getRole().name())));
 
-			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-				memberPrincipal,
-				null,
-				List.of(new SimpleGrantedAuthority("USER")));
+			SecurityContextHolder.getContext().setAuthentication(authentication);
 
-			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+			filterChain.doFilter(request, response);
 		} catch (ExpiredJwtException e) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 만료");
-			return;
-		} catch (SignatureException e) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증 실패");
-			return;
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("Token has been expired");
+		} catch (SignatureException | BadCredentialsException e) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("Invalid Token");
+		} catch (UsernameNotFoundException e) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("User Not Found");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "인증 실패");
-			return;
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("Authentication Error");
 		}
-
-		filterChain.doFilter(request, response);
 	}
 
-	private MemberPrincipal createPrincipalFromToken(String token) {
-		return new MemberPrincipal(
-			jwtUtil.getMemberUID(token),
-			jwtUtil.getLoginType(token));
+	private String resolveTokenFromAuthorizationHeader(HttpServletRequest request) {
+		String authorization = request.getHeader("Authorization");
+		if (!StringUtils.startsWithIgnoreCase(authorization, "bearer")) {
+			return null;
+		}
+		Matcher matcher = authorizationPattern.matcher(authorization);
+		if (!matcher.matches()) {
+			throw new BadCredentialsException("Bearer token is malformed");
+		}
+		return matcher.group("token");
 	}
 
-	private boolean verifyMemberId(Uid memberUID) {
-		return memberRepository.findById(memberUID.get()).isPresent();
+	private MemberPrincipal createPrincipal(String token) {
+		Uid memberId = JwtUtil.getMemberUID(token);
+		LoginType loginType = JwtUtil.getLoginType(token);
+
+		MemberJpaEntity member = memberRepository.findById(memberId.get())
+			.orElseThrow(() -> new UsernameNotFoundException("회원 조회 실패"));
+
+		return new MemberPrincipal(memberId, loginType, member.getRole());
 	}
 
 	@Override
@@ -93,7 +104,6 @@ public class JwtFilter extends OncePerRequestFilter {
 			"/member/login",
 			"/ipo",
 			"/email",
-			"/scraper",
 			"/oauth/kakao/login");
 
 		String path = request.getRequestURI();
