@@ -1,4 +1,4 @@
-package com.alzzaipo.member.application.service.account.social;
+package com.alzzaipo.member.application.service.login;
 
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.jwt.JwtUtil;
@@ -57,14 +57,9 @@ public class KakaoLoginService implements KakaoLoginUseCase {
 
 	private SocialAccount registerSocialAccount(UserProfile userProfile) {
 		Member member = Member.create(userProfile.getNickname());
-
-		SocialAccount socialAccount = new SocialAccount(
-			member.getUid(),
-			userProfile.getEmail(),
-			KAKAO_LOGIN_TYPE);
-
 		registerMemberPort.registerMember(member);
 
+		SocialAccount socialAccount = new SocialAccount(member.getUid(), userProfile.getEmail(), KAKAO_LOGIN_TYPE);
 		registerSocialAccountPort.registerSocialAccount(socialAccount);
 
 		return socialAccount;

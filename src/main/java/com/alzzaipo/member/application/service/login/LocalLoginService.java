@@ -1,4 +1,4 @@
-package com.alzzaipo.member.application.service.account.local;
+package com.alzzaipo.member.application.service.login;
 
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.Uid;
