@@ -97,17 +97,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		List<String> excludePath = Arrays.asList(
+		List<String> whitelist = Arrays.asList(
 			"/member/verify-account-id",
 			"/member/verify-email",
 			"/member/register",
-			"/member/login",
 			"/ipo",
 			"/email",
-			"/oauth/kakao/login");
+			"/login");
 
 		String path = request.getRequestURI();
-
-		return excludePath.stream().anyMatch(path::startsWith);
+		return whitelist.stream().anyMatch(path::startsWith);
 	}
 }

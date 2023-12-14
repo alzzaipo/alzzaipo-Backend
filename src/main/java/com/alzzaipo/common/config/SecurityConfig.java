@@ -42,7 +42,7 @@ public class SecurityConfig {
 				"/member/login",
 				"/ipo/**",
 				"/email/**",
-				"/oauth/kakao/login").permitAll()
+				"/login/**").permitAll()
 			.requestMatchers("/scraper").hasRole(Role.ADMIN.name())
 			.anyRequest().authenticated());
 
