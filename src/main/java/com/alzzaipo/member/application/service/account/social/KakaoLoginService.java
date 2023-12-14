@@ -2,9 +2,11 @@ package com.alzzaipo.member.application.service.account.social;
 
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.jwt.JwtUtil;
+import com.alzzaipo.common.jwt.TokenInfo;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.in.dto.LoginResult;
 import com.alzzaipo.member.application.port.in.oauth.KakaoLoginUseCase;
+import com.alzzaipo.member.application.port.out.SaveRefreshTokenPort;
 import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountPort;
 import com.alzzaipo.member.application.port.out.account.social.RegisterSocialAccountPort;
 import com.alzzaipo.member.application.port.out.dto.AccessToken;
@@ -22,38 +24,35 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KakaoLoginService implements KakaoLoginUseCase {
 
-	private final static LoginType LOGIN_TYPE = LoginType.KAKAO;
+	private final static LoginType KAKAO_LOGIN_TYPE = LoginType.KAKAO;
 
 	private final ExchangeKakaoAccessTokenPort exchangeKakaoAccessTokenPort;
 	private final FetchKakaoUserProfilePort fetchKakaoUserProfilePort;
 	private final FindSocialAccountPort findSocialAccountPort;
 	private final RegisterMemberPort registerMemberPort;
 	private final RegisterSocialAccountPort registerSocialAccountPort;
+	private final SaveRefreshTokenPort saveRefreshTokenPort;
 
 	@Override
 	public LoginResult handleLogin(AuthorizationCode authorizationCode) {
-		LoginResult loginResult;
-
 		try {
-			AccessToken accessToken
+			AccessToken kakaoAccessToken
 				= exchangeKakaoAccessTokenPort.exchangeKakaoAccessToken(authorizationCode);
 
-			UserProfile userProfile
-				= fetchKakaoUserProfilePort.fetchKakaoUserProfile(accessToken);
+			UserProfile kakaoUserProfile
+				= fetchKakaoUserProfilePort.fetchKakaoUserProfile(kakaoAccessToken);
 
-			FindSocialAccountCommand command = new FindSocialAccountCommand(LOGIN_TYPE,
-				userProfile.getEmail());
-
+			FindSocialAccountCommand command = new FindSocialAccountCommand(KAKAO_LOGIN_TYPE, kakaoUserProfile.getEmail());
 			SocialAccount socialAccount = findSocialAccountPort.findSocialAccount(command)
-				.orElseGet(() -> registerSocialAccount(userProfile));
+				.orElseGet(() -> registerSocialAccount(kakaoUserProfile));
 
-			String token = JwtUtil.createToken(socialAccount.getMemberUID(), LOGIN_TYPE);
-			loginResult = new LoginResult(true, token);
+			TokenInfo tokenInfo = JwtUtil.createToken(socialAccount.getMemberUID(), KAKAO_LOGIN_TYPE);
+			saveRefreshTokenPort.save(tokenInfo.getRefreshToken(), socialAccount.getMemberUID());
+
+			return new LoginResult(true, tokenInfo);
 		} catch (Exception e) {
-			loginResult = LoginResult.getFailedResult();
+			return LoginResult.getFailedResult();
 		}
-
-		return loginResult;
 	}
 
 	private SocialAccount registerSocialAccount(UserProfile userProfile) {
@@ -62,7 +61,7 @@ public class KakaoLoginService implements KakaoLoginUseCase {
 		SocialAccount socialAccount = new SocialAccount(
 			member.getUid(),
 			userProfile.getEmail(),
-			LOGIN_TYPE);
+			KAKAO_LOGIN_TYPE);
 
 		registerMemberPort.registerMember(member);
 
