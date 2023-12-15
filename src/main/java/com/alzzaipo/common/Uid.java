@@ -17,6 +17,11 @@ public class Uid {
 		selfValidate();
 	}
 
+	public Uid(String uid) {
+		this.uid = Long.parseLong(uid);
+		selfValidate();
+	}
+
 	private void selfValidate() {
 		if (uid == null) {
 			throw new CustomException(HttpStatus.BAD_REQUEST, "UID 오류 : null");
