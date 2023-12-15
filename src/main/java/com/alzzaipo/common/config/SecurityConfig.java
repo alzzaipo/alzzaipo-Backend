@@ -1,6 +1,5 @@
 package com.alzzaipo.common.config;
 
-import com.alzzaipo.common.jwt.JwtFilter;
 import com.alzzaipo.member.domain.member.Role;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import java.util.List;

@@ -1,8 +1,9 @@
-package com.alzzaipo.common.jwt;
+package com.alzzaipo.common.config;
 
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.jwt.JwtUtil;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import io.jsonwebtoken.ExpiredJwtException;
