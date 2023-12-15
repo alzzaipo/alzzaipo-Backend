@@ -1,7 +1,10 @@
 package com.alzzaipo.member.adapter.in.web;
 
+import com.alzzaipo.common.jwt.TokenInfo;
 import com.alzzaipo.member.adapter.in.web.dto.LocalLoginWebRequest;
+import com.alzzaipo.member.adapter.in.web.dto.RefreshTokenDto;
 import com.alzzaipo.member.adapter.in.web.dto.TokenResponse;
+import com.alzzaipo.member.application.port.in.RefreshTokenUseCase;
 import com.alzzaipo.member.application.port.in.account.local.LocalLoginUseCase;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.in.dto.LocalLoginCommand;
@@ -25,6 +28,7 @@ public class LoginController {
 
 	private final LocalLoginUseCase localLoginUseCase;
 	private final KakaoLoginUseCase kakaoLoginUseCase;
+	private final RefreshTokenUseCase refreshTokenUseCase;
 
 	@PostMapping("/local")
 	public ResponseEntity<TokenResponse> login(@Valid @RequestBody LocalLoginWebRequest dto) {
@@ -52,5 +56,12 @@ public class LoginController {
 			return ResponseEntity.ok(tokenResponse);
 		}
 		return ResponseEntity.badRequest().build();
+	}
+
+	@PostMapping("/refresh-token")
+	public ResponseEntity<TokenResponse> refreshToken(@Valid @RequestBody RefreshTokenDto dto) {
+		TokenInfo tokenInfo = refreshTokenUseCase.refresh(dto.getRefreshToken());
+		TokenResponse tokenResponse = TokenResponse.build(tokenInfo);
+		return ResponseEntity.ok(tokenResponse);
 	}
 }
