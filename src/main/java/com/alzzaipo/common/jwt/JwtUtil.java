@@ -24,7 +24,7 @@ public class JwtUtil {
 
 	public static TokenInfo createToken(Uid memberId, LoginType loginType) {
 		String accessToken = generateToken(memberId, loginType, jwtProperties.getAccessTokenExpirationTimeMillis());
-		String refreshToken = generateToken(memberId, loginType, jwtProperties.getRefreshTokenExpirationTimeMillis());
+		String refreshToken = generateToken(null, loginType, jwtProperties.getRefreshTokenExpirationTimeMillis());
 		return new TokenInfo(accessToken, refreshToken);
 	}
 
@@ -48,8 +48,10 @@ public class JwtUtil {
 
 	private static String generateToken(Uid memberId, LoginType loginType, long expirationTimeMillis) {
 		Claims claims = Jwts.claims();
-		claims.setSubject(memberId.toString());
 		claims.put("loginType", loginType.name());
+		if(memberId != null) {
+			claims.setSubject(memberId.toString());
+		}
 
 		return Jwts.builder()
 			.setClaims(claims)
