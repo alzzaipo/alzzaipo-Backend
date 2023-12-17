@@ -1,8 +1,8 @@
 package com.alzzaipo.member.adapter.out.persistence.account.social;
 
-import com.alzzaipo.common.Email;
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
@@ -24,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class SocialAccountPersistenceAdapterPort implements
-	RegisterSocialAccountPort,
+public class SocialAccountPersistenceAdapterPort implements RegisterSocialAccountPort,
 	FindSocialAccountPort,
 	FindMemberSocialAccountsPort,
 	FindSocialAccountByLoginTypePort,
@@ -36,9 +35,7 @@ public class SocialAccountPersistenceAdapterPort implements
 
 	@Override
 	public void registerSocialAccount(SocialAccount socialAccount) {
-		MemberJpaEntity memberJpaEntity =
-			memberRepository.findEntityById(socialAccount.getMemberUID().get());
-
+		MemberJpaEntity memberJpaEntity = memberRepository.findEntityById(socialAccount.getMemberUID().get());
 		SocialAccountJpaEntity socialAccountJpaEntity = toJpaEntity(memberJpaEntity, socialAccount);
 		socialAccountRepository.save(socialAccountJpaEntity);
 	}
@@ -46,10 +43,7 @@ public class SocialAccountPersistenceAdapterPort implements
 	@Override
 	@Transactional(readOnly = true)
 	public Optional<SocialAccount> findSocialAccount(FindSocialAccountCommand command) {
-		LoginType loginType = command.getLoginType();
-		String email = command.getEmail().get();
-
-		return socialAccountRepository.findByLoginTypeAndEmail(loginType.name(), email)
+		return socialAccountRepository.findByLoginTypeAndEmail(command.getLoginType().name(), command.getEmail().get())
 			.map(this::toDomainEntity);
 	}
 
@@ -64,8 +58,7 @@ public class SocialAccountPersistenceAdapterPort implements
 
 	@Override
 	@Transactional(readOnly = true)
-	public Optional<SocialAccount> findSocialAccountByLoginType(Uid memberUID,
-		LoginType loginType) {
+	public Optional<SocialAccount> findSocialAccountByLoginType(Uid memberUID, LoginType loginType) {
 		return socialAccountRepository.findByLoginType(memberUID.get(), loginType.name())
 			.map(this::toDomainEntity);
 	}
@@ -79,11 +72,8 @@ public class SocialAccountPersistenceAdapterPort implements
 		socialAccountRepository.delete(socialAccountJpaEntity);
 	}
 
-	private SocialAccountJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity,
-		SocialAccount socialAccount) {
-		return new SocialAccountJpaEntity(
-			socialAccount.getEmail().get(),
-			socialAccount.getLoginType().name(),
+	private SocialAccountJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity, SocialAccount socialAccount) {
+		return new SocialAccountJpaEntity(socialAccount.getEmail().get(), socialAccount.getLoginType().name(),
 			memberJpaEntity);
 	}
 
@@ -91,7 +81,6 @@ public class SocialAccountPersistenceAdapterPort implements
 		Uid memberUID = new Uid(socialAccountJpaEntity.getMemberJpaEntity().getUid());
 		Email email = new Email(socialAccountJpaEntity.getEmail());
 		LoginType loginType = LoginType.valueOf(socialAccountJpaEntity.getLoginType());
-
 		return new SocialAccount(memberUID, email, loginType);
 	}
 }

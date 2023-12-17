@@ -88,8 +88,6 @@ public class JwtFilter extends OncePerRequestFilter {
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 		List<String> whitelist = Arrays.asList(
-			"/member/verify-account-id",
-			"/member/verify-email",
 			"/member/register",
 			"/ipo",
 			"/email",

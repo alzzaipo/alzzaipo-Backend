@@ -1,6 +1,6 @@
 package com.alzzaipo.member.domain.account.social;
 
-import com.alzzaipo.common.Email;
+import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.Uid;
 import lombok.Getter;

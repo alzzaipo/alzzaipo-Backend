@@ -1,6 +1,6 @@
 package com.alzzaipo.member.application.port.out.dto;
 
-import com.alzzaipo.common.Email;
+import com.alzzaipo.common.email.domain.Email;
 import lombok.Getter;
 
 @Getter
