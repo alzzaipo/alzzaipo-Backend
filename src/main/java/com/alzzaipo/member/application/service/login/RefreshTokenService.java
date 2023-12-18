@@ -27,7 +27,7 @@ public class RefreshTokenService implements RefreshTokenUseCase {
 		Uid memberId = findRefreshTokenPort.find(refreshToken)
 			.orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "Invalid Token"));
 
-		TokenInfo tokenInfo = JwtUtil.createToken(memberId, JwtUtil.getLoginType(refreshToken));
+		TokenInfo tokenInfo = JwtUtil.refreshToken(memberId, refreshToken);
 		renewRefreshTokenPort.renew(refreshToken, tokenInfo.getRefreshToken());
 		return tokenInfo;
 	}
