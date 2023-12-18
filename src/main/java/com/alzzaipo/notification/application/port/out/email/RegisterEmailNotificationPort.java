@@ -4,5 +4,5 @@ import com.alzzaipo.notification.domain.email.EmailNotification;
 
 public interface RegisterEmailNotificationPort {
 
-    void registerEmailNotification(EmailNotification emailNotification);
+    void register(EmailNotification emailNotification);
 }

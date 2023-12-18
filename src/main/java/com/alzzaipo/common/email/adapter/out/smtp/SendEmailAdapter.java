@@ -1,6 +1,5 @@
 package com.alzzaipo.common.email.adapter.out.smtp;
 
-import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.email.domain.EmailVerificationCode;
 import com.alzzaipo.common.email.port.out.smtp.SendCustomEmailPort;
 import com.alzzaipo.common.email.port.out.smtp.SendEmailVerificationCodePort;
@@ -27,10 +26,10 @@ public class SendEmailAdapter implements SendCustomEmailPort, SendEmailVerificat
 	private final JavaMailSender javaMailSender;
 
 	@Override
-	public void send(Email to, String subject, String text) {
+	public void send(String to, String subject, String text) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(from);
-		message.setTo(to.get());
+		message.setTo(to);
 		message.setSubject(subject);
 		message.setText(text);
 

@@ -1,4 +1,4 @@
-package com.alzzaipo.notification.adapter.in.web.email.dto;
+package com.alzzaipo.notification.adapter.in.web;
 
 import jakarta.validation.constraints.Email;
 import lombok.Getter;

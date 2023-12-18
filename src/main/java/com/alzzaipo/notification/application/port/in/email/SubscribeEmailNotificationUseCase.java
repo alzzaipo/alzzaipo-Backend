@@ -4,5 +4,5 @@ import com.alzzaipo.notification.application.port.dto.SubscribeEmailNotification
 
 public interface SubscribeEmailNotificationUseCase {
 
-    void subscribeEmailNotification(SubscribeEmailNotificationCommand command);
+    void subscribe(SubscribeEmailNotificationCommand command);
 }
