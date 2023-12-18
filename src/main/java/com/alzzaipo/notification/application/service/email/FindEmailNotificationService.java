@@ -3,8 +3,7 @@ package com.alzzaipo.notification.application.service.email;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.notification.application.port.dto.EmailNotificationStatus;
 import com.alzzaipo.notification.application.port.in.email.FindEmailNotificationStatusQuery;
-import com.alzzaipo.notification.application.port.out.email.FindEmailNotificationPort;
-import com.alzzaipo.notification.domain.email.EmailNotification;
+import com.alzzaipo.notification.application.port.out.email.FindNotificationEmailPort;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,17 +12,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FindEmailNotificationService implements FindEmailNotificationStatusQuery {
 
-	private final FindEmailNotificationPort findEmailNotificationPort;
+	private final FindNotificationEmailPort findNotificationEmailPort;
 
 	@Override
-	public EmailNotificationStatus findEmailNotificationStatus(Uid memberUID) {
-		Optional<EmailNotification> emailNotification =
-			findEmailNotificationPort.findEmailNotification(memberUID);
-
-		boolean subscriptionStatus = emailNotification.isPresent();
-		String email = emailNotification.map(e -> e.getEmail().get()).orElse(null);
-
-		return new EmailNotificationStatus(subscriptionStatus, email);
+	public EmailNotificationStatus find(Uid memberUID) {
+		Optional<String> notificationEmail = findNotificationEmailPort.findNotificationEmail(memberUID);
+		return new EmailNotificationStatus(notificationEmail.isPresent(), notificationEmail.orElse(""));
 	}
 
 }

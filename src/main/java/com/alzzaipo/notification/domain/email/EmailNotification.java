@@ -1,6 +1,6 @@
 package com.alzzaipo.notification.domain.email;
 
-import com.alzzaipo.common.Email;
+import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.Uid;
 import lombok.Getter;
 
@@ -8,7 +8,7 @@ import lombok.Getter;
 public class EmailNotification {
 
     private final Uid memberUID;
-    private Email email;
+    private final Email email;
 
     public EmailNotification(Uid memberUID, Email email) {
         this.memberUID = memberUID;

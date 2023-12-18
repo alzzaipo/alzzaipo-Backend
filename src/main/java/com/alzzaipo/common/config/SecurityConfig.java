@@ -1,7 +1,7 @@
 package com.alzzaipo.common.config;
 
-import com.alzzaipo.member.domain.member.Role;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
+import com.alzzaipo.member.domain.member.Role;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,9 +35,7 @@ public class SecurityConfig {
 		http.addFilterBefore(new JwtFilter(memberRepository), UsernamePasswordAuthenticationFilter.class);
 
 		http.authorizeHttpRequests(requests -> requests
-			.requestMatchers("/member/verify-account-id",
-				"/member/verify-email",
-				"/member/register",
+			.requestMatchers("/member/register/**",
 				"/member/login",
 				"/ipo/**",
 				"/email/**",

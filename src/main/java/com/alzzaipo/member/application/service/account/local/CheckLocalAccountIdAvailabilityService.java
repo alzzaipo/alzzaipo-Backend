@@ -1,8 +1,9 @@
 package com.alzzaipo.member.application.service.account.local;
 
 import com.alzzaipo.member.application.port.in.account.local.CheckLocalAccountIdAvailabilityQuery;
-import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByAccountIdPort;
+import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountIdAvailablePort;
 import com.alzzaipo.member.domain.account.local.LocalAccountId;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,12 +11,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CheckLocalAccountIdAvailabilityService implements CheckLocalAccountIdAvailabilityQuery {
 
-    private final FindLocalAccountByAccountIdPort findLocalAccountByAccountIdPort;
+	private final CheckLocalAccountIdAvailablePort checkLocalAccountIdAvailablePort;
 
-    @Override
-    public boolean checkLocalAccountIdAvailability(LocalAccountId localAccountId) {
-        return findLocalAccountByAccountIdPort
-                .findLocalAccountByAccountId(localAccountId)
-                .isEmpty();
-    }
+	@Override
+	public boolean check(@Valid LocalAccountId localAccountId) {
+		return checkLocalAccountIdAvailablePort.checkAccountIdAvailable(localAccountId.get());
+	}
 }
