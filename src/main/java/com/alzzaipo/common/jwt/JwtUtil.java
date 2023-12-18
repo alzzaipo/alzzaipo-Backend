@@ -22,17 +22,10 @@ public class JwtUtil {
 		JwtUtil.jwtProperties = jwtProperties;
 	}
 
-	public static String createToken(Uid memberUID, LoginType loginType) {
-		Claims claims = Jwts.claims();
-		claims.setSubject(memberUID.toString());
-		claims.put("loginType", loginType.name());
-
-		return Jwts.builder()
-			.setClaims(claims)
-			.setIssuedAt(new Date())
-			.setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpirationTimeMillis()))
-			.signWith(getSecretKey(), SignatureAlgorithm.HS256)
-			.compact();
+	public static TokenInfo createToken(Uid memberId, LoginType loginType) {
+		String accessToken = generateToken(memberId, loginType, jwtProperties.getAccessTokenExpirationTimeMillis());
+		String refreshToken = generateToken(null, loginType, jwtProperties.getRefreshTokenExpirationTimeMillis());
+		return new TokenInfo(accessToken, refreshToken);
 	}
 
 	public static Uid getMemberUID(String token) {
@@ -42,6 +35,30 @@ public class JwtUtil {
 
 	public static LoginType getLoginType(String token) {
 		return LoginType.valueOf((getClaims(token).get("loginType", String.class)));
+	}
+
+	public static boolean validate(String token) {
+		try {
+			Jwts.parserBuilder().setSigningKey(getSecretKey()).build().parseClaimsJws(token);
+		} catch(Exception e) {
+			return false;
+		}
+		return true;
+	}
+
+	private static String generateToken(Uid memberId, LoginType loginType, long expirationTimeMillis) {
+		Claims claims = Jwts.claims();
+		claims.put("loginType", loginType.name());
+		if(memberId != null) {
+			claims.setSubject(memberId.toString());
+		}
+
+		return Jwts.builder()
+			.setClaims(claims)
+			.setIssuedAt(new Date())
+			.setExpiration(new Date(System.currentTimeMillis() + expirationTimeMillis))
+			.signWith(getSecretKey(), SignatureAlgorithm.HS256)
+			.compact();
 	}
 
 	private static Claims getClaims(String token) {

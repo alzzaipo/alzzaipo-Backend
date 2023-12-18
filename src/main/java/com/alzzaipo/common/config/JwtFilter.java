@@ -1,12 +1,11 @@
-package com.alzzaipo.common.jwt;
+package com.alzzaipo.common.config;
 
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.jwt.JwtUtil;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		String token = resolveTokenFromAuthorizationHeader(request);
 		if (token == null) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.getWriter().write("Token Not Found");
+			response.getWriter().write("Missing Token");
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -57,19 +56,10 @@ public class JwtFilter extends OncePerRequestFilter {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 
 			filterChain.doFilter(request, response);
-		} catch (ExpiredJwtException e) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.getWriter().write("Token has been expired");
-		} catch (SignatureException | BadCredentialsException e) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.getWriter().write("Invalid Token");
-		} catch (UsernameNotFoundException e) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.getWriter().write("User Not Found");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().write("Authentication Error");
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("Invalid Token");
 		}
 	}
 
@@ -97,17 +87,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		List<String> excludePath = Arrays.asList(
+		List<String> whitelist = Arrays.asList(
 			"/member/verify-account-id",
 			"/member/verify-email",
 			"/member/register",
-			"/member/login",
 			"/ipo",
 			"/email",
-			"/oauth/kakao/login");
+			"/login");
 
 		String path = request.getRequestURI();
-
-		return excludePath.stream().anyMatch(path::startsWith);
+		return whitelist.stream().anyMatch(path::startsWith);
 	}
 }
