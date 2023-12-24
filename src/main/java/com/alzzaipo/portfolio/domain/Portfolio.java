@@ -1,7 +1,6 @@
 package com.alzzaipo.portfolio.domain;
 
 import com.alzzaipo.common.Uid;
-import com.alzzaipo.common.util.UidGenerator;
 import com.alzzaipo.ipo.domain.Ipo;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,7 +41,7 @@ public class Portfolio {
 	}
 
 	public static Portfolio build(Uid memberId, Ipo ipo, long profit, int sharesCount, String agents, String memo) {
-		return new Portfolio(UidGenerator.generate(),
+		return new Portfolio(Uid.generate(),
 			memberId,
 			ipo.getStockName(),
 			ipo.getStockCode(),

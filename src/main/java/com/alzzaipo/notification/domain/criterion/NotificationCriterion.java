@@ -1,10 +1,11 @@
 package com.alzzaipo.notification.domain.criterion;
 
 import com.alzzaipo.common.Uid;
-import com.alzzaipo.common.util.UidGenerator;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class NotificationCriterion {
 
     private final Uid notificationCriterionUID;
@@ -20,8 +21,7 @@ public class NotificationCriterion {
     }
 
     public static NotificationCriterion create(Uid memberUID, int minCompetitionRate, int minLockupRate) {
-        return new NotificationCriterion(
-                UidGenerator.generate(),
+        return new NotificationCriterion(Uid.generate(),
                 memberUID,
                 minCompetitionRate,
                 minLockupRate);
