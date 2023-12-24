@@ -1,6 +1,5 @@
 package com.alzzaipo.notification.application.port.dto;
 
-import com.alzzaipo.common.TsidUtil;
 import lombok.Getter;
 
 @Getter
@@ -11,7 +10,7 @@ public class NotificationCriterionView {
     private final int lockupRate;
 
     public NotificationCriterionView(Long uid, int competitionRate, int lockupRate) {
-        this.uid = TsidUtil.toString(uid);
+        this.uid = uid.toString();
         this.competitionRate = competitionRate;
         this.lockupRate = lockupRate;
     }

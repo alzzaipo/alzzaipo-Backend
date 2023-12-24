@@ -1,7 +1,6 @@
 package com.alzzaipo.notification.adapter.in.web.criterion;
 
 import com.alzzaipo.common.MemberPrincipal;
-import com.alzzaipo.common.TsidUtil;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.notification.adapter.in.web.criterion.dto.RegisterNotificationCriterionWebRequest;
 import com.alzzaipo.notification.adapter.in.web.criterion.dto.UpdateNotificationCriterionWebRequest;
@@ -70,7 +69,7 @@ public class NotificationCriterionController {
 
 		UpdateNotificationCriterionCommand command = new UpdateNotificationCriterionCommand(
 			principal.getMemberUID(),
-			new Uid(TsidUtil.toLong(dto.getUid())),
+			Uid.fromString(dto.getUid()),
 			dto.getCompetitionRate(),
 			dto.getLockupRate());
 
@@ -86,7 +85,7 @@ public class NotificationCriterionController {
 
 		DeleteNotificationCriterionCommand command = new DeleteNotificationCriterionCommand(
 			principal.getMemberUID(),
-			new Uid(TsidUtil.toLong(uid)));
+			Uid.fromString(uid));
 
 		deleteNotificationCriterionUseCase.deleteNotificationCriterion(command);
 

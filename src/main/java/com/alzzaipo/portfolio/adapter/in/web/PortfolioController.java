@@ -1,7 +1,6 @@
 package com.alzzaipo.portfolio.adapter.in.web;
 
 import com.alzzaipo.common.MemberPrincipal;
-import com.alzzaipo.common.TsidUtil;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.portfolio.adapter.in.web.dto.RegisterPortfolioWebRequest;
 import com.alzzaipo.portfolio.adapter.in.web.dto.UpdatePortfolioWebRequest;
@@ -92,30 +91,24 @@ public class PortfolioController {
 
 		DeletePortfolioCommand command = new DeletePortfolioCommand(
 			principal.getMemberUID(),
-			new Uid(TsidUtil.toLong(uid)));
+			Uid.fromString(uid));
 
 		deletePortfolioUseCase.deletePortfolio(command);
 
 		return ResponseEntity.ok().body("포트폴리오 삭제 완료");
 	}
 
-	private RegisterPortfolioCommand toRegisterPortfolioCommand(MemberPrincipal principal,
-		RegisterPortfolioWebRequest registerPortfolioWebRequest) {
-
-		return new RegisterPortfolioCommand(
-			principal.getMemberUID(),
-			registerPortfolioWebRequest.getStockCode(),
-			registerPortfolioWebRequest.getSharesCnt(),
-			registerPortfolioWebRequest.getProfit(),
-			registerPortfolioWebRequest.getAgents(),
-			registerPortfolioWebRequest.getMemo());
+	private RegisterPortfolioCommand toRegisterPortfolioCommand(MemberPrincipal principal, RegisterPortfolioWebRequest dto) {
+		return new RegisterPortfolioCommand(principal.getMemberUID(),
+			dto.getStockCode(),
+			dto.getSharesCnt(),
+			dto.getProfit(),
+			dto.getAgents(),
+			dto.getMemo());
 	}
 
-	private UpdatePortfolioCommand toUpdateMemberPortfolioCommand(MemberPrincipal principal,
-		UpdatePortfolioWebRequest dto) {
-
-		return new UpdatePortfolioCommand(
-			new Uid(TsidUtil.toLong(dto.getUid())),
+	private UpdatePortfolioCommand toUpdateMemberPortfolioCommand(MemberPrincipal principal, UpdatePortfolioWebRequest dto) {
+		return new UpdatePortfolioCommand(Uid.fromString(dto.getUid()),
 			principal.getMemberUID(),
 			dto.getStockCode(),
 			dto.getSharesCnt(),

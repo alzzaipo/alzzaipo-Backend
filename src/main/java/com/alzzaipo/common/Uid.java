@@ -2,6 +2,7 @@ package com.alzzaipo.common;
 
 import com.alzzaipo.common.exception.CustomException;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.f4b6a3.tsid.Tsid;
 import java.util.Objects;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,16 +18,10 @@ public class Uid {
 		selfValidate();
 	}
 
-	public Uid(String uid) {
-		this.uid = Long.parseLong(uid);
-		selfValidate();
-	}
-
 	private void selfValidate() {
 		if (uid == null) {
 			throw new CustomException(HttpStatus.BAD_REQUEST, "UID 오류 : null");
 		}
-
 		if (uid <= 0) {
 			throw new CustomException(HttpStatus.BAD_REQUEST, "UID 오류 : 0 이하 불가");
 		}
@@ -36,9 +31,13 @@ public class Uid {
 		return uid;
 	}
 
+	public static Uid fromString(String uid) {
+		return new Uid(Tsid.decode(uid, 62).toLong());
+	}
+
 	@Override
 	public String toString() {
-		return String.valueOf(this.uid);
+		return Tsid.from(this.uid).encode(62);
 	}
 
 	@Override

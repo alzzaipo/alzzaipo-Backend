@@ -32,7 +32,7 @@ public class RefreshTokenPersistenceAdapter implements SaveRefreshTokenPort,
 	public Optional<Uid> find(String refreshToken) {
 		String memberId = redisTemplate.opsForValue().get(refreshToken);
 		if (memberId != null) {
-			return Optional.of(new Uid(memberId));
+			return Optional.of(Uid.fromString(memberId));
 		}
 		return Optional.empty();
 	}
