@@ -7,20 +7,26 @@ import java.util.List;
 @Getter
 public class MemberPortfolioSummary {
 
-    private final Long totalProfit;
-    private final Long averageProfitRate;
+    private final long totalProfit;
+    private final long averageProfitRate;
     private final List<PortfolioView> portfolioList;
 
-    public MemberPortfolioSummary(List<PortfolioView> portfolioList) {
+    private MemberPortfolioSummary(Long totalProfit, Long averageProfitRate, List<PortfolioView> portfolioList) {
+        this.totalProfit = totalProfit;
+        this.averageProfitRate = averageProfitRate;
         this.portfolioList = portfolioList;
+    }
 
-        this.averageProfitRate = (long) portfolioList.stream()
-                .mapToDouble(PortfolioView::getProfitRate)
-                .average()
-                .orElse(0.0);
+    public static MemberPortfolioSummary build(List<PortfolioView> portfolioList) {
+        long totalProfit = portfolioList.stream()
+            .mapToLong(PortfolioView::getProfit)
+            .sum();
 
-        this.totalProfit = portfolioList.stream()
-                .mapToLong(PortfolioView::getProfit)
-                .sum();
+        long averageProfitRate = (long) portfolioList.stream()
+            .mapToDouble(PortfolioView::getProfitRate)
+            .average()
+            .orElse(0.0);
+
+        return new MemberPortfolioSummary(totalProfit, averageProfitRate, portfolioList);
     }
 }
