@@ -5,5 +5,5 @@ import com.alzzaipo.notification.application.port.dto.EmailNotificationStatus;
 
 public interface FindEmailNotificationStatusQuery {
 
-    EmailNotificationStatus find(Uid memberUID);
+    EmailNotificationStatus findStatus(Uid memberUID);
 }

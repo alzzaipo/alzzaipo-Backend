@@ -5,5 +5,5 @@ import com.alzzaipo.common.Uid;
 
 public interface ChangeNotificationEmailUseCase {
 
-    void changeEmail(Uid memberUID, Email email);
+    void changeNotificationEmail(Uid memberUID, Email email);
 }

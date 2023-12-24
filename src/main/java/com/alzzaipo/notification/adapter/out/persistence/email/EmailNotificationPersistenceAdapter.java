@@ -6,7 +6,7 @@ import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
 import com.alzzaipo.notification.application.port.out.email.DeleteEmailNotificationPort;
 import com.alzzaipo.notification.application.port.out.email.ChangeNotificationEmailPort;
-import com.alzzaipo.notification.application.port.out.email.CheckMemberSubscriptionExists;
+import com.alzzaipo.notification.application.port.out.email.CheckMemberSubscriptionExistsPort;
 import com.alzzaipo.notification.application.port.out.email.CheckNotificationEmailAvailablePort;
 import com.alzzaipo.notification.application.port.out.email.FindNotificationEmailPort;
 import com.alzzaipo.notification.application.port.out.email.RegisterEmailNotificationPort;
@@ -25,7 +25,7 @@ public class EmailNotificationPersistenceAdapter implements FindNotificationEmai
 	ChangeNotificationEmailPort,
 	DeleteEmailNotificationPort,
 	CheckNotificationEmailAvailablePort,
-	CheckMemberSubscriptionExists {
+	CheckMemberSubscriptionExistsPort {
 
 	private final MemberRepository memberRepository;
 	private final EmailNotificationRepository emailNotificationRepository;

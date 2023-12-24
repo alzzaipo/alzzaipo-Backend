@@ -7,7 +7,7 @@ import com.alzzaipo.member.adapter.in.web.dto.EmailVerificationCodeDto;
 import com.alzzaipo.notification.application.port.dto.EmailNotificationStatus;
 import com.alzzaipo.notification.application.port.dto.SubscribeEmailNotificationCommand;
 import com.alzzaipo.notification.application.port.in.email.SendNotificationEmailVerificationCodeUseCase;
-import com.alzzaipo.notification.application.port.in.email.VerifyNotificationEmailVerificationCodeUseCase;
+import com.alzzaipo.notification.application.port.in.email.CheckNotificationEmailVerificationCodeUseCase;
 import com.alzzaipo.notification.application.port.in.email.ChangeNotificationEmailUseCase;
 import com.alzzaipo.notification.application.port.in.email.FindEmailNotificationStatusQuery;
 import com.alzzaipo.notification.application.port.in.email.SubscribeEmailNotificationUseCase;
@@ -35,19 +35,19 @@ public class EmailNotificationController {
 	private final ChangeNotificationEmailUseCase changeNotificationEmailUseCase;
 	private final UnsubscribeEmailNotificationUseCase unsubscribeEmailNotificationUseCase;
 	private final SendNotificationEmailVerificationCodeUseCase sendNotificationEmailVerificationCodeUseCase;
-	private final VerifyNotificationEmailVerificationCodeUseCase verifyNotificationEmailVerificationCodeUseCase;
+	private final CheckNotificationEmailVerificationCodeUseCase checkNotificationEmailVerificationCodeUseCase;
 
 	@PostMapping("/send-verification-code")
 	public ResponseEntity<String> sendVerificationCode(@AuthenticationPrincipal MemberPrincipal principal,
 		@Valid @RequestBody EmailDto dto) {
-		sendNotificationEmailVerificationCodeUseCase.send(principal.getMemberUID(), new Email(dto.getEmail()));
+		sendNotificationEmailVerificationCodeUseCase.sendVerificationCode(principal.getMemberUID(), new Email(dto.getEmail()));
 		return ResponseEntity.ok().body("전송 완료");
 	}
 
 	@PostMapping("/validate-verification-code")
 	public ResponseEntity<String> validateVerificationCode(@Valid @RequestBody EmailVerificationCodeDto dto) {
 		EmailVerificationCode verificationCode = new EmailVerificationCode(dto.getVerificationCode());
-		if (verifyNotificationEmailVerificationCodeUseCase.verify(verificationCode)) {
+		if (checkNotificationEmailVerificationCodeUseCase.checkVerificationCode(verificationCode)) {
 			return ResponseEntity.ok().body("인증 성공");
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
@@ -57,21 +57,20 @@ public class EmailNotificationController {
 	public ResponseEntity<String> subscribeEmailNotification(@AuthenticationPrincipal MemberPrincipal principal,
 		@Valid @RequestBody EmailDto emailDto) {
 		SubscribeEmailNotificationCommand command = createSubscribeEmailNotificationCommand(principal, emailDto);
-		subscribeEmailNotificationUseCase.subscribe(command);
+		subscribeEmailNotificationUseCase.subscribeEmailNotification(command);
 		return ResponseEntity.ok("신청 완료");
 	}
 
 	@GetMapping("/status")
-	public ResponseEntity<EmailNotificationStatus> findEmailNotificationStatus(
-		@AuthenticationPrincipal MemberPrincipal principal) {
-		EmailNotificationStatus emailNotificationStatus = findEmailNotificationStatusQuery.find(principal.getMemberUID());
+	public ResponseEntity<EmailNotificationStatus> findEmailNotificationStatus(@AuthenticationPrincipal MemberPrincipal principal) {
+		EmailNotificationStatus emailNotificationStatus = findEmailNotificationStatusQuery.findStatus(principal.getMemberUID());
 		return ResponseEntity.ok(emailNotificationStatus);
 	}
 
 	@PutMapping("/update")
 	public ResponseEntity<String> updateEmailNotification(@AuthenticationPrincipal MemberPrincipal principal,
 		@Valid @RequestBody EmailDto dto) {
-		changeNotificationEmailUseCase.changeEmail(principal.getMemberUID(), new Email(dto.getEmail()));
+		changeNotificationEmailUseCase.changeNotificationEmail(principal.getMemberUID(), new Email(dto.getEmail()));
 		return ResponseEntity.ok("수정 완료");
 	}
 
@@ -81,8 +80,7 @@ public class EmailNotificationController {
 		return ResponseEntity.ok("해지 완료");
 	}
 
-	private SubscribeEmailNotificationCommand createSubscribeEmailNotificationCommand(MemberPrincipal principal,
-		EmailDto emailDto) {
+	private SubscribeEmailNotificationCommand createSubscribeEmailNotificationCommand(MemberPrincipal principal, EmailDto emailDto) {
 		return new SubscribeEmailNotificationCommand(principal.getMemberUID(), new Email(emailDto.getEmail()));
 	}
 }
