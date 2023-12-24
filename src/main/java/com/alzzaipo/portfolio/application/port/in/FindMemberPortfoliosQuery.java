@@ -1,4 +1,4 @@
-package com.alzzaipo.portfolio.application.in;
+package com.alzzaipo.portfolio.application.port.in;
 
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.portfolio.application.dto.MemberPortfolioSummary;
