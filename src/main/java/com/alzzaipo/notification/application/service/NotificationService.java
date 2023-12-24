@@ -10,9 +10,10 @@ import com.alzzaipo.notification.application.port.in.criterion.DeleteNotificatio
 import com.alzzaipo.notification.application.port.in.criterion.FindMemberNotificationCriteriaQuery;
 import com.alzzaipo.notification.application.port.in.criterion.RegisterNotificationCriterionUseCase;
 import com.alzzaipo.notification.application.port.in.criterion.UpdateNotificationCriterionUseCase;
+import com.alzzaipo.notification.application.port.out.criterion.CheckNotificationCriterionOwnershipPort;
+import com.alzzaipo.notification.application.port.out.criterion.CountMemberNotificationCriteriaPort;
 import com.alzzaipo.notification.application.port.out.criterion.DeleteNotificationCriterionPort;
 import com.alzzaipo.notification.application.port.out.criterion.FindMemberNotificationCriteriaPort;
-import com.alzzaipo.notification.application.port.out.criterion.FindNotificationCriterionPort;
 import com.alzzaipo.notification.application.port.out.criterion.RegisterNotificationCriterionPort;
 import com.alzzaipo.notification.application.port.out.criterion.UpdateNotificationCriterionPort;
 import com.alzzaipo.notification.domain.criterion.NotificationCriterion;
@@ -35,17 +36,18 @@ public class NotificationService implements RegisterNotificationCriterionUseCase
 
 	private final RegisterNotificationCriterionPort registerNotificationCriterionPort;
 	private final FindMemberNotificationCriteriaPort findMemberNotificationCriteriaPort;
-	private final DeleteNotificationCriterionPort deleteNotificationCriterionPort;
-	private final FindNotificationCriterionPort findNotificationCriterionPort;
 	private final UpdateNotificationCriterionPort updateNotificationCriterionPort;
+	private final DeleteNotificationCriterionPort deleteNotificationCriterionPort;
+	private final CountMemberNotificationCriteriaPort countMemberNotificationCriteriaPort;
+	private final CheckNotificationCriterionOwnershipPort checkNotificationCriterionOwnershipPort;
 
 	@Override
 	public void registerNotificationCriterion(RegisterNotificationCriterionCommand command) {
-		verifyNotificationCriteriaLimitReached(command);
-
 		NotificationCriterion notificationCriterion = NotificationCriterion.build(command.getMemberUID(),
 			command.getMinCompetitionRate(),
 			command.getMinLockupRate());
+
+		checkNotificationCriteriaCapacity(command.getMemberUID());
 
 		registerNotificationCriterionPort.registerNotificationCriterion(notificationCriterion);
 	}
@@ -60,50 +62,26 @@ public class NotificationService implements RegisterNotificationCriterionUseCase
 
 	@Override
 	public void updateNotificationCriterion(UpdateNotificationCriterionCommand command) {
-		validateMemberAndOwnership(command);
+		checkOwnership(command.getMemberUID(), command.getNotificationCriterionUID());
 		updateNotificationCriterionPort.updateNotificationCriterion(command);
 	}
 
 	@Override
 	public void deleteNotificationCriterion(DeleteNotificationCriterionCommand command) {
-		validateMemberAndOwnership(command);
-
-		deleteNotificationCriterionPort.deleteNotificationCriterion(
-			command.getNotificationCriterionUID());
+		checkOwnership(command.getMemberUID(), command.getNotificationCriterionUID());
+		deleteNotificationCriterionPort.deleteNotificationCriterion(command.getNotificationCriterionUID());
 	}
 
-	private void validateMemberAndOwnership(DeleteNotificationCriterionCommand command) {
-		Uid memberUID = command.getMemberUID();
-		Uid notificationCriterionUID = command.getNotificationCriterionUID();
-
-		NotificationCriterion notificationCriterion =
-			findNotificationCriterionPort.findNotificationCriterion(notificationCriterionUID)
-				.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "알림 기준 조회 실패"));
-
-		if (!memberUID.equals(notificationCriterion.getMemberUID())) {
-			throw new CustomException(HttpStatus.UNAUTHORIZED, "오류: 접근 권한 없음");
-		}
-	}
-
-	private void verifyNotificationCriteriaLimitReached(RegisterNotificationCriterionCommand command) {
-		int totalCount = findMemberNotificationCriteriaPort.findMemberNotificationCriteria(command.getMemberUID()).size();
-
+	private void checkNotificationCriteriaCapacity(Uid memberID) {
+		int totalCount = countMemberNotificationCriteriaPort.count(memberID.get());
 		if (totalCount >= NOTIFICATION_CRITERIA_LIMIT) {
-			throw new CustomException(HttpStatus.FORBIDDEN, "오류 : 알림 기준 최대 개수 도달");
+			throw new CustomException(HttpStatus.FORBIDDEN, "오류 : 최대 개수 초과");
 		}
 	}
 
-	private void validateMemberAndOwnership(UpdateNotificationCriterionCommand command) {
-		Uid memberUID = command.getMemberUID();
-		Uid notificationCriterionUID = command.getNotificationCriterionUID();
-
-		NotificationCriterion notificationCriterion = findNotificationCriterionPort.findNotificationCriterion(
-				notificationCriterionUID)
-			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "알림 기준 조회 실패"));
-
-		if (!memberUID.equals(notificationCriterion.getMemberUID())) {
+	private void checkOwnership(Uid memberId, Uid notificationCriterionId) {
+		if (!checkNotificationCriterionOwnershipPort.checkOwnership(memberId.get(), notificationCriterionId.get())) {
 			throw new CustomException(HttpStatus.UNAUTHORIZED, "오류: 권한 없음");
 		}
 	}
-
 }
