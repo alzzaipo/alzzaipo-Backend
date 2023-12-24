@@ -1,4 +1,4 @@
-package com.alzzaipo.notification.adapter.in.web.criterion.dto;
+package com.alzzaipo.notification.adapter.in.web.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
