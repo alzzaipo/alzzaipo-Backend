@@ -20,7 +20,7 @@ public class NotificationCriterion {
         this.minLockupRate = minLockupRate;
     }
 
-    public static NotificationCriterion create(Uid memberUID, int minCompetitionRate, int minLockupRate) {
+    public static NotificationCriterion build(Uid memberUID, int minCompetitionRate, int minLockupRate) {
         return new NotificationCriterion(Uid.generate(),
                 memberUID,
                 minCompetitionRate,
