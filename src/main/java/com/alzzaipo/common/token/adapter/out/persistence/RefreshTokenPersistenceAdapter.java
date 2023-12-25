@@ -1,11 +1,11 @@
-package com.alzzaipo.member.adapter.out.token;
+package com.alzzaipo.common.token.adapter.out.persistence;
 
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.exception.CustomException;
-import com.alzzaipo.common.jwt.JwtProperties;
-import com.alzzaipo.member.application.port.out.FindRefreshTokenPort;
-import com.alzzaipo.member.application.port.out.RenewRefreshTokenPort;
-import com.alzzaipo.member.application.port.out.SaveRefreshTokenPort;
+import com.alzzaipo.common.token.domain.TokenProperties;
+import com.alzzaipo.common.token.application.port.out.FindRefreshTokenPort;
+import com.alzzaipo.common.token.application.port.out.RenewRefreshTokenPort;
+import com.alzzaipo.common.token.application.port.out.SaveRefreshTokenPort;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +20,11 @@ public class RefreshTokenPersistenceAdapter implements SaveRefreshTokenPort,
 	RenewRefreshTokenPort {
 
 	private final RedisTemplate<String, String> redisTemplate;
-	private final JwtProperties jwtProperties;
+	private final TokenProperties tokenProperties;
 
 	@Override
 	public void save(String token, Uid memberId) {
-		Long expirationTimeMillis = jwtProperties.getRefreshTokenExpirationTimeMillis();
+		Long expirationTimeMillis = tokenProperties.getRefreshTokenExpirationTimeMillis();
 		redisTemplate.opsForValue().set(token, memberId.toString(), expirationTimeMillis, TimeUnit.MILLISECONDS);
 	}
 

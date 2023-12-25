@@ -1,7 +1,9 @@
-package com.alzzaipo.common.jwt;
+package com.alzzaipo.common.token;
 
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.token.domain.TokenProperties;
+import com.alzzaipo.common.token.domain.TokenInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,13 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtUtil {
+public class TokenUtil {
 
-	private static JwtProperties jwtProperties;
+	private static TokenProperties tokenProperties;
 
 	@Autowired
-	private JwtUtil(JwtProperties jwtProperties) {
-		JwtUtil.jwtProperties = jwtProperties;
+	private TokenUtil(TokenProperties tokenProperties) {
+		TokenUtil.tokenProperties = tokenProperties;
 	}
 
 	public static TokenInfo createToken(Uid memberId, LoginType loginType) {
@@ -58,12 +60,12 @@ public class JwtUtil {
 
 	private static String generateAccessToken(Long memberId, LoginType loginType) {
 		return generateToken(memberId, loginType,
-			System.currentTimeMillis() + jwtProperties.getAccessTokenExpirationTimeMillis());
+			System.currentTimeMillis() + tokenProperties.getAccessTokenExpirationTimeMillis());
 	}
 
 	private static String generateRefreshToken(LoginType loginType) {
 		return generateToken(null, loginType,
-			System.currentTimeMillis() + jwtProperties.getRefreshTokenExpirationTimeMillis());
+			System.currentTimeMillis() + tokenProperties.getRefreshTokenExpirationTimeMillis());
 	}
 
 	private static String generateRefreshToken(LoginType loginType, long expirationTimeMillis) {
@@ -95,7 +97,7 @@ public class JwtUtil {
 	}
 
 	private static SecretKey getSecretKey() {
-		byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecretKey());
+		byte[] keyBytes = Decoders.BASE64.decode(tokenProperties.getSecretKey());
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 }

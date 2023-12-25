@@ -1,12 +1,12 @@
-package com.alzzaipo.member.application.service.login;
+package com.alzzaipo.common.token.application.service;
 
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.exception.CustomException;
-import com.alzzaipo.common.jwt.JwtUtil;
-import com.alzzaipo.common.jwt.TokenInfo;
-import com.alzzaipo.member.application.port.in.RefreshTokenUseCase;
-import com.alzzaipo.member.application.port.out.FindRefreshTokenPort;
-import com.alzzaipo.member.application.port.out.RenewRefreshTokenPort;
+import com.alzzaipo.common.token.TokenUtil;
+import com.alzzaipo.common.token.domain.TokenInfo;
+import com.alzzaipo.common.token.application.port.in.RefreshTokenUseCase;
+import com.alzzaipo.common.token.application.port.out.FindRefreshTokenPort;
+import com.alzzaipo.common.token.application.port.out.RenewRefreshTokenPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,13 +27,13 @@ public class RefreshTokenService implements RefreshTokenUseCase {
 		Uid memberId = findRefreshTokenPort.find(refreshToken)
 			.orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "Invalid Token"));
 
-		TokenInfo tokenInfo = JwtUtil.refreshToken(memberId, refreshToken);
+		TokenInfo tokenInfo = TokenUtil.refreshToken(memberId, refreshToken);
 		renewRefreshTokenPort.renew(refreshToken, tokenInfo.getRefreshToken());
 		return tokenInfo;
 	}
 
 	private void validateToken(String refreshToken) {
-		if (!JwtUtil.validate(refreshToken)) {
+		if (!TokenUtil.validate(refreshToken)) {
 			throw new CustomException(HttpStatus.UNAUTHORIZED, "Invalid Token");
 		}
 	}

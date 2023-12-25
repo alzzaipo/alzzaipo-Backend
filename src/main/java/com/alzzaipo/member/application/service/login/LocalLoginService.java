@@ -2,12 +2,12 @@ package com.alzzaipo.member.application.service.login;
 
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.Uid;
-import com.alzzaipo.common.jwt.JwtUtil;
-import com.alzzaipo.common.jwt.TokenInfo;
+import com.alzzaipo.common.token.TokenUtil;
+import com.alzzaipo.common.token.domain.TokenInfo;
 import com.alzzaipo.member.application.port.in.account.local.LocalLoginUseCase;
 import com.alzzaipo.member.application.port.in.dto.LocalLoginCommand;
 import com.alzzaipo.member.application.port.in.dto.LoginResult;
-import com.alzzaipo.member.application.port.out.SaveRefreshTokenPort;
+import com.alzzaipo.common.token.application.port.out.SaveRefreshTokenPort;
 import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByAccountIdPort;
 import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
 import java.util.Optional;
@@ -30,7 +30,7 @@ public class LocalLoginService implements LocalLoginUseCase {
 
 		if (optionalLocalAccount.isPresent() && isPasswordValid(command, optionalLocalAccount.get())) {
 			Uid memberId = optionalLocalAccount.get().getMemberUID();
-			TokenInfo tokenInfo = JwtUtil.createToken(memberId, LoginType.LOCAL);
+			TokenInfo tokenInfo = TokenUtil.createToken(memberId, LoginType.LOCAL);
 			saveRefreshTokenPort.save(tokenInfo.getRefreshToken(), memberId);
 			return new LoginResult(true, tokenInfo);
 		}

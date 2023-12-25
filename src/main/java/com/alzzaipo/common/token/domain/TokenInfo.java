@@ -1,4 +1,4 @@
-package com.alzzaipo.common.jwt;
+package com.alzzaipo.common.token.domain;
 
 import lombok.Getter;
 
@@ -6,10 +6,10 @@ import lombok.Getter;
 public class TokenInfo {
 
 	private final String accessToken;
-	private final String RefreshToken;
+	private final String refreshToken;
 
 	public TokenInfo(String accessToken, String refreshToken) {
 		this.accessToken = accessToken;
-		RefreshToken = refreshToken;
+		this.refreshToken = refreshToken;
 	}
 }

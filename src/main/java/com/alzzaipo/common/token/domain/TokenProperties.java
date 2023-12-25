@@ -1,4 +1,4 @@
-package com.alzzaipo.common.jwt;
+package com.alzzaipo.common.token.domain;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "jwt")
-public class JwtProperties {
+@ConfigurationProperties(prefix = "token")
+public class TokenProperties {
 
 	private String secretKey;
 	private Long accessTokenExpirationTimeMillis;

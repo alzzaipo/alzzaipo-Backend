@@ -1,12 +1,12 @@
 package com.alzzaipo.member.application.service.login;
 
 import com.alzzaipo.common.LoginType;
-import com.alzzaipo.common.jwt.JwtUtil;
-import com.alzzaipo.common.jwt.TokenInfo;
+import com.alzzaipo.common.token.TokenUtil;
+import com.alzzaipo.common.token.domain.TokenInfo;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.in.dto.LoginResult;
 import com.alzzaipo.member.application.port.in.oauth.KakaoLoginUseCase;
-import com.alzzaipo.member.application.port.out.SaveRefreshTokenPort;
+import com.alzzaipo.common.token.application.port.out.SaveRefreshTokenPort;
 import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountPort;
 import com.alzzaipo.member.application.port.out.account.social.RegisterSocialAccountPort;
 import com.alzzaipo.member.application.port.out.dto.AccessToken;
@@ -46,7 +46,7 @@ public class KakaoLoginService implements KakaoLoginUseCase {
 			SocialAccount socialAccount = findSocialAccountPort.findSocialAccount(command)
 				.orElseGet(() -> registerSocialAccount(kakaoUserProfile));
 
-			TokenInfo tokenInfo = JwtUtil.createToken(socialAccount.getMemberUID(), KAKAO_LOGIN_TYPE);
+			TokenInfo tokenInfo = TokenUtil.createToken(socialAccount.getMemberUID(), KAKAO_LOGIN_TYPE);
 			saveRefreshTokenPort.save(tokenInfo.getRefreshToken(), socialAccount.getMemberUID());
 
 			return new LoginResult(true, tokenInfo);

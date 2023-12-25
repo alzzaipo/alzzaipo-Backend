@@ -1,10 +1,7 @@
 package com.alzzaipo.member.adapter.in.web;
 
-import com.alzzaipo.common.jwt.TokenInfo;
 import com.alzzaipo.member.adapter.in.web.dto.LocalLoginWebRequest;
-import com.alzzaipo.member.adapter.in.web.dto.RefreshTokenDto;
 import com.alzzaipo.member.adapter.in.web.dto.TokenResponse;
-import com.alzzaipo.member.application.port.in.RefreshTokenUseCase;
 import com.alzzaipo.member.application.port.in.account.local.LocalLoginUseCase;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.in.dto.LocalLoginCommand;
@@ -26,42 +23,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LoginController {
 
-	private final LocalLoginUseCase localLoginUseCase;
-	private final KakaoLoginUseCase kakaoLoginUseCase;
-	private final RefreshTokenUseCase refreshTokenUseCase;
+    private final LocalLoginUseCase localLoginUseCase;
+    private final KakaoLoginUseCase kakaoLoginUseCase;
 
-	@PostMapping("/local")
-	public ResponseEntity<TokenResponse> login(@Valid @RequestBody LocalLoginWebRequest dto) {
-		LocalLoginCommand localLoginCommand = new LocalLoginCommand(
-			dto.getAccountId(),
-			dto.getAccountPassword());
+    @PostMapping("/local")
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LocalLoginWebRequest dto) {
+        LocalLoginCommand localLoginCommand = new LocalLoginCommand(
+            dto.getAccountId(),
+            dto.getAccountPassword());
 
-		LoginResult loginResult = localLoginUseCase.handleLocalLogin(localLoginCommand);
+        LoginResult loginResult = localLoginUseCase.handleLocalLogin(localLoginCommand);
 
-		if (loginResult.isSuccess()) {
-			TokenResponse tokenResponse = TokenResponse.build(loginResult.getTokenInfo());
-			return ResponseEntity.ok(tokenResponse);
-		}
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	}
+        if (loginResult.isSuccess()) {
+            TokenResponse tokenResponse = TokenResponse.build(loginResult.getTokenInfo());
+            return ResponseEntity.ok(tokenResponse);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 
-	@GetMapping("/kakao")
-	public ResponseEntity<TokenResponse> kakaoLogin(@RequestParam("code") String authCode) {
-		AuthorizationCode authorizationCode = new AuthorizationCode(authCode);
+    @GetMapping("/kakao")
+    public ResponseEntity<TokenResponse> kakaoLogin(@RequestParam("code") String authCode) {
+        AuthorizationCode authorizationCode = new AuthorizationCode(authCode);
 
-		LoginResult loginResult = kakaoLoginUseCase.handleLogin(authorizationCode);
+        LoginResult loginResult = kakaoLoginUseCase.handleLogin(authorizationCode);
 
-		if (loginResult.isSuccess()) {
-			TokenResponse tokenResponse = TokenResponse.build(loginResult.getTokenInfo());
-			return ResponseEntity.ok(tokenResponse);
-		}
-		return ResponseEntity.badRequest().build();
-	}
-
-	@PostMapping("/refresh-token")
-	public ResponseEntity<TokenResponse> refreshToken(@Valid @RequestBody RefreshTokenDto dto) {
-		TokenInfo tokenInfo = refreshTokenUseCase.refresh(dto.getRefreshToken());
-		TokenResponse tokenResponse = TokenResponse.build(tokenInfo);
-		return ResponseEntity.ok(tokenResponse);
-	}
+        if (loginResult.isSuccess()) {
+            TokenResponse tokenResponse = TokenResponse.build(loginResult.getTokenInfo());
+            return ResponseEntity.ok(tokenResponse);
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }

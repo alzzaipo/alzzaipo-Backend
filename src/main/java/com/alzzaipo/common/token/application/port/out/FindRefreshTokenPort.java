@@ -1,4 +1,4 @@
-package com.alzzaipo.member.application.port.out;
+package com.alzzaipo.common.token.application.port.out;
 
 import com.alzzaipo.common.Uid;
 import java.util.Optional;
