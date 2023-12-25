@@ -6,7 +6,7 @@ import com.alzzaipo.member.application.port.in.account.local.LocalLoginUseCase;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.in.dto.LocalLoginCommand;
 import com.alzzaipo.member.application.port.in.dto.LoginResult;
-import com.alzzaipo.member.application.port.in.oauth.KakaoLoginUseCase;
+import com.alzzaipo.member.application.port.in.account.social.KakaoLoginUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

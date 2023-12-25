@@ -5,7 +5,7 @@ import com.alzzaipo.member.domain.account.local.LocalAccountId;
 
 import java.util.Optional;
 
-public interface FindLocalAccountByAccountIdPort {
+public interface FindLocalAccountByIdPort {
 
-    Optional<SecureLocalAccount> findLocalAccountByAccountId(LocalAccountId localAccountId);
+    Optional<SecureLocalAccount> findLocalAccountById(LocalAccountId localAccountId);
 }

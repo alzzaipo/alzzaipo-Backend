@@ -1,5 +1,6 @@
-package com.alzzaipo.member.application.service.account.local;
+package com.alzzaipo.member.application.service.account;
 
+import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.email.domain.EmailVerificationCode;
@@ -9,20 +10,27 @@ import com.alzzaipo.common.email.port.out.verification.CheckEmailVerifiedPort;
 import com.alzzaipo.common.email.port.out.verification.SaveEmailVerificationCodePort;
 import com.alzzaipo.common.email.port.out.verification.VerifyEmailVerificationCodePort;
 import com.alzzaipo.common.exception.CustomException;
+import com.alzzaipo.common.token.TokenUtil;
+import com.alzzaipo.common.token.application.port.out.SaveRefreshTokenPort;
+import com.alzzaipo.common.token.domain.TokenInfo;
 import com.alzzaipo.member.application.port.in.account.local.ChangeLocalAccountPasswordUseCase;
 import com.alzzaipo.member.application.port.in.account.local.CheckLocalAccountEmailAvailableQuery;
-import com.alzzaipo.member.application.port.in.account.local.CheckLocalAccountIdAvailabilityQuery;
+import com.alzzaipo.member.application.port.in.account.local.CheckLocalAccountIdAvailableQuery;
+import com.alzzaipo.member.application.port.in.account.local.LocalLoginUseCase;
 import com.alzzaipo.member.application.port.in.account.local.RegisterLocalAccountUseCase;
 import com.alzzaipo.member.application.port.in.account.local.SendSignUpEmailVerificationCodeUseCase;
 import com.alzzaipo.member.application.port.in.account.local.SendUpdateEmailVerificationCodeUseCase;
 import com.alzzaipo.member.application.port.in.account.local.VerifyEmailVerificationCodeUseCase;
 import com.alzzaipo.member.application.port.in.account.local.VerifyLocalAccountPasswordQuery;
 import com.alzzaipo.member.application.port.in.dto.ChangeLocalAccountPasswordCommand;
+import com.alzzaipo.member.application.port.in.dto.LocalLoginCommand;
+import com.alzzaipo.member.application.port.in.dto.LoginResult;
 import com.alzzaipo.member.application.port.in.dto.RegisterLocalAccountCommand;
 import com.alzzaipo.member.application.port.in.dto.SendSignUpEmailVerificationCodeCommand;
 import com.alzzaipo.member.application.port.out.account.local.ChangeLocalAccountPasswordPort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountEmailAvailablePort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountIdAvailablePort;
+import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByIdPort;
 import com.alzzaipo.member.application.port.out.account.local.RegisterLocalAccountPort;
 import com.alzzaipo.member.application.port.out.account.local.VerifyLocalAccountPasswordPort;
 import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
@@ -31,6 +39,7 @@ import com.alzzaipo.member.domain.account.local.LocalAccountId;
 import com.alzzaipo.member.domain.account.local.LocalAccountPassword;
 import com.alzzaipo.member.domain.member.Member;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,10 +51,11 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     VerifyEmailVerificationCodeUseCase,
     SendUpdateEmailVerificationCodeUseCase,
     CheckLocalAccountEmailAvailableQuery,
-    CheckLocalAccountIdAvailabilityQuery,
+    CheckLocalAccountIdAvailableQuery,
     RegisterLocalAccountUseCase,
     VerifyLocalAccountPasswordQuery,
-    ChangeLocalAccountPasswordUseCase {
+    ChangeLocalAccountPasswordUseCase,
+    LocalLoginUseCase {
 
     private final PasswordEncoder passwordEncoder;
     private final SendEmailVerificationCodePort sendEmailVerificationCodePort;
@@ -58,6 +68,8 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     private final RegisterLocalAccountPort registerLocalAccountPort;
     private final VerifyLocalAccountPasswordPort verifyLocalAccountPasswordPort;
     private final ChangeLocalAccountPasswordPort changeLocalAccountPasswordPort;
+    private final SaveRefreshTokenPort saveRefreshTokenPort;
+    private final FindLocalAccountByIdPort findLocalAccountByIdPort;
 
     @Override
     public void sendSignUpEmailVerificationCode(@Valid SendSignUpEmailVerificationCodeCommand command) {
@@ -133,6 +145,26 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
             return true;
         }
         return false;
+    }
+
+    @Override
+    public LoginResult handleLocalLogin(LocalLoginCommand command) {
+        Optional<SecureLocalAccount> localAccount
+            = findLocalAccountByIdPort.findLocalAccountById(command.getLocalAccountId());
+
+        if (localAccount.isPresent() && isPasswordValid(command, localAccount.get())) {
+            Uid memberId = localAccount.get().getMemberUID();
+            TokenInfo tokenInfo = TokenUtil.createToken(memberId, LoginType.LOCAL);
+            saveRefreshTokenPort.save(tokenInfo.getRefreshToken(), memberId);
+            return new LoginResult(true, tokenInfo);
+        }
+        return LoginResult.getFailedResult();
+    }
+
+    private boolean isPasswordValid(LocalLoginCommand command, SecureLocalAccount secureLocalAccount) {
+        String userProvidedPassword = command.getLocalAccountPassword().get();
+        String validEncryptedPassword = secureLocalAccount.getEncryptedAccountPassword();
+        return passwordEncoder.matches(userProvidedPassword, validEncryptedPassword);
     }
 
     private void checkAccountIdAvailability(LocalAccountId localAccountId) {

@@ -9,7 +9,7 @@ import com.alzzaipo.member.application.port.out.account.local.ChangeLocalAccount
 import com.alzzaipo.member.application.port.out.account.local.ChangeLocalAccountPasswordPort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountEmailAvailablePort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountIdAvailablePort;
-import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByAccountIdPort;
+import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByIdPort;
 import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberUidPort;
 import com.alzzaipo.member.application.port.out.account.local.RegisterLocalAccountPort;
 import com.alzzaipo.member.application.port.out.account.local.VerifyLocalAccountPasswordPort;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class LocalAccountPersistenceAdapter implements FindLocalAccountByAccountIdPort,
+public class LocalAccountPersistenceAdapterBy implements FindLocalAccountByIdPort,
 	RegisterLocalAccountPort,
 	FindLocalAccountByMemberUidPort,
 	ChangeLocalAccountPasswordPort,
@@ -38,7 +38,7 @@ public class LocalAccountPersistenceAdapter implements FindLocalAccountByAccount
 
 	@Override
 	@Transactional(readOnly = true)
-	public Optional<SecureLocalAccount> findLocalAccountByAccountId(LocalAccountId localAccountId) {
+	public Optional<SecureLocalAccount> findLocalAccountById(LocalAccountId localAccountId) {
 		return localAccountRepository.findByAccountId(localAccountId.get())
 			.map(this::toSecureLocalAccount);
 	}

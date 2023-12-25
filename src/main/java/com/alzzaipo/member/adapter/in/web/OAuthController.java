@@ -5,7 +5,7 @@ import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.member.application.port.in.account.social.UnlinkSocialAccountUseCase;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.in.dto.UnlinkSocialAccountCommand;
-import com.alzzaipo.member.application.port.in.oauth.LinkKakaoAccountUseCase;
+import com.alzzaipo.member.application.port.in.account.social.LinkKakaoAccountUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

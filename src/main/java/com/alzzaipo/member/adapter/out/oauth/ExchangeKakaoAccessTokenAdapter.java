@@ -1,9 +1,9 @@
-package com.alzzaipo.member.adapter.out.web;
+package com.alzzaipo.member.adapter.out.oauth;
 
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.out.dto.AccessToken;
-import com.alzzaipo.member.application.port.out.oauth.ExchangeKakaoAccessTokenPort;
+import com.alzzaipo.member.application.port.out.account.social.ExchangeKakaoAccessTokenPort;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package com.alzzaipo.member.application.port.out.oauth;
+package com.alzzaipo.member.application.port.out.account.social;
 
 import com.alzzaipo.member.application.port.out.dto.AccessToken;
 import com.alzzaipo.member.application.port.out.dto.UserProfile;

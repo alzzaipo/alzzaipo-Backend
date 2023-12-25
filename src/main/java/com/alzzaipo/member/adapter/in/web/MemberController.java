@@ -14,7 +14,7 @@ import com.alzzaipo.member.adapter.in.web.dto.SendSignUpEmailVerificationCodeWeb
 import com.alzzaipo.member.adapter.in.web.dto.UpdateMemberProfileWebRequest;
 import com.alzzaipo.member.application.port.in.account.local.ChangeLocalAccountPasswordUseCase;
 import com.alzzaipo.member.application.port.in.account.local.CheckLocalAccountEmailAvailableQuery;
-import com.alzzaipo.member.application.port.in.account.local.CheckLocalAccountIdAvailabilityQuery;
+import com.alzzaipo.member.application.port.in.account.local.CheckLocalAccountIdAvailableQuery;
 import com.alzzaipo.member.application.port.in.account.local.RegisterLocalAccountUseCase;
 import com.alzzaipo.member.application.port.in.account.local.SendSignUpEmailVerificationCodeUseCase;
 import com.alzzaipo.member.application.port.in.account.local.SendUpdateEmailVerificationCodeUseCase;
@@ -51,7 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final RegisterLocalAccountUseCase registerLocalAccountUseCase;
-    private final CheckLocalAccountIdAvailabilityQuery checkLocalAccountIdAvailabilityQuery;
+    private final CheckLocalAccountIdAvailableQuery checkLocalAccountIdAvailableQuery;
     private final CheckLocalAccountEmailAvailableQuery checkLocalAccountEmailAvailableQuery;
     private final VerifyLocalAccountPasswordQuery verifyLocalAccountPasswordQuery;
     private final ChangeLocalAccountPasswordUseCase changeLocalAccountPasswordUseCase;
@@ -67,7 +67,7 @@ public class MemberController {
     public ResponseEntity<String> checkLocalAccountIdAvailability(
         @RequestParam("accountId") String accountId) {
         LocalAccountId localAccountId = new LocalAccountId(accountId);
-        if (!checkLocalAccountIdAvailabilityQuery.checkAccountIdAvailable(localAccountId)) {
+        if (!checkLocalAccountIdAvailableQuery.checkAccountIdAvailable(localAccountId)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 등록된 아이디 입니다.");
         }
         return ResponseEntity.ok().body("사용 가능한 아이디 입니다.");
