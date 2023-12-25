@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LocalAccountRepository extends JpaRepository<LocalAccountJpaEntity, Long> {
 
-	Optional<LocalAccountJpaEntity> findLocalAccountJpaEntityByAccountId(String accountId);
+	Optional<LocalAccountJpaEntity> findByAccountId(String accountId);
 
-	Optional<LocalAccountJpaEntity> findLocalAccountJpaEntityByMemberJpaEntityUid(Long memberUID);
+	Optional<LocalAccountJpaEntity> findByMemberJpaEntityUid(Long memberUID);
 
 	boolean existsByAccountId(String accountId);
 

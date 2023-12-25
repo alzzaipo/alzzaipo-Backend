@@ -5,5 +5,5 @@ import com.alzzaipo.common.Uid;
 
 public interface SendUpdateEmailVerificationCodeUseCase {
 
-	void send(Email email, Uid memberId);
+	void sendUpdateEmailVerificationCode(Email email, Uid memberId);
 }

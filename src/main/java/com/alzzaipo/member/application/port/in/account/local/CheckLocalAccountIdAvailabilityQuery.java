@@ -4,5 +4,5 @@ import com.alzzaipo.member.domain.account.local.LocalAccountId;
 
 public interface CheckLocalAccountIdAvailabilityQuery {
 
-    boolean check(LocalAccountId localAccountId);
+    boolean checkAccountIdAvailable(LocalAccountId localAccountId);
 }

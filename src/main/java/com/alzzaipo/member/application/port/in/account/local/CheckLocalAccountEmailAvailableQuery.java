@@ -2,7 +2,7 @@ package com.alzzaipo.member.application.port.in.account.local;
 
 import com.alzzaipo.common.email.domain.Email;
 
-public interface CheckLocalAccountEmailAvailabilityQuery {
+public interface CheckLocalAccountEmailAvailableQuery {
 
-    boolean check(Email email);
+    boolean checkEmailAvailable(Email email);
 }

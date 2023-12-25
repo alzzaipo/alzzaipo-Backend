@@ -16,7 +16,7 @@ public class Member {
 		this.role = role;
 	}
 
-	public static Member create(String nickname) {
+	public static Member build(String nickname) {
 		return new Member(Uid.generate(), nickname, Role.USER);
 	}
 }

@@ -8,10 +8,12 @@ import lombok.Getter;
 public class ChangeLocalAccountPasswordCommand {
 
     private final Uid memberUID;
+    private final LocalAccountPassword currentPassword;
     private final LocalAccountPassword newPassword;
 
-    public ChangeLocalAccountPasswordCommand(Uid memberUID, LocalAccountPassword newPassword) {
+    public ChangeLocalAccountPasswordCommand(Uid memberUID, String currentPassword, String newPassword) {
         this.memberUID = memberUID;
-        this.newPassword = newPassword;
+        this.currentPassword = new LocalAccountPassword(currentPassword);
+        this.newPassword = new LocalAccountPassword(newPassword);
     }
 }

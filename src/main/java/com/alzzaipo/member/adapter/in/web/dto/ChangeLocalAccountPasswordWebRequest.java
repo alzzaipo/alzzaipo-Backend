@@ -13,9 +13,9 @@ public class ChangeLocalAccountPasswordWebRequest {
 
 	@NotBlank
 	@Size(min = 8, max = 16)
-	private String currentAccountPassword;
+	private String currentPassword;
 
 	@NotBlank
 	@Size(min = 8, max = 16)
-	private String newAccountPassword;
+	private String newPassword;
 }

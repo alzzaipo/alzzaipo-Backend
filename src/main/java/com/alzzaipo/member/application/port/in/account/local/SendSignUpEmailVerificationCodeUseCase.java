@@ -4,5 +4,5 @@ import com.alzzaipo.member.application.port.in.dto.SendSignUpEmailVerificationCo
 
 public interface SendSignUpEmailVerificationCodeUseCase {
 
-    void send(SendSignUpEmailVerificationCodeCommand command);
+    void sendSignUpEmailVerificationCode(SendSignUpEmailVerificationCodeCommand command);
 }

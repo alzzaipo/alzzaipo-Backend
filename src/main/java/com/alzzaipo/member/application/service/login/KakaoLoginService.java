@@ -56,7 +56,7 @@ public class KakaoLoginService implements KakaoLoginUseCase {
 	}
 
 	private SocialAccount registerSocialAccount(UserProfile userProfile) {
-		Member member = Member.create(userProfile.getNickname());
+		Member member = Member.build(userProfile.getNickname());
 		registerMemberPort.registerMember(member);
 
 		SocialAccount socialAccount = new SocialAccount(member.getUid(), userProfile.getEmail(), KAKAO_LOGIN_TYPE);
