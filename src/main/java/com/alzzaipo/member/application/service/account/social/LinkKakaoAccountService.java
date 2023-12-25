@@ -32,7 +32,7 @@ public class LinkKakaoAccountService implements LinkKakaoAccountUseCase {
 
     @Override
     public void linkKakaoAccount(Uid memberUID, AuthorizationCode authorizationCode) {
-        findLocalAccountByMemberUidPort.findLocalAccountByMemberUid(memberUID)
+        findLocalAccountByMemberUidPort.findByMemberId(memberUID)
                 .orElseThrow(() -> new CustomException(HttpStatus.FORBIDDEN, "소셜 계정 연동은 로컬 계정에서만 가능합니다."));
 
         AccessToken accessToken = exchangeKakaoAccessTokenPort.exchangeKakaoAccessToken(authorizationCode);

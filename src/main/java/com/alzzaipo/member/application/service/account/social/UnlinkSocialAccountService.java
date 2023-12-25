@@ -18,7 +18,7 @@ public class UnlinkSocialAccountService implements UnlinkSocialAccountUseCase {
 
     @Override
     public void unlinkSocialAccountUseCase(UnlinkSocialAccountCommand command) {
-        findLocalAccountByMemberUidPort.findLocalAccountByMemberUid(command.getMemberUID())
+        findLocalAccountByMemberUidPort.findByMemberId(command.getMemberUID())
                 .orElseThrow(() -> new CustomException(HttpStatus.FORBIDDEN, "소셜 계정 연동 해지는 로컬 계정에서만 가능합니다."));
 
         deleteSocialAccountUsePort.deleteSocialAccount(

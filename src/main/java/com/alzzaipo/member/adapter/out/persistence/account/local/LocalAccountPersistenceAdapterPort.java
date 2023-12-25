@@ -4,7 +4,7 @@ import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
-import com.alzzaipo.member.application.port.out.account.local.ChangeLocalAccountEmail;
+import com.alzzaipo.member.application.port.out.account.local.ChangeLocalAccountEmailPort;
 import com.alzzaipo.member.application.port.out.account.local.ChangeLocalAccountPasswordPort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountEmailAvailablePort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountIdAvailablePort;
@@ -21,11 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class LocalAccountPersistenceAdapter implements FindLocalAccountByAccountIdPort,
+public class LocalAccountPersistenceAdapterPort implements FindLocalAccountByAccountIdPort,
 	RegisterLocalAccountPort,
 	FindLocalAccountByMemberUidPort,
 	ChangeLocalAccountPasswordPort,
-	ChangeLocalAccountEmail,
+	ChangeLocalAccountEmailPort,
 	CheckLocalAccountIdAvailablePort,
 	CheckLocalAccountEmailAvailablePort {
 
@@ -41,7 +41,7 @@ public class LocalAccountPersistenceAdapter implements FindLocalAccountByAccount
 
 	@Override
 	@Transactional(readOnly = true)
-	public Optional<SecureLocalAccount> findLocalAccountByMemberUid(Uid memberUID) {
+	public Optional<SecureLocalAccount> findByMemberId(Uid memberUID) {
 		return localAccountRepository.findLocalAccountJpaEntityByMemberJpaEntityUid(memberUID.get())
 			.map(this::toSecureLocalAccount);
 	}

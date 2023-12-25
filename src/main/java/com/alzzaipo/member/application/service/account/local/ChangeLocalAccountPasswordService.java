@@ -24,7 +24,7 @@ public class ChangeLocalAccountPasswordService implements ChangeLocalAccountPass
     @Override
     public boolean changeLocalAccountPassword(ChangeLocalAccountPasswordCommand command) {
         Optional<SecureLocalAccount> optionalSecureLocalAccount
-                = findLocalAccountByMemberUidPort.findLocalAccountByMemberUid(command.getMemberUID());
+                = findLocalAccountByMemberUidPort.findByMemberId(command.getMemberUID());
 
         return optionalSecureLocalAccount.isPresent() &&
                 changePassword(optionalSecureLocalAccount.get(), command.getNewPassword());

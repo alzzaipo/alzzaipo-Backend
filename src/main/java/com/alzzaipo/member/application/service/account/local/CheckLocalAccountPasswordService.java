@@ -21,7 +21,7 @@ public class CheckLocalAccountPasswordService implements CheckLocalAccountPasswo
     @Override
     public boolean checkLocalAccountPassword(Uid memberUID, LocalAccountPassword localAccountPassword) {
         Optional<SecureLocalAccount> optionalSecureLocalAccount
-                = findLocalAccountByMemberUidPort.findLocalAccountByMemberUid(memberUID);
+                = findLocalAccountByMemberUidPort.findByMemberId(memberUID);
 
         return optionalSecureLocalAccount.isPresent()
                 && isPasswordValid(localAccountPassword, optionalSecureLocalAccount.get());
