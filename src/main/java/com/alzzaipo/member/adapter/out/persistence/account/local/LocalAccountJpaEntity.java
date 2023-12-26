@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "local_account")
 public class LocalAccountJpaEntity extends BaseTimeEntity {
 
     @Id
@@ -25,7 +26,7 @@ public class LocalAccountJpaEntity extends BaseTimeEntity {
     private String email;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_uid")
+    @JoinColumn(name = "member_id")
     private MemberJpaEntity memberJpaEntity;
 
     public LocalAccountJpaEntity(String accountId, String accountPassword, String email, MemberJpaEntity memberJpaEntity) {

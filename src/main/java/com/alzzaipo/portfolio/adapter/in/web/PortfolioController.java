@@ -1,8 +1,7 @@
 package com.alzzaipo.portfolio.adapter.in.web;
 
 import com.alzzaipo.common.MemberPrincipal;
-import com.alzzaipo.common.TsidUtil;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.portfolio.adapter.in.web.dto.RegisterPortfolioWebRequest;
 import com.alzzaipo.portfolio.adapter.in.web.dto.UpdatePortfolioWebRequest;
 import com.alzzaipo.portfolio.application.dto.DeletePortfolioCommand;
@@ -11,11 +10,11 @@ import com.alzzaipo.portfolio.application.dto.MemberPortfolioSummary;
 import com.alzzaipo.portfolio.application.dto.PortfolioView;
 import com.alzzaipo.portfolio.application.dto.RegisterPortfolioCommand;
 import com.alzzaipo.portfolio.application.dto.UpdatePortfolioCommand;
-import com.alzzaipo.portfolio.application.in.DeletePortfolioUseCase;
-import com.alzzaipo.portfolio.application.in.FindMemberPortfoliosQuery;
-import com.alzzaipo.portfolio.application.in.FindPortfolioQuery;
-import com.alzzaipo.portfolio.application.in.RegisterPortfolioUseCase;
-import com.alzzaipo.portfolio.application.in.UpdatePortfolioUseCase;
+import com.alzzaipo.portfolio.application.port.in.DeletePortfolioUseCase;
+import com.alzzaipo.portfolio.application.port.in.FindMemberPortfoliosQuery;
+import com.alzzaipo.portfolio.application.port.in.FindPortfolioQuery;
+import com.alzzaipo.portfolio.application.port.in.RegisterPortfolioUseCase;
+import com.alzzaipo.portfolio.application.port.in.UpdatePortfolioUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -53,11 +52,11 @@ public class PortfolioController {
 
 	@GetMapping
 	public ResponseEntity<PortfolioView> find(@AuthenticationPrincipal MemberPrincipal principal,
-		@RequestParam("uid") Long portfolioUID) {
+		@RequestParam("id") String portfolioId) {
 
 		FindPortfolioCommand command = new FindPortfolioCommand(
-			principal.getMemberUID(),
-			new Uid(portfolioUID));
+			principal.getMemberId(),
+			Id.fromString(portfolioId));
 
 		PortfolioView portfolio = findPortfolioQuery.findPortfolio(command);
 
@@ -69,7 +68,7 @@ public class PortfolioController {
 		@AuthenticationPrincipal MemberPrincipal principal) {
 
 		MemberPortfolioSummary memberPortfolioSummary
-			= findMemberPortfoliosQuery.findMemberPortfolios(principal.getMemberUID());
+			= findMemberPortfoliosQuery.findMemberPortfolios(principal.getMemberId());
 
 		return ResponseEntity.ok().body(memberPortfolioSummary);
 	}
@@ -88,35 +87,29 @@ public class PortfolioController {
 
 	@DeleteMapping("/delete")
 	public ResponseEntity<String> delete(@AuthenticationPrincipal MemberPrincipal principal,
-		@RequestParam("uid") String uid) {
+		@RequestParam("id") String id) {
 
 		DeletePortfolioCommand command = new DeletePortfolioCommand(
-			principal.getMemberUID(),
-			new Uid(TsidUtil.toLong(uid)));
+			principal.getMemberId(),
+			Id.fromString(id));
 
 		deletePortfolioUseCase.deletePortfolio(command);
 
 		return ResponseEntity.ok().body("포트폴리오 삭제 완료");
 	}
 
-	private RegisterPortfolioCommand toRegisterPortfolioCommand(MemberPrincipal principal,
-		RegisterPortfolioWebRequest registerPortfolioWebRequest) {
-
-		return new RegisterPortfolioCommand(
-			principal.getMemberUID(),
-			registerPortfolioWebRequest.getStockCode(),
-			registerPortfolioWebRequest.getSharesCnt(),
-			registerPortfolioWebRequest.getProfit(),
-			registerPortfolioWebRequest.getAgents(),
-			registerPortfolioWebRequest.getMemo());
+	private RegisterPortfolioCommand toRegisterPortfolioCommand(MemberPrincipal principal, RegisterPortfolioWebRequest dto) {
+		return new RegisterPortfolioCommand(principal.getMemberId(),
+			dto.getStockCode(),
+			dto.getSharesCnt(),
+			dto.getProfit(),
+			dto.getAgents(),
+			dto.getMemo());
 	}
 
-	private UpdatePortfolioCommand toUpdateMemberPortfolioCommand(MemberPrincipal principal,
-		UpdatePortfolioWebRequest dto) {
-
-		return new UpdatePortfolioCommand(
-			new Uid(TsidUtil.toLong(dto.getUid())),
-			principal.getMemberUID(),
+	private UpdatePortfolioCommand toUpdateMemberPortfolioCommand(MemberPrincipal principal, UpdatePortfolioWebRequest dto) {
+		return new UpdatePortfolioCommand(Id.fromString(dto.getId()),
+			principal.getMemberId(),
 			dto.getStockCode(),
 			dto.getSharesCnt(),
 			dto.getProfit(),

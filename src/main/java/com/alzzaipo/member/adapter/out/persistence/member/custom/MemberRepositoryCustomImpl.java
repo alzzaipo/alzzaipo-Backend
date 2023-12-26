@@ -8,10 +8,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-@Transactional
 @RequiredArgsConstructor
 public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
@@ -20,7 +18,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 	@Override
 	public MemberJpaEntity findEntityById(Long id) throws CustomException {
 		TypedQuery<MemberJpaEntity> query = entityManager.createQuery(
-			"SELECT m FROM MemberJpaEntity m WHERE m.uid = :id", MemberJpaEntity.class);
+			"SELECT m FROM MemberJpaEntity m WHERE m.id = :id", MemberJpaEntity.class);
 		query.setParameter("id", id);
 
 		List<MemberJpaEntity> resultList = query.getResultList();

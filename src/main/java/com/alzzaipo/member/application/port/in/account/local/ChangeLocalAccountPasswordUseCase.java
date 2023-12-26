@@ -4,5 +4,5 @@ import com.alzzaipo.member.application.port.in.dto.ChangeLocalAccountPasswordCom
 
 public interface ChangeLocalAccountPasswordUseCase {
 
-    boolean changeLocalAccountPassword(ChangeLocalAccountPasswordCommand command);
+    boolean changePassword(ChangeLocalAccountPasswordCommand command);
 }

@@ -12,7 +12,7 @@ import lombok.Setter;
 public class UpdatePortfolioWebRequest {
 
     @NotBlank
-    private String uid;
+    private String id;
 
     @Min(value = 1)
     private int stockCode;

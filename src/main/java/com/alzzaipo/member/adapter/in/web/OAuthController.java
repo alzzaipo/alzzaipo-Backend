@@ -5,7 +5,7 @@ import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.member.application.port.in.account.social.UnlinkSocialAccountUseCase;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
 import com.alzzaipo.member.application.port.in.dto.UnlinkSocialAccountCommand;
-import com.alzzaipo.member.application.port.in.oauth.LinkKakaoAccountUseCase;
+import com.alzzaipo.member.application.port.in.account.social.LinkKakaoAccountUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,13 +26,13 @@ public class OAuthController {
 	@GetMapping("/kakao/link")
 	public ResponseEntity<String> kakaoLink(@AuthenticationPrincipal MemberPrincipal principal,
 		@RequestParam("code") String authCode) {
-		linkKakaoAccountUseCase.linkKakaoAccount(principal.getMemberUID(), new AuthorizationCode(authCode));
+		linkKakaoAccountUseCase.linkKakaoAccount(principal.getMemberId(), new AuthorizationCode(authCode));
 		return ResponseEntity.ok().body("연동 완료");
 	}
 
 	@DeleteMapping("/kakao/unlink")
 	public ResponseEntity<String> kakaoUnlink(@AuthenticationPrincipal MemberPrincipal principal) {
-		UnlinkSocialAccountCommand command = new UnlinkSocialAccountCommand(principal.getMemberUID(), LoginType.KAKAO);
+		UnlinkSocialAccountCommand command = new UnlinkSocialAccountCommand(principal.getMemberId(), LoginType.KAKAO);
 		unlinkSocialAccountUseCase.unlinkSocialAccountUseCase(command);
 		return ResponseEntity.ok().body("해지 완료");
 	}

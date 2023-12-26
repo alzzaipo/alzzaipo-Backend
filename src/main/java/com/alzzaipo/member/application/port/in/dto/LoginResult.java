@@ -1,6 +1,6 @@
 package com.alzzaipo.member.application.port.in.dto;
 
-import com.alzzaipo.common.jwt.TokenInfo;
+import com.alzzaipo.common.token.domain.TokenInfo;
 import lombok.Getter;
 
 @Getter

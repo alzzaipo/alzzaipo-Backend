@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "notification_criterion")
 public class NotificationCriterionJpaEntity extends BaseTimeEntity {
 
     @Id
-    @Column(name = "notification_criterion_uid", unique = true, nullable = false)
-    private Long notificationCriterionUID;
+    @Column(name = "notification_criterion_id", unique = true, nullable = false)
+    private Long id;
 
     @Column(name = "min_competition_rate", nullable = false,
             columnDefinition = "INT CHECK (min_competition_rate >= 0 AND min_competition_rate <= 10000)")
@@ -24,11 +25,11 @@ public class NotificationCriterionJpaEntity extends BaseTimeEntity {
     private int minLockupRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_uid", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     private MemberJpaEntity memberJpaEntity;
 
-    public NotificationCriterionJpaEntity(Long notificationCriterionUID, int minCompetitionRate, int minLockupRate, MemberJpaEntity memberJpaEntity) {
-        this.notificationCriterionUID = notificationCriterionUID;
+    public NotificationCriterionJpaEntity(Long id, int minCompetitionRate, int minLockupRate, MemberJpaEntity memberJpaEntity) {
+        this.id = id;
         this.minCompetitionRate = minCompetitionRate;
         this.minLockupRate = minLockupRate;
         this.memberJpaEntity = memberJpaEntity;

@@ -1,7 +1,7 @@
 package com.alzzaipo.hexagonal.ipo.adapter.out.web;
 
 import com.alzzaipo.ipo.adapter.out.web.ScrapeIposFromIpo38Adapter;
-import com.alzzaipo.ipo.application.port.out.dto.ScrapeIpoResult;
+import com.alzzaipo.ipo.application.port.out.dto.ScrapedIpoDto;
 import com.alzzaipo.ipo.application.port.out.dto.ScrapeIposCommand;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -21,11 +21,11 @@ public class ScrapeIposFromIpo38AdapterTest {
         ScrapeIposCommand scrapeIposCommand = new ScrapeIposCommand(1, 1);
 
         //when
-        List<ScrapeIpoResult> scrapeIpoResults
+        List<ScrapedIpoDto> scrapedIpoDtos
                 = scrapeIposFromIpo38Adapter.scrapeIpos(scrapeIposCommand);
 
         //then
-        Assertions.assertThat(scrapeIpoResults.size()).isEqualTo(20);
+        Assertions.assertThat(scrapedIpoDtos.size()).isEqualTo(20);
     }
 
 }

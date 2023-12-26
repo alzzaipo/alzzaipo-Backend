@@ -1,18 +1,21 @@
 package com.alzzaipo.ipo.adapter.out.persistence;
 
 import com.alzzaipo.common.BaseTimeEntity;
+import com.alzzaipo.ipo.domain.Ipo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Getter
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
+@Table(name = "ipo")
 public class IpoJpaEntity extends BaseTimeEntity {
 
     @Id
@@ -92,5 +95,41 @@ public class IpoJpaEntity extends BaseTimeEntity {
 
     public void setListed() {
         this.listed = true;
+    }
+
+    public static IpoJpaEntity build(Ipo ipo) {
+        return new IpoJpaEntity(
+            ipo.getStockName(),
+            ipo.getStockCode(),
+            ipo.getExpectedOfferingPriceMin(),
+            ipo.getExpectedOfferingPriceMax(),
+            ipo.getFixedOfferingPrice(),
+            ipo.getTotalAmount(),
+            ipo.getCompetitionRate(),
+            ipo.getLockupRate(),
+            ipo.getAgents(),
+            ipo.getSubscribeStartDate(),
+            ipo.getSubscribeEndDate(),
+            ipo.getListedDate(),
+            ipo.getInitialMarketPrice(),
+            ipo.getProfitRate());
+    }
+
+    public Ipo toDomainEntity() {
+        return new Ipo(
+            stockName,
+            stockCode,
+            expectedOfferingPriceMin,
+            expectedOfferingPriceMax,
+            fixedOfferingPrice,
+            totalAmount,
+            competitionRate,
+            lockupRate,
+            agents,
+            subscribeStartDate,
+            subscribeEndDate,
+            listedDate,
+            initialMarketPrice,
+            profitRate);
     }
 }

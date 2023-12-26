@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "social_account_jpa_entity",
-        uniqueConstraints = {@UniqueConstraint(name = "uidx-email-login_type", columnNames = {"email", "login_type"})})
+@Table(name = "social_account",
+        uniqueConstraints = {@UniqueConstraint(name = "uix-email-login_type", columnNames = {"email", "login_type"})})
 public class SocialAccountJpaEntity extends BaseTimeEntity {
 
     @Id
@@ -24,7 +24,7 @@ public class SocialAccountJpaEntity extends BaseTimeEntity {
     private String loginType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_uid")
+    @JoinColumn(name = "member_id")
     private MemberJpaEntity memberJpaEntity;
 
     public SocialAccountJpaEntity(String email, String loginType, MemberJpaEntity memberJpaEntity) {

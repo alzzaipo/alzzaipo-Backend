@@ -1,16 +1,16 @@
 package com.alzzaipo.portfolio.application.dto;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import lombok.Getter;
 
 @Getter
 public class DeletePortfolioCommand {
 
-    private final Uid memberUID;
-    private final Uid portfolioUID;
+    private final Id memberId;
+    private final Id portfolioId;
 
-    public DeletePortfolioCommand(Uid memberUID, Uid portfolioUID) {
-        this.memberUID = memberUID;
-        this.portfolioUID = portfolioUID;
+    public DeletePortfolioCommand(Id memberId, Id portfolioId) {
+        this.memberId = memberId;
+        this.portfolioId = portfolioId;
     }
 }

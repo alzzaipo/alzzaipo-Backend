@@ -14,6 +14,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -22,10 +23,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "member")
 public class MemberJpaEntity extends BaseTimeEntity {
 
 	@Id
-	private Long uid;
+	private Long id;
 
 	@Column(nullable = false)
 	private String nickname;
@@ -45,8 +47,8 @@ public class MemberJpaEntity extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
-	public MemberJpaEntity(Long uid, String nickname) {
-		this.uid = uid;
+	public MemberJpaEntity(Long id, String nickname) {
+		this.id = id;
 		this.nickname = nickname;
 		this.role = Role.USER;
 	}

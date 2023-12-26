@@ -12,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 @Component
+@Repository
 @RequiredArgsConstructor
 public class EmailVerificationPersistenceAdapter implements SaveEmailVerificationCodePort,
 	VerifyEmailVerificationCodePort,
