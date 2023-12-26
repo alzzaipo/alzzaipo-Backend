@@ -10,7 +10,5 @@ public interface SocialAccountRepository extends JpaRepository<SocialAccountJpaE
 
     Optional<SocialAccountJpaEntity> findByLoginTypeAndEmail(String loginType, String email);
 
-    List<SocialAccountJpaEntity> findByMemberJpaEntityId(long memberId);
-
     Optional<SocialAccountJpaEntity> findByMemberJpaEntityIdAndLoginType(long memberId, String loginType);
 }
