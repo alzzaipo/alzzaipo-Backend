@@ -1,6 +1,5 @@
 package com.alzzaipo.ipo.adapter.out.web;
 
-import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.ipo.application.port.out.QueryInitialMarketPricePort;
 import com.alzzaipo.ipo.application.port.out.dto.QueryInitialMarketPriceResult;
 import java.io.BufferedReader;
@@ -18,7 +17,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -29,7 +27,8 @@ public class QueryInitialMarketPriceAdapter implements QueryInitialMarketPricePo
     @Value("${data.go.kr.apiKey}")
     private String serviceKey;
 
-    private final String endpoint = "http://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo";
+    @Value("${data.go.kr.endpoint}")
+    private String endpoint;
 
     @Override
     public QueryInitialMarketPriceResult queryInitialMarketPrice(int stockCode, LocalDate listedDate) {
@@ -44,7 +43,7 @@ public class QueryInitialMarketPriceAdapter implements QueryInitialMarketPricePo
             conn.setRequestProperty("Content-type", "application/json");
 
             if (conn.getResponseCode() < 200 || conn.getResponseCode() >= 300) {
-                throw new CustomException(HttpStatus.valueOf(conn.getResponseCode()), "시초가 조회 실패", conn.getResponseMessage());
+                throw new RuntimeException("Bad Response Code / " + conn.getResponseMessage());
             }
 
             String response = readApiResponse(conn);
@@ -53,7 +52,7 @@ public class QueryInitialMarketPriceAdapter implements QueryInitialMarketPricePo
             int initialMarketPrice = parseInitialMarketPrice(response);
             return new QueryInitialMarketPriceResult(true, initialMarketPrice);
         } catch (Exception e) {
-            log.error("Query Initial Market Price Error : {}", e.getMessage());
+            log.error("Query Initial Market Price Error: {}", e.getMessage());
             return new QueryInitialMarketPriceResult(false, 0);
         }
     }
