@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "email_notification")
 public class EmailNotificationJpaEntity extends BaseTimeEntity {
 
     @Id

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "notification_criterion")
 public class NotificationCriterionJpaEntity extends BaseTimeEntity {
 
     @Id

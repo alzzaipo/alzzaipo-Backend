@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "local_account")
 public class LocalAccountJpaEntity extends BaseTimeEntity {
 
     @Id

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "portfolio")
 public class PortfolioJpaEntity extends BaseTimeEntity {
 
     @Id
