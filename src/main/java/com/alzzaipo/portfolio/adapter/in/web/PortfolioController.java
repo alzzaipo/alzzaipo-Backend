@@ -52,11 +52,11 @@ public class PortfolioController {
 
 	@GetMapping
 	public ResponseEntity<PortfolioView> find(@AuthenticationPrincipal MemberPrincipal principal,
-		@RequestParam("id") Long portfolioId) {
+		@RequestParam("id") String portfolioId) {
 
 		FindPortfolioCommand command = new FindPortfolioCommand(
 			principal.getMemberId(),
-			new Id(portfolioId));
+			Id.fromString(portfolioId));
 
 		PortfolioView portfolio = findPortfolioQuery.findPortfolio(command);
 
