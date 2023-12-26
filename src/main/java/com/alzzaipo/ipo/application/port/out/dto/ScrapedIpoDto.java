@@ -1,5 +1,6 @@
 package com.alzzaipo.ipo.application.port.out.dto;
 
+import com.alzzaipo.ipo.domain.Ipo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
-public class ScrapeIpoResult {
+public class ScrapedIpoDto {
 
     // 종목명
     private final String stockName;
@@ -44,4 +45,21 @@ public class ScrapeIpoResult {
 
     // 종목 코드
     private final int stockCode;
+
+    public Ipo toDomainEntity() {
+        return new Ipo(
+            stockName,
+            stockCode,
+            expectedOfferingPriceMin,
+            expectedOfferingPriceMax,
+            fixedOfferingPrice,
+            totalAmount,
+            competitionRate,
+            lockupRate,
+            agents,
+            subscribeStartDate,
+            subscribeEndDate,
+            listedDate,
+            0, 0);
+    }
 }

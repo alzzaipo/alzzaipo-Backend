@@ -44,8 +44,7 @@ public class PortfolioService implements RegisterPortfolioUseCase,
 
 	@Override
 	public void registerPortfolio(RegisterPortfolioCommand command) {
-		Ipo ipo = findIpoByStockCodePort.findIpoByStockCodePort(command.getStockCode())
-			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "공모주 조회 실패"));
+		Ipo ipo = findIpoByStockCodePort.findByStockCode(command.getStockCode());
 
 		Portfolio portfolio = Portfolio.build(command.getMemberUID(), ipo, command.getProfit(), command.getSharesCnt(),
 			command.getAgents(), command.getAgents());
@@ -84,8 +83,7 @@ public class PortfolioService implements RegisterPortfolioUseCase,
 			throw new CustomException(HttpStatus.UNAUTHORIZED, "포트폴리오 권한 없음");
 		}
 
-		Ipo ipo = findIpoByStockCodePort.findIpoByStockCodePort(command.getStockCode())
-			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "공모주 조회 실패"));
+		Ipo ipo = findIpoByStockCodePort.findByStockCode(command.getStockCode());
 
 		Portfolio updatedPortfolio = Portfolio.build(command.getMemberUID(), ipo, command.getProfit(), command.getSharesCnt(),
 			command.getAgents(), command.getMemo());

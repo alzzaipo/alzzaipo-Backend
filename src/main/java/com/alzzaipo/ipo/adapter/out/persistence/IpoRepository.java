@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IpoRepository extends JpaRepository<IpoJpaEntity, Long> {
 
-    @Query("SELECT i FROM IpoJpaEntity i WHERE i.stockCode = ?1")
     Optional<IpoJpaEntity> findByStockCode(int stockCode);
 
     @Query("SELECT i FROM IpoJpaEntity i " +
@@ -19,8 +18,7 @@ public interface IpoRepository extends JpaRepository<IpoJpaEntity, Long> {
             "   AND YEAR(i.listedDate) >= :from " +
             "   AND YEAR(i.listedDate) <= :to " +
             "   AND i.competitionRate >= :minCompetitionRate " +
-            "   AND i.lockupRate >= :minLockupRate"
-    )
+            "   AND i.lockupRate >= :minLockupRate")
     List<IpoJpaEntity> findAnalyzeIpoProfitRateTarget(
             @Param("from") int from,
             @Param("to") int to,
@@ -29,4 +27,6 @@ public interface IpoRepository extends JpaRepository<IpoJpaEntity, Long> {
 
     @Query("SELECT i FROM IpoJpaEntity i WHERE i.listed = false")
     List<IpoJpaEntity> findNotListedIpos();
+
+    boolean existsByStockCode(int stockCode);
 }

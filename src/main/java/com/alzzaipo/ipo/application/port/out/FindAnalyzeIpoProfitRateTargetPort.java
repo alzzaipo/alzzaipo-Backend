@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface FindAnalyzeIpoProfitRateTargetPort {
 
-    List<Ipo> findAnalyzeIpoProfitRateTarget(AnalyzeIpoProfitRateCommand command);
+    List<Ipo> findTargets(AnalyzeIpoProfitRateCommand command);
 }
