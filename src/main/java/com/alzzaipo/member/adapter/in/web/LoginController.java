@@ -51,6 +51,6 @@ public class LoginController {
             TokenResponse tokenResponse = TokenResponse.build(loginResult.getTokenInfo());
             return ResponseEntity.ok(tokenResponse);
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
