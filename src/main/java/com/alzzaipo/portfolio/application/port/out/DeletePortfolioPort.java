@@ -1,8 +1,8 @@
 package com.alzzaipo.portfolio.application.port.out;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 
 public interface DeletePortfolioPort {
 
-    void deletePortfolio(Uid portfolioUID);
+    void deletePortfolio(Id portfolioId);
 }

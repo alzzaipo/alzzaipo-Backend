@@ -1,8 +1,8 @@
 package com.alzzaipo.notification.application.port.out.criterion;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 
 public interface DeleteNotificationCriterionPort {
 
-    void deleteNotificationCriterion(Uid notificationCriterionPort);
+    void deleteNotificationCriterion(Id notificationCriterionPort);
 }

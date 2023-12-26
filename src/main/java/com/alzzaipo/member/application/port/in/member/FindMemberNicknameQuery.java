@@ -1,8 +1,8 @@
 package com.alzzaipo.member.application.port.in.member;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 
 public interface FindMemberNicknameQuery {
 
-    String findMemberNickname(Uid memberUID);
+    String findMemberNickname(Id memberId);
 }

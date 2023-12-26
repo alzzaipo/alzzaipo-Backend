@@ -1,7 +1,7 @@
 package com.alzzaipo.member.adapter.in.web;
 
 import com.alzzaipo.common.MemberPrincipal;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.email.domain.EmailVerificationCode;
 import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
@@ -115,10 +115,10 @@ public class MemberController {
     public ResponseEntity<String> verifyPassword(@AuthenticationPrincipal MemberPrincipal principal,
         @Valid @RequestBody LocalAccountPasswordDto dto) {
 
-        Uid memberUID = principal.getMemberUID();
+        Id memberId = principal.getMemberId();
         LocalAccountPassword localAccountPassword = new LocalAccountPassword(dto.getAccountPassword());
 
-        if (verifyLocalAccountPasswordQuery.verifyLocalAccountPassword(memberUID, localAccountPassword)) {
+        if (verifyLocalAccountPasswordQuery.verifyLocalAccountPassword(memberId, localAccountPassword)) {
             return ResponseEntity.ok().body("비밀번호 검증 성공");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호 검증 실패");
@@ -129,7 +129,7 @@ public class MemberController {
         @Valid @RequestBody ChangeLocalAccountPasswordWebRequest dto) {
 
         ChangeLocalAccountPasswordCommand command = new ChangeLocalAccountPasswordCommand(
-            principal.getMemberUID(),
+            principal.getMemberId(),
             dto.getCurrentPassword(),
             dto.getNewPassword());
 
@@ -141,14 +141,14 @@ public class MemberController {
 
     @GetMapping("/nickname")
     public ResponseEntity<String> findMemberNickname(@AuthenticationPrincipal MemberPrincipal principal) {
-        String nickname = findMemberNicknameQuery.findMemberNickname(principal.getMemberUID());
+        String nickname = findMemberNicknameQuery.findMemberNickname(principal.getMemberId());
         return ResponseEntity.ok().body(nickname);
     }
 
     @GetMapping("/profile")
     public ResponseEntity<MemberProfile> findMemberProfile(
         @AuthenticationPrincipal MemberPrincipal principal) {
-        MemberProfile memberProfile = findMemberProfileQuery.findMemberProfile(principal.getMemberUID(),
+        MemberProfile memberProfile = findMemberProfileQuery.findMemberProfile(principal.getMemberId(),
             principal.getCurrentLoginType());
 
         return ResponseEntity.ok().body(memberProfile);
@@ -159,7 +159,7 @@ public class MemberController {
         @AuthenticationPrincipal MemberPrincipal principal,
         @Valid @RequestBody EmailDto dto) {
         sendUpdateEmailVerificationCodeUseCase.sendUpdateEmailVerificationCode(new Email(dto.getEmail()),
-            principal.getMemberUID());
+            principal.getMemberId());
         return ResponseEntity.ok().body("전송 완료");
     }
 
@@ -179,7 +179,7 @@ public class MemberController {
         @Valid @RequestBody UpdateMemberProfileWebRequest dto) {
 
         UpdateMemberProfileCommand command = new UpdateMemberProfileCommand(
-            principal.getMemberUID(),
+            principal.getMemberId(),
             dto.getNickname(),
             new Email(dto.getEmail()));
 
@@ -190,7 +190,7 @@ public class MemberController {
 
     @DeleteMapping("/withdraw")
     public ResponseEntity<String> withdrawMember(@AuthenticationPrincipal MemberPrincipal principal) {
-        withdrawMemberUseCase.withdrawMember(principal.getMemberUID());
+        withdrawMemberUseCase.withdrawMember(principal.getMemberId());
         return ResponseEntity.ok().body("회원 탈퇴 완료");
     }
 }

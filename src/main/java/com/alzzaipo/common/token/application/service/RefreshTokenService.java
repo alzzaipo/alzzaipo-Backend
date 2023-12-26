@@ -1,6 +1,6 @@
 package com.alzzaipo.common.token.application.service;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.common.token.TokenUtil;
 import com.alzzaipo.common.token.domain.TokenInfo;
@@ -26,7 +26,7 @@ public class RefreshTokenService implements RefreshTokenUseCase {
 	public TokenInfo refresh(String refreshToken) {
 		validateToken(refreshToken);
 
-		Uid memberId = findRefreshTokenPort.find(refreshToken)
+		Id memberId = findRefreshTokenPort.find(refreshToken)
 			.orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "Invalid Token"));
 
 		TokenInfo tokenInfo = TokenUtil.refreshToken(memberId, refreshToken);

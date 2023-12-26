@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.Range;
 public class UpdateNotificationCriterionWebRequest {
 
 	@NotBlank
-	private String uid;
+	private String id;
 
 	@Min(value = 0)
 	private int competitionRate;

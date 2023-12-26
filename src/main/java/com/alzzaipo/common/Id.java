@@ -9,33 +9,33 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @NoArgsConstructor
-public class Uid {
+public class Id {
 
-	@JsonProperty("uid")
-	private long uid;
+	@JsonProperty("id")
+	private long id;
 
-	public Uid(Long uid) {
-		if (uid <= 0) {
-			throw new CustomException(HttpStatus.BAD_REQUEST, "UID 값 오류");
+	public Id(Long id) {
+		if (id <= 0) {
+			throw new CustomException(HttpStatus.BAD_REQUEST, "ID 값 오류");
 		}
-		this.uid = uid;
+		this.id = id;
 	}
 
-	public static Uid generate() {
-		return new Uid(TsidCreator.getTsid().toLong());
+	public static Id generate() {
+		return new Id(TsidCreator.getTsid().toLong());
 	}
 
-	public static Uid fromString(String uid) {
-		return new Uid(Tsid.decode(uid, 62).toLong());
+	public static Id fromString(String id) {
+		return new Id(Tsid.decode(id, 62).toLong());
 	}
 
 	@Override
 	public String toString() {
-		return Tsid.from(this.uid).encode(62);
+		return Tsid.from(this.id).encode(62);
 	}
 
 	public Long get() {
-		return uid;
+		return id;
 	}
 
 	@Override
@@ -46,12 +46,12 @@ public class Uid {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		Uid u = (Uid) o;
-		return Objects.equals(uid, u.uid);
+		Id u = (Id) o;
+		return Objects.equals(id, u.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(uid);
+		return Objects.hash(id);
 	}
 }

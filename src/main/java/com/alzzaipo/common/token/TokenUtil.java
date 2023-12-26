@@ -1,7 +1,7 @@
 package com.alzzaipo.common.token;
 
 import com.alzzaipo.common.LoginType;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.token.domain.TokenProperties;
 import com.alzzaipo.common.token.domain.TokenInfo;
 import io.jsonwebtoken.Claims;
@@ -24,13 +24,13 @@ public class TokenUtil {
 		TokenUtil.tokenProperties = tokenProperties;
 	}
 
-	public static TokenInfo createToken(Uid memberId, LoginType loginType) {
+	public static TokenInfo createToken(Id memberId, LoginType loginType) {
 		String accessToken = generateAccessToken(memberId.get(), loginType);
 		String refreshToken = generateRefreshToken(loginType);
 		return new TokenInfo(accessToken, refreshToken);
 	}
 
-	public static TokenInfo refreshToken(Uid memberId, String refreshToken) {
+	public static TokenInfo refreshToken(Id memberId, String refreshToken) {
 		Claims claims = getClaims(refreshToken);
 		LoginType loginType = LoginType.valueOf(claims.get("loginType", String.class));
 		Date refreshTokenExpirationDate = claims.getExpiration();
@@ -40,9 +40,9 @@ public class TokenUtil {
 		return new TokenInfo(accessToken, newRefreshToken);
 	}
 
-	public static Uid getMemberUID(String token) {
+	public static Id getMemberId(String token) {
 		long memberId = Long.parseLong(getClaims(token).getSubject());
-		return new Uid(memberId);
+		return new Id(memberId);
 	}
 
 	public static LoginType getLoginType(String token) {

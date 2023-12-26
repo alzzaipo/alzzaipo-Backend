@@ -1,7 +1,7 @@
 package com.alzzaipo.member.application.service.account;
 
 import com.alzzaipo.common.LoginType;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.common.token.TokenUtil;
 import com.alzzaipo.common.token.application.port.out.SaveRefreshTokenPort;
@@ -12,7 +12,7 @@ import com.alzzaipo.member.application.port.in.dto.LoginResult;
 import com.alzzaipo.member.application.port.in.dto.UnlinkSocialAccountCommand;
 import com.alzzaipo.member.application.port.in.account.social.KakaoLoginUseCase;
 import com.alzzaipo.member.application.port.in.account.social.LinkKakaoAccountUseCase;
-import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberUidPort;
+import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberIdPort;
 import com.alzzaipo.member.application.port.out.account.social.DeleteSocialAccountPort;
 import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountPort;
 import com.alzzaipo.member.application.port.out.account.social.RegisterSocialAccountPort;
@@ -36,7 +36,7 @@ public class SocialAccountService implements LinkKakaoAccountUseCase,
     UnlinkSocialAccountUseCase,
     KakaoLoginUseCase {
 
-    private final FindLocalAccountByMemberUidPort findLocalAccountByMemberUidPort;
+    private final FindLocalAccountByMemberIdPort findLocalAccountByMemberIdPort;
     private final ExchangeKakaoAccessTokenPort exchangeKakaoAccessTokenPort;
     private final FetchKakaoUserProfilePort fetchKakaoUserProfilePort;
     private final FindSocialAccountPort findSocialAccountPort;
@@ -46,8 +46,8 @@ public class SocialAccountService implements LinkKakaoAccountUseCase,
     private final RegisterMemberPort registerMemberPort;
 
     @Override
-    public void linkKakaoAccount(Uid memberUID, AuthorizationCode authorizationCode) {
-        findLocalAccountByMemberUidPort.findByMemberId(memberUID)
+    public void linkKakaoAccount(Id memberId, AuthorizationCode authorizationCode) {
+        findLocalAccountByMemberIdPort.findByMemberId(memberId)
             .orElseThrow(() -> new CustomException(HttpStatus.FORBIDDEN, "로컬 계정에서만 가능합니다"));
 
         AccessToken accessToken = exchangeKakaoAccessTokenPort.exchangeKakaoAccessToken(authorizationCode);
@@ -57,15 +57,15 @@ public class SocialAccountService implements LinkKakaoAccountUseCase,
         checkLinkedKakaoAccountExists(userProfile);
 
         registerSocialAccountPort.registerSocialAccount(
-            new SocialAccount(memberUID, userProfile.getEmail(), LoginType.KAKAO));
+            new SocialAccount(memberId, userProfile.getEmail(), LoginType.KAKAO));
     }
 
     @Override
     public void unlinkSocialAccountUseCase(UnlinkSocialAccountCommand command) {
-        findLocalAccountByMemberUidPort.findByMemberId(command.getMemberUID())
+        findLocalAccountByMemberIdPort.findByMemberId(command.getMemberId())
             .orElseThrow(() -> new CustomException(HttpStatus.FORBIDDEN, "로컬 계정에서만 가능합니다"));
 
-        deleteSocialAccountUsePort.deleteSocialAccount(command.getMemberUID(), command.getLoginType());
+        deleteSocialAccountUsePort.deleteSocialAccount(command.getMemberId(), command.getLoginType());
     }
 
     @Override
@@ -81,9 +81,9 @@ public class SocialAccountService implements LinkKakaoAccountUseCase,
             SocialAccount socialAccount = findSocialAccountPort.findSocialAccount(command)
                 .orElseGet(() -> registerSocialAccount(kakaoUserProfile));
 
-            TokenInfo tokenInfo = TokenUtil.createToken(socialAccount.getMemberUID(), LoginType.KAKAO);
+            TokenInfo tokenInfo = TokenUtil.createToken(socialAccount.getMemberId(), LoginType.KAKAO);
 
-            saveRefreshTokenPort.save(tokenInfo.getRefreshToken(), socialAccount.getMemberUID());
+            saveRefreshTokenPort.save(tokenInfo.getRefreshToken(), socialAccount.getMemberId());
 
             return new LoginResult(true, tokenInfo);
         } catch (Exception e) {
@@ -104,7 +104,7 @@ public class SocialAccountService implements LinkKakaoAccountUseCase,
         Member member = Member.build(userProfile.getNickname());
         registerMemberPort.registerMember(member);
 
-        SocialAccount socialAccount = new SocialAccount(member.getUid(), userProfile.getEmail(), LoginType.KAKAO);
+        SocialAccount socialAccount = new SocialAccount(member.getId(), userProfile.getEmail(), LoginType.KAKAO);
         registerSocialAccountPort.registerSocialAccount(socialAccount);
 
         return socialAccount;

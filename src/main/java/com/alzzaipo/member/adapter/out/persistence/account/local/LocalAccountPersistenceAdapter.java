@@ -1,6 +1,6 @@
 package com.alzzaipo.member.adapter.out.persistence.account.local;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
@@ -10,7 +10,7 @@ import com.alzzaipo.member.application.port.out.account.local.ChangeLocalAccount
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountEmailAvailablePort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountIdAvailablePort;
 import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByIdPort;
-import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberUidPort;
+import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberIdPort;
 import com.alzzaipo.member.application.port.out.account.local.RegisterLocalAccountPort;
 import com.alzzaipo.member.application.port.out.account.local.VerifyLocalAccountPasswordPort;
 import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class LocalAccountPersistenceAdapter implements FindLocalAccountByIdPort,
 	RegisterLocalAccountPort,
-	FindLocalAccountByMemberUidPort,
+	FindLocalAccountByMemberIdPort,
 	ChangeLocalAccountPasswordPort,
 	ChangeLocalAccountEmailPort,
 	CheckLocalAccountIdAvailablePort,
@@ -43,21 +43,21 @@ public class LocalAccountPersistenceAdapter implements FindLocalAccountByIdPort,
 	}
 
 	@Override
-	public Optional<SecureLocalAccount> findByMemberId(Uid memberUID) {
-		return localAccountRepository.findByMemberJpaEntityUid(memberUID.get())
+	public Optional<SecureLocalAccount> findByMemberId(Id memberId) {
+		return localAccountRepository.findByMemberJpaEntityId(memberId.get())
 			.map(this::toSecureLocalAccount);
 	}
 
 	@Override
 	public void registerLocalAccountPort(SecureLocalAccount secureLocalAccount) {
-		MemberJpaEntity memberJpaEntity = memberRepository.findEntityById(secureLocalAccount.getMemberUID().get());
+		MemberJpaEntity memberJpaEntity = memberRepository.findEntityById(secureLocalAccount.getMemberId().get());
 		LocalAccountJpaEntity localAccountJpaEntity = toJpaEntity(memberJpaEntity, secureLocalAccount);
 		localAccountRepository.save(localAccountJpaEntity);
 	}
 
 	@Override
 	public void changePassword(long memberId, String password) {
-		LocalAccountJpaEntity localAccount = localAccountRepository.findByMemberJpaEntityUid(memberId)
+		LocalAccountJpaEntity localAccount = localAccountRepository.findByMemberJpaEntityId(memberId)
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "계정 조회 실패"));
 
 		localAccount.changePassword(password);
@@ -80,11 +80,11 @@ public class LocalAccountPersistenceAdapter implements FindLocalAccountByIdPort,
 	}
 
 	private SecureLocalAccount toSecureLocalAccount(LocalAccountJpaEntity jpaEntity) {
-		Uid memberUID = new Uid(jpaEntity.getMemberJpaEntity().getUid());
+		Id memberId = new Id(jpaEntity.getMemberJpaEntity().getId());
 		LocalAccountId localAccountId = new LocalAccountId(jpaEntity.getAccountId());
 		String encryptedLocalAccountPassword = jpaEntity.getAccountPassword();
 		Email email = new Email(jpaEntity.getEmail());
-		return new SecureLocalAccount(memberUID, localAccountId, encryptedLocalAccountPassword, email);
+		return new SecureLocalAccount(memberId, localAccountId, encryptedLocalAccountPassword, email);
 	}
 
 	private LocalAccountJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity, SecureLocalAccount secureLocalAccount) {
@@ -96,7 +96,7 @@ public class LocalAccountPersistenceAdapter implements FindLocalAccountByIdPort,
 
 	@Override
 	public boolean verifyPassword(long memberId, String password) {
-		LocalAccountJpaEntity localAccount = localAccountRepository.findByMemberJpaEntityUid(memberId)
+		LocalAccountJpaEntity localAccount = localAccountRepository.findByMemberJpaEntityId(memberId)
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "계정 조회 실패"));
 
 		return localAccount.getAccountPassword().equals(password);

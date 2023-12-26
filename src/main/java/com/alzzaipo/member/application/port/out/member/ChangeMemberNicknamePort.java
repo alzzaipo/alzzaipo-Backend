@@ -1,8 +1,8 @@
 package com.alzzaipo.member.application.port.out.member;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 
 public interface ChangeMemberNicknamePort {
 
-    void changeMemberNickname(Uid memberUID, String nickname);
+    void changeMemberNickname(Id memberId, String nickname);
 }

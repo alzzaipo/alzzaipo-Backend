@@ -1,7 +1,7 @@
 package com.alzzaipo.notification.adapter.in.web;
 
 import com.alzzaipo.common.MemberPrincipal;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.email.domain.EmailVerificationCode;
 import com.alzzaipo.member.adapter.in.web.dto.EmailVerificationCodeDto;
@@ -58,7 +58,7 @@ public class EmailNotificationController {
 	@PostMapping("/send-verification-code")
 	public ResponseEntity<String> sendVerificationCode(@AuthenticationPrincipal MemberPrincipal principal,
 		@Valid @RequestBody EmailDto dto) {
-		sendNotificationEmailVerificationCodeUseCase.sendVerificationCode(principal.getMemberUID(), new Email(dto.getEmail()));
+		sendNotificationEmailVerificationCodeUseCase.sendVerificationCode(principal.getMemberId(), new Email(dto.getEmail()));
 		return ResponseEntity.ok().body("전송 완료");
 	}
 
@@ -76,7 +76,7 @@ public class EmailNotificationController {
 		@Valid @RequestBody EmailDto emailDto) {
 
 		SubscribeEmailNotificationCommand command =
-			new SubscribeEmailNotificationCommand(principal.getMemberUID(), new Email(emailDto.getEmail()));
+			new SubscribeEmailNotificationCommand(principal.getMemberId(), new Email(emailDto.getEmail()));
 
 		subscribeEmailNotificationUseCase.subscribeEmailNotification(command);
 
@@ -85,20 +85,20 @@ public class EmailNotificationController {
 
 	@GetMapping("/status")
 	public ResponseEntity<EmailNotificationStatus> findEmailNotificationStatus(@AuthenticationPrincipal MemberPrincipal principal) {
-		EmailNotificationStatus emailNotificationStatus = findEmailNotificationStatusQuery.findStatus(principal.getMemberUID());
+		EmailNotificationStatus emailNotificationStatus = findEmailNotificationStatusQuery.findStatus(principal.getMemberId());
 		return ResponseEntity.ok(emailNotificationStatus);
 	}
 
 	@PutMapping("/update")
 	public ResponseEntity<String> updateEmailNotification(@AuthenticationPrincipal MemberPrincipal principal,
 		@Valid @RequestBody EmailDto dto) {
-		changeNotificationEmailUseCase.changeNotificationEmail(principal.getMemberUID(), new Email(dto.getEmail()));
+		changeNotificationEmailUseCase.changeNotificationEmail(principal.getMemberId(), new Email(dto.getEmail()));
 		return ResponseEntity.ok("수정 완료");
 	}
 
 	@DeleteMapping("/unsubscribe")
 	public ResponseEntity<String> unsubscribeEmailNotification(@AuthenticationPrincipal MemberPrincipal principal) {
-		unsubscribeEmailNotificationUseCase.unsubscribeEmailNotification(principal.getMemberUID());
+		unsubscribeEmailNotificationUseCase.unsubscribeEmailNotification(principal.getMemberId());
 		return ResponseEntity.ok("해지 완료");
 	}
 
@@ -107,7 +107,7 @@ public class EmailNotificationController {
 		@Valid @RequestBody RegisterNotificationCriterionWebRequest dto) {
 
 		RegisterNotificationCriterionCommand command = new RegisterNotificationCriterionCommand(
-			principal.getMemberUID(),
+			principal.getMemberId(),
 			dto.getCompetitionRate(),
 			dto.getLockupRate());
 
@@ -121,7 +121,7 @@ public class EmailNotificationController {
 		@AuthenticationPrincipal MemberPrincipal principal) {
 
 		List<NotificationCriterionView> memberNotificationCriteria =
-			findMemberNotificationCriteriaQuery.findMemberNotificationCriteria(principal.getMemberUID());
+			findMemberNotificationCriteriaQuery.findMemberNotificationCriteria(principal.getMemberId());
 
 		return ResponseEntity.ok().body(memberNotificationCriteria);
 	}
@@ -130,8 +130,8 @@ public class EmailNotificationController {
 	public ResponseEntity<String> updateNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
 		@Valid @RequestBody UpdateNotificationCriterionWebRequest dto) {
 
-		UpdateNotificationCriterionCommand command = new UpdateNotificationCriterionCommand(principal.getMemberUID(),
-			Uid.fromString(dto.getUid()), dto.getCompetitionRate(), dto.getLockupRate());
+		UpdateNotificationCriterionCommand command = new UpdateNotificationCriterionCommand(principal.getMemberId(),
+			Id.fromString(dto.getId()), dto.getCompetitionRate(), dto.getLockupRate());
 
 		updateNotificationCriterionUseCase.updateNotificationCriterion(command);
 
@@ -140,10 +140,10 @@ public class EmailNotificationController {
 
 	@DeleteMapping("/criteria/delete")
 	public ResponseEntity<String> deleteNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
-		@RequestParam("uid") String uid) {
+		@RequestParam("id") String id) {
 
-		DeleteNotificationCriterionCommand command = new DeleteNotificationCriterionCommand(principal.getMemberUID(),
-			Uid.fromString(uid));
+		DeleteNotificationCriterionCommand command = new DeleteNotificationCriterionCommand(principal.getMemberId(),
+			Id.fromString(id));
 
 		deleteNotificationCriterionUseCase.deleteNotificationCriterion(command);
 

@@ -1,7 +1,7 @@
 package com.alzzaipo.member.application.service.account;
 
 import com.alzzaipo.common.LoginType;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.email.domain.EmailVerificationCode;
 import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
@@ -95,7 +95,7 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     }
 
     @Override
-    public void sendUpdateEmailVerificationCode(@Valid Email email, Uid memberId) {
+    public void sendUpdateEmailVerificationCode(@Valid Email email, Id memberId) {
         String verificationCode = sendEmailVerificationCodePort.sendVerificationCode(email.get());
 
         saveEmailVerificationCodePort.save(email.get(), verificationCode, memberId.toString(),
@@ -122,7 +122,7 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
 
         Member member = Member.build(command.getNickname());
 
-        SecureLocalAccount secureLocalAccount = new SecureLocalAccount(member.getUid(),
+        SecureLocalAccount secureLocalAccount = new SecureLocalAccount(member.getId(),
             command.getLocalAccountId(),
             passwordEncoder.encode(command.getLocalAccountPassword().get()),
             command.getEmail());
@@ -133,14 +133,14 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
 
     @Override
     @Transactional(readOnly = true)
-    public boolean verifyLocalAccountPassword(Uid memberId, LocalAccountPassword password) {
+    public boolean verifyLocalAccountPassword(Id memberId, LocalAccountPassword password) {
         return verifyLocalAccountPasswordPort.verifyPassword(memberId.get(),
             passwordEncoder.encode(password.get()));
     }
 
     @Override
     public boolean changePassword(ChangeLocalAccountPasswordCommand command) {
-        Long memberId = command.getMemberUID().get();
+        Long memberId = command.getMemberId().get();
         String currentPassword = command.getCurrentPassword().get();
         String newPassword = command.getNewPassword().get();
 
@@ -157,7 +157,7 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
             command.getLocalAccountId());
 
         if (localAccount.isPresent() && isPasswordValid(command, localAccount.get())) {
-            Uid memberId = localAccount.get().getMemberUID();
+            Id memberId = localAccount.get().getMemberId();
             TokenInfo tokenInfo = TokenUtil.createToken(memberId, LoginType.LOCAL);
             saveRefreshTokenPort.save(tokenInfo.getRefreshToken(), memberId);
             return new LoginResult(true, tokenInfo);

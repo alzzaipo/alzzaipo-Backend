@@ -2,7 +2,7 @@ package com.alzzaipo.common.config;
 
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.MemberPrincipal;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.token.TokenUtil;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
@@ -76,7 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	}
 
 	private MemberPrincipal createPrincipal(String token) {
-		Uid memberId = TokenUtil.getMemberUID(token);
+		Id memberId = TokenUtil.getMemberId(token);
 		LoginType loginType = TokenUtil.getLoginType(token);
 
 		MemberJpaEntity member = memberRepository.findById(memberId.get())

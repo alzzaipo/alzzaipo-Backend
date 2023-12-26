@@ -45,7 +45,7 @@ public class SendEmailNotificationService {
 		for (Ipo ipo : ipos) {
 			List<String> targetEmails = criteria.stream()
 				.filter(notificationCriterion -> isCriterionMet(ipo, notificationCriterion))
-				.map(NotificationCriterion::getMemberUID)
+				.map(NotificationCriterion::getMemberId)
 				.distinct()
 				.map(findNotificationEmailPort::findNotificationEmail)
 				.filter(Optional::isPresent)

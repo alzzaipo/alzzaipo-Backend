@@ -9,7 +9,7 @@ public interface LocalAccountRepository extends JpaRepository<LocalAccountJpaEnt
 
 	Optional<LocalAccountJpaEntity> findByAccountId(String accountId);
 
-	Optional<LocalAccountJpaEntity> findByMemberJpaEntityUid(Long memberUID);
+	Optional<LocalAccountJpaEntity> findByMemberJpaEntityId(long memberId);
 
 	boolean existsByAccountId(String accountId);
 

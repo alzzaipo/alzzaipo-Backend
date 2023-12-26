@@ -1,6 +1,6 @@
 package com.alzzaipo.notification.application.port.dto;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.exception.CustomException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -8,12 +8,12 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class RegisterNotificationCriterionCommand {
 
-    private final Uid memberUID;
+    private final Id memberId;
     private final int minCompetitionRate;
     private final int minLockupRate;
 
-    public RegisterNotificationCriterionCommand(Uid memberUID, int minCompetitionRate, int minLockupRate) {
-        this.memberUID = memberUID;
+    public RegisterNotificationCriterionCommand(Id memberId, int minCompetitionRate, int minLockupRate) {
+        this.memberId = memberId;
         this.minCompetitionRate = minCompetitionRate;
         this.minLockupRate = minLockupRate;
 

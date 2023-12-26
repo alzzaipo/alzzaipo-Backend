@@ -1,6 +1,6 @@
 package com.alzzaipo.portfolio.adapter.out.persistence;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.ipo.adapter.out.persistence.IpoJpaEntity;
 import com.alzzaipo.ipo.adapter.out.persistence.IpoRepository;
@@ -39,7 +39,7 @@ public class PortfolioPersistenceAdapter implements
 	@Override
 	public void registerPortfolio(Portfolio portfolio) {
 		MemberJpaEntity memberJpaEntity =
-			memberRepository.findEntityById(portfolio.getMemberUID().get());
+			memberRepository.findEntityById(portfolio.getMemberId().get());
 
 		IpoJpaEntity ipoJpaEntity = ipoRepository.findByStockCode(portfolio.getStockCode())
 			.orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "공모주 조회 실패"));
@@ -53,23 +53,23 @@ public class PortfolioPersistenceAdapter implements
 	}
 
 	@Override
-	public List<Portfolio> findMemberPortfolios(Uid memberUID) {
-		return portfolioRepository.findByMemberUID(memberUID.get())
+	public List<Portfolio> findMemberPortfolios(Id memberId) {
+		return portfolioRepository.findByMemberJpaEntityId(memberId.get())
 			.stream()
 			.map(this::toDomainEntity)
 			.collect(Collectors.toList());
 	}
 
 	@Override
-	public Optional<Portfolio> findPortfolio(Uid portfolioUID) {
-		return portfolioRepository.findByPortfolioUID(portfolioUID.get())
+	public Optional<Portfolio> findPortfolio(Id portfolioId) {
+		return portfolioRepository.findById(portfolioId.get())
 			.map(this::toDomainEntity);
 	}
 
 	@Override
 	public void updatePortfolio(Portfolio portfolio) {
-		PortfolioJpaEntity oldEntity = portfolioRepository.findByPortfolioUID(
-				portfolio.getPortfolioUID().get())
+		PortfolioJpaEntity oldEntity = portfolioRepository.findById(
+				portfolio.getPortfolioId().get())
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
 
 		IpoJpaEntity newIpoJpaEntity = ipoRepository.findByStockCode(portfolio.getStockCode())
@@ -80,14 +80,14 @@ public class PortfolioPersistenceAdapter implements
 			newIpoJpaEntity,
 			portfolio);
 
-		newEntity.setPortfolioUID(oldEntity.getPortfolioUID());
+		newEntity.setId(oldEntity.getId());
 
 		entityManager.merge(newEntity);
 	}
 
 	@Override
-	public void deletePortfolio(Uid portfolioUID) {
-		PortfolioJpaEntity entity = portfolioRepository.findByPortfolioUID(portfolioUID.get())
+	public void deletePortfolio(Id portfolioId) {
+		PortfolioJpaEntity entity = portfolioRepository.findById(portfolioId.get())
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
 
 		portfolioRepository.delete(entity);
@@ -97,7 +97,7 @@ public class PortfolioPersistenceAdapter implements
 		IpoJpaEntity ipoJpaEntity,
 		Portfolio portfolio) {
 		return new PortfolioJpaEntity(
-			portfolio.getPortfolioUID().get(),
+			portfolio.getPortfolioId().get(),
 			portfolio.getSharesCnt(),
 			portfolio.getProfit(),
 			portfolio.getProfitRate(),
@@ -109,8 +109,8 @@ public class PortfolioPersistenceAdapter implements
 
 	private Portfolio toDomainEntity(PortfolioJpaEntity portfolioJpaEntity) {
 		return new Portfolio(
-			new Uid(portfolioJpaEntity.getPortfolioUID()),
-			new Uid(portfolioJpaEntity.getMemberJpaEntity().getUid()),
+			new Id(portfolioJpaEntity.getId()),
+			new Id(portfolioJpaEntity.getMemberJpaEntity().getId()),
 			portfolioJpaEntity.getIpoJpaEntity().getStockName(),
 			portfolioJpaEntity.getIpoJpaEntity().getStockCode(),
 			portfolioJpaEntity.getSharesCnt(),

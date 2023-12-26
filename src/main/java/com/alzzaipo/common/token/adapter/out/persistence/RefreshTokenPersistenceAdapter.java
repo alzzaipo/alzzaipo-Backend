@@ -1,6 +1,6 @@
 package com.alzzaipo.common.token.adapter.out.persistence;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.common.token.domain.TokenProperties;
 import com.alzzaipo.common.token.application.port.out.FindRefreshTokenPort;
@@ -25,16 +25,16 @@ public class RefreshTokenPersistenceAdapter implements SaveRefreshTokenPort,
 	private final TokenProperties tokenProperties;
 
 	@Override
-	public void save(String token, Uid memberId) {
+	public void save(String token, Id memberId) {
 		Long expirationTimeMillis = tokenProperties.getRefreshTokenExpirationTimeMillis();
 		redisTemplate.opsForValue().set(token, memberId.toString(), expirationTimeMillis, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
-	public Optional<Uid> find(String refreshToken) {
+	public Optional<Id> find(String refreshToken) {
 		String memberId = redisTemplate.opsForValue().get(refreshToken);
 		if (memberId != null) {
-			return Optional.of(Uid.fromString(memberId));
+			return Optional.of(Id.fromString(memberId));
 		}
 		return Optional.empty();
 	}

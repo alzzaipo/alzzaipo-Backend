@@ -1,7 +1,7 @@
 package com.alzzaipo.portfolio.adapter.in.web;
 
 import com.alzzaipo.common.MemberPrincipal;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.portfolio.adapter.in.web.dto.RegisterPortfolioWebRequest;
 import com.alzzaipo.portfolio.adapter.in.web.dto.UpdatePortfolioWebRequest;
 import com.alzzaipo.portfolio.application.dto.DeletePortfolioCommand;
@@ -52,11 +52,11 @@ public class PortfolioController {
 
 	@GetMapping
 	public ResponseEntity<PortfolioView> find(@AuthenticationPrincipal MemberPrincipal principal,
-		@RequestParam("uid") Long portfolioUID) {
+		@RequestParam("id") Long portfolioId) {
 
 		FindPortfolioCommand command = new FindPortfolioCommand(
-			principal.getMemberUID(),
-			new Uid(portfolioUID));
+			principal.getMemberId(),
+			new Id(portfolioId));
 
 		PortfolioView portfolio = findPortfolioQuery.findPortfolio(command);
 
@@ -68,7 +68,7 @@ public class PortfolioController {
 		@AuthenticationPrincipal MemberPrincipal principal) {
 
 		MemberPortfolioSummary memberPortfolioSummary
-			= findMemberPortfoliosQuery.findMemberPortfolios(principal.getMemberUID());
+			= findMemberPortfoliosQuery.findMemberPortfolios(principal.getMemberId());
 
 		return ResponseEntity.ok().body(memberPortfolioSummary);
 	}
@@ -87,11 +87,11 @@ public class PortfolioController {
 
 	@DeleteMapping("/delete")
 	public ResponseEntity<String> delete(@AuthenticationPrincipal MemberPrincipal principal,
-		@RequestParam("uid") String uid) {
+		@RequestParam("id") String id) {
 
 		DeletePortfolioCommand command = new DeletePortfolioCommand(
-			principal.getMemberUID(),
-			Uid.fromString(uid));
+			principal.getMemberId(),
+			Id.fromString(id));
 
 		deletePortfolioUseCase.deletePortfolio(command);
 
@@ -99,7 +99,7 @@ public class PortfolioController {
 	}
 
 	private RegisterPortfolioCommand toRegisterPortfolioCommand(MemberPrincipal principal, RegisterPortfolioWebRequest dto) {
-		return new RegisterPortfolioCommand(principal.getMemberUID(),
+		return new RegisterPortfolioCommand(principal.getMemberId(),
 			dto.getStockCode(),
 			dto.getSharesCnt(),
 			dto.getProfit(),
@@ -108,8 +108,8 @@ public class PortfolioController {
 	}
 
 	private UpdatePortfolioCommand toUpdateMemberPortfolioCommand(MemberPrincipal principal, UpdatePortfolioWebRequest dto) {
-		return new UpdatePortfolioCommand(Uid.fromString(dto.getUid()),
-			principal.getMemberUID(),
+		return new UpdatePortfolioCommand(Id.fromString(dto.getId()),
+			principal.getMemberId(),
 			dto.getStockCode(),
 			dto.getSharesCnt(),
 			dto.getProfit(),

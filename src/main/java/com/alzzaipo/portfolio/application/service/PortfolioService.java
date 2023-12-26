@@ -1,6 +1,6 @@
 package com.alzzaipo.portfolio.application.service;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.ipo.application.port.out.FindIpoByStockCodePort;
 import com.alzzaipo.ipo.domain.Ipo;
@@ -48,7 +48,7 @@ public class PortfolioService implements RegisterPortfolioUseCase,
 	public void registerPortfolio(RegisterPortfolioCommand command) {
 		Ipo ipo = findIpoByStockCodePort.findByStockCode(command.getStockCode());
 
-		Portfolio portfolio = Portfolio.build(command.getMemberUID(), ipo, command.getProfit(), command.getSharesCnt(),
+		Portfolio portfolio = Portfolio.build(command.getMemberId(), ipo, command.getProfit(), command.getSharesCnt(),
 			command.getAgents(), command.getAgents());
 
 		registerPortfolioPort.registerPortfolio(portfolio);
@@ -57,10 +57,10 @@ public class PortfolioService implements RegisterPortfolioUseCase,
 	@Override
 	@Transactional(readOnly = true)
 	public PortfolioView findPortfolio(FindPortfolioCommand command) {
-		Portfolio portfolio = findPortfolioPort.findPortfolio(command.getPortfolioUID())
+		Portfolio portfolio = findPortfolioPort.findPortfolio(command.getPortfolioId())
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
 
-		if (!portfolio.getMemberUID().equals(command.getMemberUID())) {
+		if (!portfolio.getMemberId().equals(command.getMemberId())) {
 			throw new CustomException(HttpStatus.UNAUTHORIZED, "포트폴리오 권한 없음");
 		}
 
@@ -69,8 +69,8 @@ public class PortfolioService implements RegisterPortfolioUseCase,
 
 	@Override
 	@Transactional(readOnly = true)
-	public MemberPortfolioSummary findMemberPortfolios(Uid memberUID) {
-		List<PortfolioView> portfolioList = findMemberPortfoliosPort.findMemberPortfolios(memberUID)
+	public MemberPortfolioSummary findMemberPortfolios(Id memberId) {
+		List<PortfolioView> portfolioList = findMemberPortfoliosPort.findMemberPortfolios(memberId)
 			.stream()
 			.map(PortfolioView::build)
 			.collect(Collectors.toList());
@@ -80,16 +80,16 @@ public class PortfolioService implements RegisterPortfolioUseCase,
 
 	@Override
 	public void updatePortfolio(UpdatePortfolioCommand command) {
-		Portfolio targetPortfolio = findPortfolioPort.findPortfolio(command.getPortfolioUID())
+		Portfolio targetPortfolio = findPortfolioPort.findPortfolio(command.getPortfolioId())
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
 
-		if (!targetPortfolio.getMemberUID().equals(command.getMemberUID())) {
+		if (!targetPortfolio.getMemberId().equals(command.getMemberId())) {
 			throw new CustomException(HttpStatus.UNAUTHORIZED, "포트폴리오 권한 없음");
 		}
 
 		Ipo ipo = findIpoByStockCodePort.findByStockCode(command.getStockCode());
 
-		Portfolio updatedPortfolio = Portfolio.build(command.getMemberUID(), ipo, command.getProfit(), command.getSharesCnt(),
+		Portfolio updatedPortfolio = Portfolio.build(command.getMemberId(), ipo, command.getProfit(), command.getSharesCnt(),
 			command.getAgents(), command.getMemo());
 
 		updatePortfolioPort.updatePortfolio(updatedPortfolio);
@@ -97,13 +97,13 @@ public class PortfolioService implements RegisterPortfolioUseCase,
 
 	@Override
 	public void deletePortfolio(DeletePortfolioCommand command) {
-		Portfolio targetPortfolio = findPortfolioPort.findPortfolio(command.getPortfolioUID())
+		Portfolio targetPortfolio = findPortfolioPort.findPortfolio(command.getPortfolioId())
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
 
-		if (!targetPortfolio.getMemberUID().equals(command.getMemberUID())) {
+		if (!targetPortfolio.getMemberId().equals(command.getMemberId())) {
 			throw new CustomException(HttpStatus.UNAUTHORIZED, "포트폴리오 권한 없음");
 		}
 
-		deletePortfolioPort.deletePortfolio(command.getPortfolioUID());
+		deletePortfolioPort.deletePortfolio(command.getPortfolioId());
 	}
 }
