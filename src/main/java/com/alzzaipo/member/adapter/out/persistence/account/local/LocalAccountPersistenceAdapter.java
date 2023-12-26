@@ -12,7 +12,6 @@ import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountI
 import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByIdPort;
 import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberIdPort;
 import com.alzzaipo.member.application.port.out.account.local.RegisterLocalAccountPort;
-import com.alzzaipo.member.application.port.out.account.local.VerifyLocalAccountPasswordPort;
 import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.member.domain.account.local.LocalAccountId;
 import java.util.Optional;
@@ -30,8 +29,7 @@ public class LocalAccountPersistenceAdapter implements FindLocalAccountByIdPort,
 	ChangeLocalAccountPasswordPort,
 	ChangeLocalAccountEmailPort,
 	CheckLocalAccountIdAvailablePort,
-	CheckLocalAccountEmailAvailablePort,
-	VerifyLocalAccountPasswordPort {
+	CheckLocalAccountEmailAvailablePort {
 
 	private final MemberRepository memberRepository;
 	private final LocalAccountRepository localAccountRepository;
@@ -92,13 +90,5 @@ public class LocalAccountPersistenceAdapter implements FindLocalAccountByIdPort,
 		String encryptedAccountPassword = secureLocalAccount.getEncryptedAccountPassword();
 		String email = secureLocalAccount.getEmail().get();
 		return new LocalAccountJpaEntity(accountId, encryptedAccountPassword, email, memberJpaEntity);
-	}
-
-	@Override
-	public boolean verifyPassword(long memberId, String password) {
-		LocalAccountJpaEntity localAccount = localAccountRepository.findByMemberJpaEntityId(memberId)
-			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "계정 조회 실패"));
-
-		return localAccount.getAccountPassword().equals(password);
 	}
 }
