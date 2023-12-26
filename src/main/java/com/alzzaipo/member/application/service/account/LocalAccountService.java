@@ -81,6 +81,9 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
         if (!checkLocalAccountIdAvailablePort.checkAccountIdAvailable(accountId)) {
             throw new CustomException(HttpStatus.CONFLICT, "아이디 중복");
         }
+        if(!checkLocalAccountEmailAvailablePort.checkEmailAvailable(email)) {
+            throw new CustomException(HttpStatus.CONFLICT, "이메일 중복");
+        }
 
         String sentVerificationCode = sendEmailVerificationCodePort.sendVerificationCode(email);
 
@@ -97,6 +100,10 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     @Override
     public void sendUpdateEmailVerificationCode(@Valid Email email, Id memberId) {
         String verificationCode = sendEmailVerificationCodePort.sendVerificationCode(email.get());
+
+        if(!checkLocalAccountEmailAvailablePort.checkEmailAvailable(email.get())) {
+            throw new CustomException(HttpStatus.CONFLICT, "이메일 중복");
+        }
 
         saveEmailVerificationCodePort.save(email.get(), verificationCode, memberId.toString(),
             EmailVerificationPurpose.UPDATE);
