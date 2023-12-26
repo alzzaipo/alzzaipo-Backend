@@ -6,15 +6,16 @@ import com.alzzaipo.ipo.application.port.out.UpdateListedIpoPort;
 import com.alzzaipo.ipo.application.port.out.dto.QueryInitialMarketPriceResult;
 import com.alzzaipo.ipo.application.port.out.dto.UpdateListedIpoCommand;
 import com.alzzaipo.ipo.domain.Ipo;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public class UpdateListedIposService {
+public class UpdateListedIpoInitialMarketPriceScheduledService {
 
     private final FindNotListedIposPort findNotListedIposPort;
     private final QueryInitialMarketPricePort queryInitialMarketPricePort;
@@ -25,23 +26,23 @@ public class UpdateListedIposService {
         LocalDate currentDate = LocalDate.now();
 
         findNotListedIposPort.findNotListedIpos()
-                .stream()
-                .filter(ipo -> currentDate.isAfter(ipo.getListedDate()))
-                .forEach(this::queryInitialMarketPriceAndUpdate);
+            .stream()
+            .filter(ipo -> currentDate.isAfter(ipo.getListedDate()))
+            .forEach(this::queryInitialMarketPriceAndUpdate);
     }
 
     private void queryInitialMarketPriceAndUpdate(Ipo ipo) {
-        int initialMarketPrice = getInitialMarketPrice(ipo);
-
-        if (initialMarketPrice != -1) {
-            updateIpoWithInitialMarketPrice(ipo, initialMarketPrice);
+        int initialMarketPrice = queryInitialMarketPrice(ipo);
+        if (initialMarketPrice == -1) {
+            log.error("Query Initial Market Price Failed : {}({})", ipo.getStockName(), ipo.getStockCode());
+            return;
         }
+        updateIpoWithInitialMarketPrice(ipo, initialMarketPrice);
     }
 
-    private int getInitialMarketPrice(Ipo ipo) {
+    private int queryInitialMarketPrice(Ipo ipo) {
         QueryInitialMarketPriceResult result = queryInitialMarketPricePort.queryInitialMarketPrice(
-                ipo.getStockCode(),
-                ipo.getListedDate());
+            ipo.getStockCode(), ipo.getListedDate());
 
         return result.isSuccess() ? result.getInitialMarketPrice() : -1;
     }
@@ -51,11 +52,12 @@ public class UpdateListedIposService {
         int profitRate = (int) (((double) (initialMarketPrice - fixedOfferingPrice) / fixedOfferingPrice) * 100);
 
         UpdateListedIpoCommand command = new UpdateListedIpoCommand(
-                ipo.getStockCode(),
-                initialMarketPrice,
-                profitRate);
+            ipo.getStockCode(), initialMarketPrice, profitRate);
 
         updateListedIpoPort.updateListedIpo(command);
+
+        log.info("Initial Market Price Updated : {}({}) / {}",
+            ipo.getStockName(), ipo.getStockCode(), initialMarketPrice);
     }
 
 }
