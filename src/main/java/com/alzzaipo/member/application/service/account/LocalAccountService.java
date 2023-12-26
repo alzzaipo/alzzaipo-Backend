@@ -31,8 +31,8 @@ import com.alzzaipo.member.application.port.out.account.local.ChangeLocalAccount
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountEmailAvailablePort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountIdAvailablePort;
 import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByIdPort;
+import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberIdPort;
 import com.alzzaipo.member.application.port.out.account.local.RegisterLocalAccountPort;
-import com.alzzaipo.member.application.port.out.account.local.VerifyLocalAccountPasswordPort;
 import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.member.application.port.out.member.RegisterMemberPort;
 import com.alzzaipo.member.domain.account.local.LocalAccountId;
@@ -68,10 +68,10 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     private final CheckEmailVerifiedPort checkEmailVerifiedPort;
     private final RegisterMemberPort registerMemberPort;
     private final RegisterLocalAccountPort registerLocalAccountPort;
-    private final VerifyLocalAccountPasswordPort verifyLocalAccountPasswordPort;
     private final ChangeLocalAccountPasswordPort changeLocalAccountPasswordPort;
     private final SaveRefreshTokenPort saveRefreshTokenPort;
     private final FindLocalAccountByIdPort findLocalAccountByIdPort;
+    private final FindLocalAccountByMemberIdPort findLocalAccountByMemberIdPort;
 
     @Override
     public void sendSignUpEmailVerificationCode(@Valid SendSignUpEmailVerificationCodeCommand command) {
@@ -134,17 +134,18 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     @Override
     @Transactional(readOnly = true)
     public boolean verifyLocalAccountPassword(Id memberId, LocalAccountPassword password) {
-        return verifyLocalAccountPasswordPort.verifyPassword(memberId.get(),
-            passwordEncoder.encode(password.get()));
+        Optional<SecureLocalAccount> localAccount = findLocalAccountByMemberIdPort.findByMemberId(memberId);
+
+        return localAccount.isPresent() &&
+            passwordEncoder.matches(password.get(), localAccount.get().getEncryptedAccountPassword());
     }
 
     @Override
     public boolean changePassword(ChangeLocalAccountPasswordCommand command) {
         Long memberId = command.getMemberId().get();
-        String currentPassword = command.getCurrentPassword().get();
         String newPassword = command.getNewPassword().get();
 
-        if (verifyLocalAccountPasswordPort.verifyPassword(memberId, currentPassword)) {
+        if (verifyLocalAccountPassword(command.getMemberId(), command.getCurrentPassword())) {
             changeLocalAccountPasswordPort.changePassword(memberId, passwordEncoder.encode(newPassword));
             return true;
         }
