@@ -80,19 +80,18 @@ public class PortfolioService implements RegisterPortfolioUseCase,
 
 	@Override
 	public void updatePortfolio(UpdatePortfolioCommand command) {
-		Portfolio targetPortfolio = findPortfolioPort.findPortfolio(command.getPortfolioId())
+		Portfolio portfolio = findPortfolioPort.findPortfolio(command.getPortfolioId())
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
 
-		if (!targetPortfolio.getMemberId().equals(command.getMemberId())) {
+		if (!portfolio.getMemberId().equals(command.getMemberId())) {
 			throw new CustomException(HttpStatus.UNAUTHORIZED, "포트폴리오 권한 없음");
 		}
 
 		Ipo ipo = findIpoByStockCodePort.findByStockCode(command.getStockCode());
 
-		Portfolio updatedPortfolio = Portfolio.build(command.getMemberId(), ipo, command.getProfit(), command.getSharesCnt(),
-			command.getAgents(), command.getMemo());
+		portfolio.updatePortfolio(command, ipo);
 
-		updatePortfolioPort.updatePortfolio(updatedPortfolio);
+		updatePortfolioPort.updatePortfolio(portfolio);
 	}
 
 	@Override
