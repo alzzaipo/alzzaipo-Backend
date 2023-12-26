@@ -19,12 +19,12 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 @Component
-@Transactional
+@Repository
 @RequiredArgsConstructor
-public class LocalAccountPersistenceAdapterBy implements FindLocalAccountByIdPort,
+public class LocalAccountPersistenceAdapter implements FindLocalAccountByIdPort,
 	RegisterLocalAccountPort,
 	FindLocalAccountByMemberUidPort,
 	ChangeLocalAccountPasswordPort,
@@ -37,14 +37,12 @@ public class LocalAccountPersistenceAdapterBy implements FindLocalAccountByIdPor
 	private final LocalAccountRepository localAccountRepository;
 
 	@Override
-	@Transactional(readOnly = true)
 	public Optional<SecureLocalAccount> findLocalAccountById(LocalAccountId localAccountId) {
 		return localAccountRepository.findByAccountId(localAccountId.get())
 			.map(this::toSecureLocalAccount);
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Optional<SecureLocalAccount> findByMemberId(Uid memberUID) {
 		return localAccountRepository.findByMemberJpaEntityUid(memberUID.get())
 			.map(this::toSecureLocalAccount);

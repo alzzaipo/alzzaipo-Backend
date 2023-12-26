@@ -27,8 +27,10 @@ import com.alzzaipo.member.domain.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class SocialAccountService implements LinkKakaoAccountUseCase,
     UnlinkSocialAccountUseCase,
@@ -43,7 +45,6 @@ public class SocialAccountService implements LinkKakaoAccountUseCase,
     private final SaveRefreshTokenPort saveRefreshTokenPort;
     private final RegisterMemberPort registerMemberPort;
 
-
     @Override
     public void linkKakaoAccount(Uid memberUID, AuthorizationCode authorizationCode) {
         findLocalAccountByMemberUidPort.findByMemberId(memberUID)
@@ -57,15 +58,6 @@ public class SocialAccountService implements LinkKakaoAccountUseCase,
 
         registerSocialAccountPort.registerSocialAccount(
             new SocialAccount(memberUID, userProfile.getEmail(), LoginType.KAKAO));
-    }
-
-    private void checkLinkedKakaoAccountExists(UserProfile userProfile) {
-        FindSocialAccountCommand findSocialAccountCommand = new FindSocialAccountCommand(
-            LoginType.KAKAO, userProfile.getEmail());
-
-        if (findSocialAccountPort.findSocialAccount(findSocialAccountCommand).isPresent()) {
-            throw new CustomException(HttpStatus.CONFLICT, "이미 연동된 계정이 존재합니다");
-        }
     }
 
     @Override
@@ -96,6 +88,15 @@ public class SocialAccountService implements LinkKakaoAccountUseCase,
             return new LoginResult(true, tokenInfo);
         } catch (Exception e) {
             return LoginResult.getFailedResult();
+        }
+    }
+
+    private void checkLinkedKakaoAccountExists(UserProfile userProfile) {
+        FindSocialAccountCommand findSocialAccountCommand = new FindSocialAccountCommand(
+            LoginType.KAKAO, userProfile.getEmail());
+
+        if (findSocialAccountPort.findSocialAccount(findSocialAccountCommand).isPresent()) {
+            throw new CustomException(HttpStatus.CONFLICT, "이미 연동된 계정이 존재합니다");
         }
     }
 

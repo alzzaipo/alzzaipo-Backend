@@ -49,8 +49,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class NotificationService implements RegisterNotificationCriterionUseCase,
 	FindMemberNotificationCriteriaQuery,
@@ -99,6 +101,7 @@ public class NotificationService implements RegisterNotificationCriterionUseCase
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<NotificationCriterionView> findMemberNotificationCriteria(Uid memberUID) {
 		return findMemberNotificationCriteriaPort.findMemberNotificationCriteria(memberUID)
 			.stream()
@@ -119,6 +122,7 @@ public class NotificationService implements RegisterNotificationCriterionUseCase
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public EmailNotificationStatus findStatus(Uid memberUID) {
 		Optional<String> notificationEmail = findNotificationEmailPort.findNotificationEmail(memberUID);
 		return new EmailNotificationStatus(notificationEmail.isPresent(), notificationEmail.orElse(""));

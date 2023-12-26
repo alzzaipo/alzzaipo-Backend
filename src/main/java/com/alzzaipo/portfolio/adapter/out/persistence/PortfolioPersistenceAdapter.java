@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 @Component
-@Transactional
+@Repository
 @RequiredArgsConstructor
 public class PortfolioPersistenceAdapter implements
 	RegisterPortfolioPort,
@@ -53,7 +53,6 @@ public class PortfolioPersistenceAdapter implements
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<Portfolio> findMemberPortfolios(Uid memberUID) {
 		return portfolioRepository.findByMemberUID(memberUID.get())
 			.stream()
@@ -62,7 +61,6 @@ public class PortfolioPersistenceAdapter implements
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Optional<Portfolio> findPortfolio(Uid portfolioUID) {
 		return portfolioRepository.findByPortfolioUID(portfolioUID.get())
 			.map(this::toDomainEntity);

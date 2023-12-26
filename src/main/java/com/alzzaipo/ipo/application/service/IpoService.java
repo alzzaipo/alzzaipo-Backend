@@ -19,8 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class IpoService implements GetIpoListQuery,
     GetIpoAgentListQuery,
@@ -35,11 +37,13 @@ public class IpoService implements GetIpoListQuery,
     private final CheckIpoRegisteredPort checkIpoRegisteredPort;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Ipo> getIpoList() {
         return ipoPersistenceAdapter.findIpoList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<String> getIpoAgentList(int stockCode) {
         String separator = ",";
         Ipo ipo = findIpoByStockCodePort.findByStockCode(stockCode);
@@ -47,6 +51,7 @@ public class IpoService implements GetIpoListQuery,
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AnalyzeIpoProfitRateResult analyzeIpoProfitRate(AnalyzeIpoProfitRateCommand command) {
         List<Ipo> targetIpos = findAnalyzeIpoProfitRateTargetsPort.findTargets(command);
 

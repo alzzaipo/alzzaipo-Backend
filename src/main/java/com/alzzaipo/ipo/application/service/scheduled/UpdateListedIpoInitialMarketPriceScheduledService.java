@@ -11,9 +11,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
+@Transactional
 @RequiredArgsConstructor
 public class UpdateListedIpoInitialMarketPriceScheduledService {
 
@@ -22,7 +24,7 @@ public class UpdateListedIpoInitialMarketPriceScheduledService {
     private final UpdateListedIpoPort updateListedIpoPort;
 
     @Scheduled(cron = "0 0 18 ? * MON-FRI")
-    private void updateListedIpos() {
+    public void updateListedIpos() {
         LocalDate currentDate = LocalDate.now();
 
         findNotListedIposPort.findNotListedIpos()

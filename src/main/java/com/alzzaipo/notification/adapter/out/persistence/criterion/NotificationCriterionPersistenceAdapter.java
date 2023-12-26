@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 @Component
-@Transactional
+@Repository
 @RequiredArgsConstructor
 public class NotificationCriterionPersistenceAdapter implements RegisterNotificationCriterionPort,
 	FindMemberNotificationCriteriaPort,
@@ -44,7 +44,6 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<NotificationCriterion> findMemberNotificationCriteria(Uid memberUID) {
 		return notificationCriterionRepository.findByMemberJpaEntityUid(memberUID.get())
 			.stream()

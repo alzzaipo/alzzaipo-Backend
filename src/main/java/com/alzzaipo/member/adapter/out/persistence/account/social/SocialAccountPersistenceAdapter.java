@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 @Component
-@Transactional
+@Repository
 @RequiredArgsConstructor
-public class SocialAccountPersistenceAdapterPort implements RegisterSocialAccountPort,
+public class SocialAccountPersistenceAdapter implements RegisterSocialAccountPort,
 	FindSocialAccountPort,
 	FindMemberSocialAccountsPort,
 	FindSocialAccountByLoginTypePort,
@@ -41,14 +41,12 @@ public class SocialAccountPersistenceAdapterPort implements RegisterSocialAccoun
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Optional<SocialAccount> findSocialAccount(FindSocialAccountCommand command) {
 		return socialAccountRepository.findByLoginTypeAndEmail(command.getLoginType().name(), command.getEmail().get())
 			.map(this::toDomainEntity);
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<SocialAccount> findMemberSocialAccounts(Uid memberUID) {
 		return socialAccountRepository.findByMemberUID(memberUID.get())
 			.stream()
@@ -57,7 +55,6 @@ public class SocialAccountPersistenceAdapterPort implements RegisterSocialAccoun
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Optional<SocialAccount> findSocialAccountByLoginType(Uid memberUID, LoginType loginType) {
 		return socialAccountRepository.findByLoginType(memberUID.get(), loginType.name())
 			.map(this::toDomainEntity);
