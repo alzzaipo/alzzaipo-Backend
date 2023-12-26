@@ -19,7 +19,7 @@ public class EmailNotificationJpaEntity extends BaseTimeEntity {
     private String email;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_uid")
+    @JoinColumn(name = "member_id")
     private MemberJpaEntity memberJpaEntity;
 
     public EmailNotificationJpaEntity(String email, MemberJpaEntity memberJpaEntity) {

@@ -1,6 +1,6 @@
 package com.alzzaipo.notification.adapter.out.persistence.criterion;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
@@ -37,15 +37,15 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 	@Override
 	public void registerNotificationCriterion(NotificationCriterion notificationCriterion) {
 		MemberJpaEntity memberJpaEntity
-			= memberRepository.findEntityById(notificationCriterion.getMemberUID().get());
+			= memberRepository.findEntityById(notificationCriterion.getMemberId().get());
 
 		NotificationCriterionJpaEntity entity = toJpaEntity(notificationCriterion, memberJpaEntity);
 		notificationCriterionRepository.save(entity);
 	}
 
 	@Override
-	public List<NotificationCriterion> findMemberNotificationCriteria(Uid memberUID) {
-		return notificationCriterionRepository.findByMemberJpaEntityUid(memberUID.get())
+	public List<NotificationCriterion> findMemberNotificationCriteria(Id memberId) {
+		return notificationCriterionRepository.findByMemberJpaEntityId(memberId.get())
 			.stream()
 			.map(this::toDomainEntity)
 			.collect(Collectors.toList());
@@ -53,9 +53,9 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 
 	@Override
 	public void updateNotificationCriterion(UpdateNotificationCriterionCommand command) {
-		Long uid = command.getNotificationCriterionUID().get();
+		Long entityId = command.getNotificationCriterionId().get();
 
-		NotificationCriterionJpaEntity entity = notificationCriterionRepository.findById(uid)
+		NotificationCriterionJpaEntity entity = notificationCriterionRepository.findById(entityId)
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "알림 기준 조회 실패"));
 
 		entity.changeMinCompetitionRate(command.getMinCompetitionRate());
@@ -63,10 +63,10 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 	}
 
 	@Override
-	public void deleteNotificationCriterion(Uid notificationCriterionUID) {
-		Long uid = notificationCriterionUID.get();
+	public void deleteNotificationCriterion(Id notificationCriterionId) {
+		Long entityId = notificationCriterionId.get();
 
-		NotificationCriterionJpaEntity entity = notificationCriterionRepository.findById(uid)
+		NotificationCriterionJpaEntity entity = notificationCriterionRepository.findById(entityId)
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "알림 기준 조회 실패"));
 
 		notificationCriterionRepository.delete(entity);
@@ -82,7 +82,7 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 
 	@Override
 	public int count(Long memberId) {
-		return notificationCriterionRepository.countByMemberJpaEntityUid(memberId);
+		return notificationCriterionRepository.countByMemberJpaEntityId(memberId);
 	}
 
 	@Override
@@ -91,15 +91,15 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 	}
 
 	private NotificationCriterionJpaEntity toJpaEntity(NotificationCriterion domainEntity, MemberJpaEntity memberJpaEntity) {
-		return new NotificationCriterionJpaEntity(domainEntity.getNotificationCriterionUID().get(),
+		return new NotificationCriterionJpaEntity(domainEntity.getNotificationCriterionId().get(),
 			domainEntity.getMinCompetitionRate(),
 			domainEntity.getMinLockupRate(),
 			memberJpaEntity);
 	}
 
 	private NotificationCriterion toDomainEntity(NotificationCriterionJpaEntity jpaEntity) {
-		return new NotificationCriterion(new Uid(jpaEntity.getNotificationCriterionUID()),
-			new Uid(jpaEntity.getMemberJpaEntity().getUid()),
+		return new NotificationCriterion(new Id(jpaEntity.getId()),
+			new Id(jpaEntity.getMemberJpaEntity().getId()),
 			jpaEntity.getMinCompetitionRate(),
 			jpaEntity.getMinLockupRate());
 	}

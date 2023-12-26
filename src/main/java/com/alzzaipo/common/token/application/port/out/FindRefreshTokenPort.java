@@ -1,9 +1,9 @@
 package com.alzzaipo.common.token.application.port.out;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import java.util.Optional;
 
 public interface FindRefreshTokenPort {
 
-	Optional<Uid> find(String refreshToken);
+	Optional<Id> find(String refreshToken);
 }

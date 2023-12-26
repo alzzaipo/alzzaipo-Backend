@@ -9,12 +9,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NotificationCriterionRepository extends JpaRepository<NotificationCriterionJpaEntity, Long> {
 
-	List<NotificationCriterionJpaEntity> findByMemberJpaEntityUid(@Param("memberUID") Long memberUID);
+	List<NotificationCriterionJpaEntity> findByMemberJpaEntityId(long memberId);
 
-	int countByMemberJpaEntityUid(Long memberId);
+	int countByMemberJpaEntityId(long memberId);
 
 	@Query("SELECT CASE WHEN COUNT(n) > 0 THEN true ELSE false END "
 		+ "FROM NotificationCriterionJpaEntity n "
-		+ "WHERE n.notificationCriterionUID = :notificationCriterionId AND n.memberJpaEntity.uid = :memberId")
-	boolean checkOwnership(@Param("memberId") Long memberId, @Param("notificationCriterionId") Long notificationCriterionId);
+		+ "WHERE n.id = :notificationCriterionId AND n.memberJpaEntity.id = :memberId")
+	boolean checkOwnership(@Param("memberId") long memberId, @Param("notificationCriterionId") long notificationCriterionId);
 }

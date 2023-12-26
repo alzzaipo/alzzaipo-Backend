@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 public class PortfolioJpaEntity extends BaseTimeEntity {
 
     @Id
-    @Column(name = "portfolio_uid", unique = true)
-    private Long portfolioUID;
+    @Column(name = "portfolio_id", unique = true)
+    private Long id;
 
     private int sharesCnt;
 
-    private Long profit;
+    private long profit;
 
-    private Long profitRate;
+    private long profitRate;
 
     private String agents;
 
@@ -28,15 +28,15 @@ public class PortfolioJpaEntity extends BaseTimeEntity {
     private String memo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_uid")
+    @JoinColumn(name = "member_id")
     private MemberJpaEntity memberJpaEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ipo_id")
     private IpoJpaEntity ipoJpaEntity;
 
-    public PortfolioJpaEntity(Long portfolioUID, int sharesCnt, Long profit, Long profitRate, String agents, String memo, MemberJpaEntity memberJpaEntity, IpoJpaEntity ipoJpaEntity) {
-        this.portfolioUID = portfolioUID;
+    public PortfolioJpaEntity(Long id, int sharesCnt, long profit, long profitRate, String agents, String memo, MemberJpaEntity memberJpaEntity, IpoJpaEntity ipoJpaEntity) {
+        this.id = id;
         this.sharesCnt = sharesCnt;
         this.profit = profit;
         this.profitRate = profitRate;
@@ -46,7 +46,7 @@ public class PortfolioJpaEntity extends BaseTimeEntity {
         this.ipoJpaEntity = ipoJpaEntity;
     }
 
-    public void setPortfolioUID(Long portfolioUID) {
-        this.portfolioUID = portfolioUID;
+    public void setId(Long id) {
+        this.id = id;
     }
 }

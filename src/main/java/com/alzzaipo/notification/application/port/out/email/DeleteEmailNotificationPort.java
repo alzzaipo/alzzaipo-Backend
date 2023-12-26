@@ -1,8 +1,8 @@
 package com.alzzaipo.notification.application.port.out.email;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 
 public interface DeleteEmailNotificationPort {
 
-    void delete(Uid memberUID);
+    void delete(Id memberId);
 }

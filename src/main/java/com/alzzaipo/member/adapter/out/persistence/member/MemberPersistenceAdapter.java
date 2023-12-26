@@ -1,7 +1,7 @@
 package com.alzzaipo.member.adapter.out.persistence.member;
 
 import com.alzzaipo.common.LoginType;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.account.local.LocalAccountJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.account.social.SocialAccountJpaEntity;
@@ -37,30 +37,30 @@ public class MemberPersistenceAdapter implements RegisterMemberPort,
 
 	@Override
 	public void registerMember(Member member) {
-		MemberJpaEntity memberJpaEntity = new MemberJpaEntity(member.getUid().get(),
+		MemberJpaEntity memberJpaEntity = new MemberJpaEntity(member.getId().get(),
 			member.getNickname());
 		memberRepository.save(memberJpaEntity);
 	}
 
 	@Override
-	public Member findMember(Uid uid) throws CustomException {
-		MemberJpaEntity entity = memberRepository.findEntityById(uid.get());
+	public Member findMember(Id id) throws CustomException {
+		MemberJpaEntity entity = memberRepository.findEntityById(id.get());
 		return toDomainEntity(entity);
 	}
 
 	@Override
-	public void changeMemberNickname(Uid memberUID, String nickname) {
-		MemberJpaEntity entity = memberRepository.findEntityById(memberUID.get());
+	public void changeMemberNickname(Id memberId, String nickname) {
+		MemberJpaEntity entity = memberRepository.findEntityById(memberId.get());
 		entity.changeNickname(nickname);
 	}
 
 	@Override
-	public void withdrawMember(Uid memberUID) {
-		memberRepository.deleteById(memberUID.get());
+	public void withdrawMember(Id memberId) {
+		memberRepository.deleteById(memberId.get());
 	}
 
 	@Override
-	public Set<String> findEmails(Uid memberId) {
+	public Set<String> findEmails(Id memberId) {
 		Set<String> emails = new HashSet<>();
 
 		MemberJpaEntity entity = memberRepository.findEntityById(memberId.get());
@@ -83,7 +83,7 @@ public class MemberPersistenceAdapter implements RegisterMemberPort,
 	}
 
 	private Member toDomainEntity(MemberJpaEntity memberJpaEntity) {
-		return new Member(new Uid(memberJpaEntity.getUid()),
+		return new Member(new Id(memberJpaEntity.getId()),
 			memberJpaEntity.getNickname(),
 			memberJpaEntity.getRole());
 	}

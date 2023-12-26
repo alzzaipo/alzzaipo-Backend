@@ -24,7 +24,7 @@ public class SocialAccountJpaEntity extends BaseTimeEntity {
     private String loginType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_uid")
+    @JoinColumn(name = "member_id")
     private MemberJpaEntity memberJpaEntity;
 
     public SocialAccountJpaEntity(String email, String loginType, MemberJpaEntity memberJpaEntity) {

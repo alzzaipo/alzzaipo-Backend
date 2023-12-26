@@ -1,13 +1,13 @@
 package com.alzzaipo.portfolio.application.dto;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.portfolio.domain.Portfolio;
 import lombok.Getter;
 
 @Getter
 public class PortfolioView {
 
-	private final String uid;
+	private final String id;
 
 	private final String stockName;
 
@@ -23,9 +23,9 @@ public class PortfolioView {
 
 	private final String memo;
 
-	private PortfolioView(Uid uid, String stockName, int stockCode, int sharesCnt, long profit, long profitRate, String agents,
+	private PortfolioView(Id id, String stockName, int stockCode, int sharesCnt, long profit, long profitRate, String agents,
 		String memo) {
-		this.uid = uid.toString();
+		this.id = id.toString();
 		this.stockName = stockName;
 		this.stockCode = stockCode;
 		this.sharesCnt = sharesCnt;
@@ -36,7 +36,7 @@ public class PortfolioView {
 	}
 
 	public static PortfolioView build(Portfolio portfolio) {
-		return new PortfolioView(portfolio.getPortfolioUID(),
+		return new PortfolioView(portfolio.getPortfolioId(),
 			portfolio.getStockName(),
 			portfolio.getStockCode(),
 			portfolio.getSharesCnt(),

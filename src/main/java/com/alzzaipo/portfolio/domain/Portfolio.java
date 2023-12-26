@@ -1,6 +1,6 @@
 package com.alzzaipo.portfolio.domain;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.ipo.domain.Ipo;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 public class Portfolio {
 
-	private final Uid portfolioUID;
+	private final Id portfolioId;
 
-	private final Uid memberUID;
+	private final Id memberId;
 
 	private String stockName;
 
@@ -27,10 +27,10 @@ public class Portfolio {
 
 	private String memo;
 
-	public Portfolio(Uid portfolioUID, Uid memberUID, String stockName, int stockCode, int sharesCnt, long profit,
+	public Portfolio(Id portfolioId, Id memberId, String stockName, int stockCode, int sharesCnt, long profit,
 		long profitRate, String agents, String memo) {
-		this.portfolioUID = portfolioUID;
-		this.memberUID = memberUID;
+		this.portfolioId = portfolioId;
+		this.memberId = memberId;
 		this.stockName = stockName;
 		this.stockCode = stockCode;
 		this.sharesCnt = sharesCnt;
@@ -40,8 +40,8 @@ public class Portfolio {
 		this.memo = memo;
 	}
 
-	public static Portfolio build(Uid memberId, Ipo ipo, long profit, int sharesCount, String agents, String memo) {
-		return new Portfolio(Uid.generate(),
+	public static Portfolio build(Id memberId, Ipo ipo, long profit, int sharesCount, String agents, String memo) {
+		return new Portfolio(Id.generate(),
 			memberId,
 			ipo.getStockName(),
 			ipo.getStockCode(),

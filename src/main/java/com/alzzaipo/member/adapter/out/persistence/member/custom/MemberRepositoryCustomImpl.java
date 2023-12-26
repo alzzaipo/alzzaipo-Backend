@@ -18,7 +18,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 	@Override
 	public MemberJpaEntity findEntityById(Long id) throws CustomException {
 		TypedQuery<MemberJpaEntity> query = entityManager.createQuery(
-			"SELECT m FROM MemberJpaEntity m WHERE m.uid = :id", MemberJpaEntity.class);
+			"SELECT m FROM MemberJpaEntity m WHERE m.id = :id", MemberJpaEntity.class);
 		query.setParameter("id", id);
 
 		List<MemberJpaEntity> resultList = query.getResultList();

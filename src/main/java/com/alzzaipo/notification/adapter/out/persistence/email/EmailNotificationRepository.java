@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EmailNotificationRepository extends JpaRepository<EmailNotificationJpaEntity, Long> {
 
-	Optional<EmailNotificationJpaEntity> findByMemberJpaEntityUid(Long memberUID);
+	Optional<EmailNotificationJpaEntity> findByMemberJpaEntityId(long memberId);
 
 	boolean existsByEmail(String email);
 
-	boolean existsByMemberJpaEntityUid(Long memberId);
+	boolean existsByMemberJpaEntityId(long memberId);
 }

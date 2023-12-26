@@ -1,8 +1,8 @@
 package com.alzzaipo.notification.application.port.out.email;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 
 public interface CheckMemberSubscriptionExistsPort {
 
-	boolean checkSubscription(Uid memberId);
+	boolean checkSubscription(Id memberId);
 }

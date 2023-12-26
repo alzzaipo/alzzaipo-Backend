@@ -1,11 +1,11 @@
 package com.alzzaipo.member.application.port.out.account.local;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
 
 import java.util.Optional;
 
-public interface FindLocalAccountByMemberUidPort {
+public interface FindLocalAccountByMemberIdPort {
 
-    Optional<SecureLocalAccount> findByMemberId(Uid memberUID);
+    Optional<SecureLocalAccount> findByMemberId(Id memberId);
 }

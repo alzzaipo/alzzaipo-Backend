@@ -1,6 +1,6 @@
 package com.alzzaipo.notification.application.service;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.email.domain.EmailVerificationCode;
 import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
@@ -91,19 +91,19 @@ public class NotificationService implements RegisterNotificationCriterionUseCase
 
 	@Override
 	public void registerNotificationCriterion(RegisterNotificationCriterionCommand command) {
-		NotificationCriterion notificationCriterion = NotificationCriterion.build(command.getMemberUID(),
+		NotificationCriterion notificationCriterion = NotificationCriterion.build(command.getMemberId(),
 			command.getMinCompetitionRate(),
 			command.getMinLockupRate());
 
-		checkNotificationCriteriaCapacity(command.getMemberUID());
+		checkNotificationCriteriaCapacity(command.getMemberId());
 
 		registerNotificationCriterionPort.registerNotificationCriterion(notificationCriterion);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<NotificationCriterionView> findMemberNotificationCriteria(Uid memberUID) {
-		return findMemberNotificationCriteriaPort.findMemberNotificationCriteria(memberUID)
+	public List<NotificationCriterionView> findMemberNotificationCriteria(Id memberId) {
+		return findMemberNotificationCriteriaPort.findMemberNotificationCriteria(memberId)
 			.stream()
 			.map(NotificationCriterionView::build)
 			.collect(Collectors.toList());
@@ -111,25 +111,25 @@ public class NotificationService implements RegisterNotificationCriterionUseCase
 
 	@Override
 	public void updateNotificationCriterion(UpdateNotificationCriterionCommand command) {
-		checkNotificationCriterionOwnership(command.getMemberUID(), command.getNotificationCriterionUID());
+		checkNotificationCriterionOwnership(command.getMemberId(), command.getNotificationCriterionId());
 		updateNotificationCriterionPort.updateNotificationCriterion(command);
 	}
 
 	@Override
 	public void deleteNotificationCriterion(DeleteNotificationCriterionCommand command) {
-		checkNotificationCriterionOwnership(command.getMemberUID(), command.getNotificationCriterionUID());
-		deleteNotificationCriterionPort.deleteNotificationCriterion(command.getNotificationCriterionUID());
+		checkNotificationCriterionOwnership(command.getMemberId(), command.getNotificationCriterionId());
+		deleteNotificationCriterionPort.deleteNotificationCriterion(command.getNotificationCriterionId());
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public EmailNotificationStatus findStatus(Uid memberUID) {
-		Optional<String> notificationEmail = findNotificationEmailPort.findNotificationEmail(memberUID);
+	public EmailNotificationStatus findStatus(Id memberId) {
+		Optional<String> notificationEmail = findNotificationEmailPort.findNotificationEmail(memberId);
 		return new EmailNotificationStatus(notificationEmail.isPresent(), notificationEmail.orElse(""));
 	}
 
 	@Override
-	public void sendVerificationCode(Uid memberId, Email email) {
+	public void sendVerificationCode(Id memberId, Email email) {
 		if (checkNotificationEmailAvailablePort.checkEmailAvailable(email.get())) {
 			throw new CustomException(HttpStatus.CONFLICT, "이미 등록된 이메일");
 		}
@@ -144,23 +144,23 @@ public class NotificationService implements RegisterNotificationCriterionUseCase
 
 	@Override
 	public void subscribeEmailNotification(SubscribeEmailNotificationCommand command) {
-		if (checkMemberSubscriptionExistsPort.checkSubscription(command.getMemberUID())) {
+		if (checkMemberSubscriptionExistsPort.checkSubscription(command.getMemberId())) {
 			throw new CustomException(HttpStatus.CONFLICT, "구독 내역 존재");
 		}
-		checkEmailVerified(command.getMemberUID(), command.getEmail());
+		checkEmailVerified(command.getMemberId(), command.getEmail());
 
-		EmailNotification emailNotification = new EmailNotification(command.getMemberUID(), command.getEmail());
+		EmailNotification emailNotification = new EmailNotification(command.getMemberId(), command.getEmail());
 		registerEmailNotificationPort.register(emailNotification);
 		deleteEmailVerificationStatusPort.delete(command.getEmail().get(), EMAIL_VERIFICATION_PURPOSE);
 	}
 
 	@Override
-	public void unsubscribeEmailNotification(Uid memberUID) {
-		deleteEmailNotificationPort.delete(memberUID);
+	public void unsubscribeEmailNotification(Id memberId) {
+		deleteEmailNotificationPort.delete(memberId);
 	}
 
 	@Override
-	public void changeNotificationEmail(Uid memberId, @Valid Email email) {
+	public void changeNotificationEmail(Id memberId, @Valid Email email) {
 		if (!checkMemberSubscriptionExistsPort.checkSubscription(memberId)) {
 			throw new CustomException(HttpStatus.FORBIDDEN, "구독 내역 없음");
 		}
@@ -170,20 +170,20 @@ public class NotificationService implements RegisterNotificationCriterionUseCase
 		deleteEmailVerificationStatusPort.delete(email.get(), EMAIL_VERIFICATION_PURPOSE);
 	}
 
-	private void checkNotificationCriteriaCapacity(Uid memberID) {
+	private void checkNotificationCriteriaCapacity(Id memberID) {
 		int totalCount = countMemberNotificationCriteriaPort.count(memberID.get());
 		if (totalCount >= NOTIFICATION_CRITERIA_LIMIT) {
 			throw new CustomException(HttpStatus.FORBIDDEN, "오류 : 최대 개수 초과");
 		}
 	}
 
-	private void checkNotificationCriterionOwnership(Uid memberId, Uid notificationCriterionId) {
+	private void checkNotificationCriterionOwnership(Id memberId, Id notificationCriterionId) {
 		if (!checkNotificationCriterionOwnershipPort.checkOwnership(memberId.get(), notificationCriterionId.get())) {
 			throw new CustomException(HttpStatus.UNAUTHORIZED, "오류: 권한 없음");
 		}
 	}
 
-	private void checkEmailVerified(Uid memberId, Email email) {
+	private void checkEmailVerified(Id memberId, Email email) {
 		boolean isAccountEmail = findMemberAccountEmailsQuery.findEmails(memberId)
 			.stream()
 			.anyMatch(accountEmail -> accountEmail.equals(email.get()));

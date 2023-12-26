@@ -1,7 +1,7 @@
 package com.alzzaipo.member.adapter.out.persistence.account.social;
 
 import com.alzzaipo.common.LoginType;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
@@ -35,7 +35,7 @@ public class SocialAccountPersistenceAdapter implements RegisterSocialAccountPor
 
 	@Override
 	public void registerSocialAccount(SocialAccount socialAccount) {
-		MemberJpaEntity memberJpaEntity = memberRepository.findEntityById(socialAccount.getMemberUID().get());
+		MemberJpaEntity memberJpaEntity = memberRepository.findEntityById(socialAccount.getMemberId().get());
 		SocialAccountJpaEntity socialAccountJpaEntity = toJpaEntity(memberJpaEntity, socialAccount);
 		socialAccountRepository.save(socialAccountJpaEntity);
 	}
@@ -47,23 +47,23 @@ public class SocialAccountPersistenceAdapter implements RegisterSocialAccountPor
 	}
 
 	@Override
-	public List<SocialAccount> findMemberSocialAccounts(Uid memberUID) {
-		return socialAccountRepository.findByMemberUID(memberUID.get())
+	public List<SocialAccount> findMemberSocialAccounts(Id memberId) {
+		return socialAccountRepository.findByMemberJpaEntityId(memberId.get())
 			.stream()
 			.map(this::toDomainEntity)
 			.collect(Collectors.toList());
 	}
 
 	@Override
-	public Optional<SocialAccount> findSocialAccountByLoginType(Uid memberUID, LoginType loginType) {
-		return socialAccountRepository.findByLoginType(memberUID.get(), loginType.name())
+	public Optional<SocialAccount> findSocialAccountByLoginType(Id memberId, LoginType loginType) {
+		return socialAccountRepository.findByMemberJpaEntityIdAndLoginType(memberId.get(), loginType.name())
 			.map(this::toDomainEntity);
 	}
 
 	@Override
-	public void deleteSocialAccount(Uid memberUID, LoginType loginType) {
+	public void deleteSocialAccount(Id memberId, LoginType loginType) {
 		SocialAccountJpaEntity socialAccountJpaEntity =
-			socialAccountRepository.findByLoginType(memberUID.get(), loginType.name())
+			socialAccountRepository.findByMemberJpaEntityIdAndLoginType(memberId.get(), loginType.name())
 				.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "계정 조회 실패"));
 
 		socialAccountRepository.delete(socialAccountJpaEntity);
@@ -75,9 +75,9 @@ public class SocialAccountPersistenceAdapter implements RegisterSocialAccountPor
 	}
 
 	private SocialAccount toDomainEntity(SocialAccountJpaEntity socialAccountJpaEntity) {
-		Uid memberUID = new Uid(socialAccountJpaEntity.getMemberJpaEntity().getUid());
+		Id memberId = new Id(socialAccountJpaEntity.getMemberJpaEntity().getId());
 		Email email = new Email(socialAccountJpaEntity.getEmail());
 		LoginType loginType = LoginType.valueOf(socialAccountJpaEntity.getLoginType());
-		return new SocialAccount(memberUID, email, loginType);
+		return new SocialAccount(memberId, email, loginType);
 	}
 }

@@ -1,6 +1,6 @@
 package com.alzzaipo.notification.domain.criterion;
 
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,21 +8,21 @@ import lombok.Setter;
 @Setter
 public class NotificationCriterion {
 
-    private final Uid notificationCriterionUID;
-    private final Uid memberUID;
+    private final Id notificationCriterionId;
+    private final Id memberId;
     private int minCompetitionRate;
     private int minLockupRate;
 
-    public NotificationCriterion(Uid notificationCriterionUID, Uid memberUID, int minCompetitionRate, int minLockupRate) {
-        this.notificationCriterionUID = notificationCriterionUID;
-        this.memberUID = memberUID;
+    public NotificationCriterion(Id notificationCriterionId, Id memberId, int minCompetitionRate, int minLockupRate) {
+        this.notificationCriterionId = notificationCriterionId;
+        this.memberId = memberId;
         this.minCompetitionRate = minCompetitionRate;
         this.minLockupRate = minLockupRate;
     }
 
-    public static NotificationCriterion build(Uid memberUID, int minCompetitionRate, int minLockupRate) {
-        return new NotificationCriterion(Uid.generate(),
-                memberUID,
+    public static NotificationCriterion build(Id memberId, int minCompetitionRate, int minLockupRate) {
+        return new NotificationCriterion(Id.generate(),
+            memberId,
                 minCompetitionRate,
                 minLockupRate);
     }

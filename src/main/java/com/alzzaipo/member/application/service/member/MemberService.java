@@ -1,7 +1,7 @@
 package com.alzzaipo.member.application.service.member;
 
 import com.alzzaipo.common.LoginType;
-import com.alzzaipo.common.Uid;
+import com.alzzaipo.common.Id;
 import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
 import com.alzzaipo.common.email.port.out.verification.CheckEmailVerifiedPort;
@@ -15,7 +15,7 @@ import com.alzzaipo.member.application.port.in.member.UpdateMemberProfileUseCase
 import com.alzzaipo.member.application.port.in.member.WithdrawMemberUseCase;
 import com.alzzaipo.member.application.port.out.account.local.ChangeLocalAccountEmailPort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountEmailAvailablePort;
-import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberUidPort;
+import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberIdPort;
 import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.member.application.port.out.member.ChangeMemberNicknamePort;
 import com.alzzaipo.member.application.port.out.member.FindMemberAccountEmailsPort;
@@ -41,7 +41,7 @@ public class MemberService implements FindMemberNicknameQuery,
 	private final FindMemberPort findMemberPort;
 	private final FindMemberProfilePort findMemberProfilePort;
 	private final CheckLocalAccountEmailAvailablePort checkLocalAccountEmailAvailablePort;
-	private final FindLocalAccountByMemberUidPort findLocalAccountByMemberUidPort;
+	private final FindLocalAccountByMemberIdPort findLocalAccountByMemberIdPort;
 	private final ChangeMemberNicknamePort changeMemberNicknamePort;
 	private final ChangeLocalAccountEmailPort changeLocalAccountEmailPort;
 	private final CheckEmailVerifiedPort checkEmailVerifiedPort;
@@ -50,33 +50,33 @@ public class MemberService implements FindMemberNicknameQuery,
 
 	@Override
 	@Transactional(readOnly = true)
-	public String findMemberNickname(Uid memberUID) {
-		Member member = findMemberPort.findMember(memberUID);
+	public String findMemberNickname(Id memberId) {
+		Member member = findMemberPort.findMember(memberId);
 		return member.getNickname();
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public MemberProfile findMemberProfile(Uid memberUID, LoginType currentLoginType) {
-		return findMemberProfilePort.findProfile(memberUID.get(), currentLoginType);
+	public MemberProfile findMemberProfile(Id memberId, LoginType currentLoginType) {
+		return findMemberProfilePort.findProfile(memberId.get(), currentLoginType);
 	}
 
 	@Override
 	public void updateMemberProfile(UpdateMemberProfileCommand command) {
-		changeMemberNicknamePort.changeMemberNickname(command.getMemberUID(), command.getNickname());
+		changeMemberNicknamePort.changeMemberNickname(command.getMemberId(), command.getNickname());
 
-		findLocalAccountByMemberUidPort.findByMemberId(command.getMemberUID())
+		findLocalAccountByMemberIdPort.findByMemberId(command.getMemberId())
 			.ifPresent(localAccount -> changeLocalAccountEmail(command, localAccount));
 	}
 
 	@Override
-	public Set<String> findEmails(Uid memberId) {
+	public Set<String> findEmails(Id memberId) {
 		return findMemberAccountEmailsPort.findEmails(memberId);
 	}
 
 	@Override
-	public void withdrawMember(Uid memberUID) {
-		withdrawMemberPort.withdrawMember(memberUID);
+	public void withdrawMember(Id memberId) {
+		withdrawMemberPort.withdrawMember(memberId);
 	}
 
 	private void changeLocalAccountEmail(UpdateMemberProfileCommand command, SecureLocalAccount localAccount) {
@@ -84,7 +84,7 @@ public class MemberService implements FindMemberNicknameQuery,
 			return;
 		}
 		checkEmailAvailable(command.getEmail());
-		checkEmailVerified(command.getEmail(), command.getMemberUID());
+		checkEmailVerified(command.getEmail(), command.getMemberId());
 
 		changeLocalAccountEmailPort.changeLocalAccountEmail(localAccount.getAccountId(), command.getEmail());
 	}
@@ -96,7 +96,7 @@ public class MemberService implements FindMemberNicknameQuery,
 		}
 	}
 
-	private void checkEmailVerified(Email email, Uid memberId) {
+	private void checkEmailVerified(Email email, Id memberId) {
 		boolean isVerified = checkEmailVerifiedPort.check(email.get(),
 			memberId.toString(),
 			EmailVerificationPurpose.UPDATE);
