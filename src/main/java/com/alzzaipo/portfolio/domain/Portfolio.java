@@ -2,6 +2,7 @@ package com.alzzaipo.portfolio.domain;
 
 import com.alzzaipo.common.Id;
 import com.alzzaipo.ipo.domain.Ipo;
+import com.alzzaipo.portfolio.application.dto.UpdatePortfolioCommand;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,6 +39,16 @@ public class Portfolio {
 		this.profitRate = profitRate;
 		this.agents = agents;
 		this.memo = memo;
+	}
+
+	public void updatePortfolio(UpdatePortfolioCommand command, Ipo ipo) {
+		this.stockName = ipo.getStockName();
+		this.stockCode = ipo.getStockCode();
+		this.sharesCnt = command.getSharesCnt();
+		this.profit = command.getProfit();
+		this.profitRate = calculateProfitRate(command.getProfit(), command.getSharesCnt(), ipo.getFixedOfferingPrice());
+		this.agents = command.getAgents();
+		this.memo = command.getMemo();
 	}
 
 	public static Portfolio build(Id memberId, Ipo ipo, long profit, int sharesCount, String agents, String memo) {
