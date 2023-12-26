@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 @Component
-@Transactional
+@Repository
 @RequiredArgsConstructor
 public class MemberPersistenceAdapter implements RegisterMemberPort,
 	FindMemberPort,
@@ -43,7 +43,6 @@ public class MemberPersistenceAdapter implements RegisterMemberPort,
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Member findMember(Uid uid) throws CustomException {
 		MemberJpaEntity entity = memberRepository.findEntityById(uid.get());
 		return toDomainEntity(entity);

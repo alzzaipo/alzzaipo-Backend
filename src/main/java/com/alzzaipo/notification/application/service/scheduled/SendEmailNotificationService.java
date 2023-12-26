@@ -43,7 +43,6 @@ public class SendEmailNotificationService {
 
 	private void sendEmailForIpos(List<Ipo> ipos, List<NotificationCriterion> criteria) {
 		for (Ipo ipo : ipos) {
-
 			List<String> targetEmails = criteria.stream()
 				.filter(notificationCriterion -> isCriterionMet(ipo, notificationCriterion))
 				.map(NotificationCriterion::getMemberUID)
@@ -86,7 +85,7 @@ public class SendEmailNotificationService {
 	}
 
 	private boolean isCriterionMet(Ipo ipo, NotificationCriterion notificationCriterion) {
-		return ipo.getCompetitionRate() >= notificationCriterion.getMinCompetitionRate()
-			&& ipo.getLockupRate() >= notificationCriterion.getMinLockupRate();
+		return ipo.getCompetitionRate() >= notificationCriterion.getMinCompetitionRate() &&
+			ipo.getLockupRate() >= notificationCriterion.getMinLockupRate();
 	}
 }

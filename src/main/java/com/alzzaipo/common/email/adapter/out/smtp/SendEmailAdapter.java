@@ -14,9 +14,11 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Component
+@Repository
 @RequiredArgsConstructor
 public class SendEmailAdapter implements SendCustomEmailPort, SendEmailVerificationCodePort {
 

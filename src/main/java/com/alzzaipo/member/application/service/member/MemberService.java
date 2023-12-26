@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MemberService implements FindMemberNicknameQuery,
 	FindMemberProfileQuery,
@@ -48,18 +49,19 @@ public class MemberService implements FindMemberNicknameQuery,
 	private final WithdrawMemberPort withdrawMemberPort;
 
 	@Override
+	@Transactional(readOnly = true)
 	public String findMemberNickname(Uid memberUID) {
 		Member member = findMemberPort.findMember(memberUID);
 		return member.getNickname();
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public MemberProfile findMemberProfile(Uid memberUID, LoginType currentLoginType) {
 		return findMemberProfilePort.findProfile(memberUID.get(), currentLoginType);
 	}
 
 	@Override
-	@Transactional
 	public void updateMemberProfile(UpdateMemberProfileCommand command) {
 		changeMemberNicknamePort.changeMemberNickname(command.getMemberUID(), command.getNickname());
 

@@ -12,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 @Component
+@Repository
 @RequiredArgsConstructor
 public class RefreshTokenPersistenceAdapter implements SaveRefreshTokenPort,
 	FindRefreshTokenPort,

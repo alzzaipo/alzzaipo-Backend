@@ -4,10 +4,10 @@ import com.alzzaipo.common.Uid;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
-import com.alzzaipo.notification.application.port.out.email.DeleteEmailNotificationPort;
 import com.alzzaipo.notification.application.port.out.email.ChangeNotificationEmailPort;
 import com.alzzaipo.notification.application.port.out.email.CheckMemberSubscriptionExistsPort;
 import com.alzzaipo.notification.application.port.out.email.CheckNotificationEmailAvailablePort;
+import com.alzzaipo.notification.application.port.out.email.DeleteEmailNotificationPort;
 import com.alzzaipo.notification.application.port.out.email.FindNotificationEmailPort;
 import com.alzzaipo.notification.application.port.out.email.RegisterEmailNotificationPort;
 import com.alzzaipo.notification.domain.email.EmailNotification;
@@ -15,10 +15,10 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 @Component
-@Transactional
+@Repository
 @RequiredArgsConstructor
 public class EmailNotificationPersistenceAdapter implements FindNotificationEmailPort,
 	RegisterEmailNotificationPort,
@@ -31,7 +31,6 @@ public class EmailNotificationPersistenceAdapter implements FindNotificationEmai
 	private final EmailNotificationRepository emailNotificationRepository;
 
 	@Override
-	@Transactional(readOnly = true)
 	public Optional<String> findNotificationEmail(Uid memberUID) {
 		return emailNotificationRepository.findByMemberJpaEntityUid(memberUID.get())
 			.map(EmailNotificationJpaEntity::getEmail);

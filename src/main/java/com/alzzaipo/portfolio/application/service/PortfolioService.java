@@ -26,8 +26,10 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PortfolioService implements RegisterPortfolioUseCase,
 	FindMemberPortfoliosQuery,
@@ -53,6 +55,7 @@ public class PortfolioService implements RegisterPortfolioUseCase,
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public PortfolioView findPortfolio(FindPortfolioCommand command) {
 		Portfolio portfolio = findPortfolioPort.findPortfolio(command.getPortfolioUID())
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
@@ -65,6 +68,7 @@ public class PortfolioService implements RegisterPortfolioUseCase,
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public MemberPortfolioSummary findMemberPortfolios(Uid memberUID) {
 		List<PortfolioView> portfolioList = findMemberPortfoliosPort.findMemberPortfolios(memberUID)
 			.stream()

@@ -44,8 +44,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCase,
     VerifyEmailVerificationCodeUseCase,
@@ -89,7 +91,6 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     @Override
     public boolean verifyEmailVerificationCode(@Valid EmailVerificationCode verificationCode,
         EmailVerificationPurpose purpose) {
-
         return verifyEmailVerificationCodePort.verify(verificationCode.get(), purpose);
     }
 
@@ -102,11 +103,13 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean checkEmailAvailable(@Valid Email email) {
         return checkLocalAccountEmailAvailablePort.checkEmailAvailable(email.get());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean checkAccountIdAvailable(@Valid LocalAccountId localAccountId) {
         return checkLocalAccountIdAvailablePort.checkAccountIdAvailable(localAccountId.get());
     }
@@ -129,6 +132,7 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean verifyLocalAccountPassword(Uid memberId, LocalAccountPassword password) {
         return verifyLocalAccountPasswordPort.verifyPassword(memberId.get(),
             passwordEncoder.encode(password.get()));
@@ -149,8 +153,8 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
 
     @Override
     public LoginResult handleLocalLogin(LocalLoginCommand command) {
-        Optional<SecureLocalAccount> localAccount
-            = findLocalAccountByIdPort.findLocalAccountById(command.getLocalAccountId());
+        Optional<SecureLocalAccount> localAccount = findLocalAccountByIdPort.findLocalAccountById(
+            command.getLocalAccountId());
 
         if (localAccount.isPresent() && isPasswordValid(command, localAccount.get())) {
             Uid memberId = localAccount.get().getMemberUID();

@@ -16,10 +16,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class IpoPersistenceAdapter implements
     RegisterIpoPort,
@@ -33,7 +31,6 @@ public class IpoPersistenceAdapter implements
     private final IpoRepository ipoRepository;
 
     @Override
-    @Transactional
     public void registerIpo(Ipo ipo) {
         ipoRepository.save(IpoJpaEntity.build(ipo));
     }
@@ -74,7 +71,6 @@ public class IpoPersistenceAdapter implements
     }
 
     @Override
-    @Transactional
     public void updateListedIpo(UpdateListedIpoCommand command) {
         ipoRepository.findByStockCode(command.getStockCode())
             .ifPresent(entity -> {
