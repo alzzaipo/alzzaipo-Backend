@@ -29,6 +29,7 @@ public class ScrapeIposFromIpo38Adapter implements ScrapeIposPort {
                 scrapeIposCommand.getPageFrom(),
                 scrapeIposCommand.getPageTo()
             )
+            .parallel()
             .mapToObj(this::scrapeIposFromPage)
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
@@ -45,10 +46,17 @@ public class ScrapeIposFromIpo38Adapter implements ScrapeIposPort {
                 .get()
                 .select(selector);
 
-            for (Element ipoElement : ipoElements) {
-                ScrapedIpoDto ipoData = parseScrapedIpoDto(ipoElement);
-                result.add(ipoData);
-            }
+            ipoElements.stream()
+                .parallel()
+                .forEach(ipoElement -> {
+                    try {
+                        ScrapedIpoDto ipoData = parseScrapedIpoDto(ipoElement);
+                        result.add(ipoData);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
         } catch (Exception e) {
             log.error("Ipo Scraping Error : {}", e.getMessage());
         }
