@@ -41,7 +41,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
 		String token = resolveTokenFromAuthorizationHeader(request);
 		if (token == null) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.getWriter().write("Missing Token");
 			filterChain.doFilter(request, response);
 			return;
@@ -91,7 +90,8 @@ public class JwtFilter extends OncePerRequestFilter {
 			"/member/register",
 			"/ipo",
 			"/email",
-			"/login");
+			"/login",
+			"/actuator");
 
 		String path = request.getRequestURI();
 		return whitelist.stream().anyMatch(path::startsWith);
