@@ -29,6 +29,7 @@ public class UpdateListedIpoInitialMarketPriceScheduledService {
 
         findNotListedIposPort.findNotListedIpos()
             .stream()
+            .parallel()
             .filter(ipo -> currentDate.isAfter(ipo.getListedDate()))
             .forEach(this::queryInitialMarketPriceAndUpdate);
     }
