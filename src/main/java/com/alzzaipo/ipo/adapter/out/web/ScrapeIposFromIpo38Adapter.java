@@ -24,8 +24,7 @@ public class ScrapeIposFromIpo38Adapter implements ScrapeIposPort {
 
     @Override
     public List<ScrapedIpoDto> scrapeIpos(ScrapeIposCommand scrapeIposCommand) {
-        return IntStream
-            .rangeClosed(
+        return IntStream.rangeClosed(
                 scrapeIposCommand.getPageFrom(),
                 scrapeIposCommand.getPageTo()
             )
@@ -46,8 +45,7 @@ public class ScrapeIposFromIpo38Adapter implements ScrapeIposPort {
                 .get()
                 .select(selector);
 
-            ipoElements.stream()
-                .parallel()
+            ipoElements.parallelStream()
                 .forEach(ipoElement -> {
                     try {
                         ScrapedIpoDto ipoData = parseScrapedIpoDto(ipoElement);
