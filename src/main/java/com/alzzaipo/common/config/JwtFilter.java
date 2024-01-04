@@ -41,6 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
 		String token = resolveTokenFromAuthorizationHeader(request);
 		if (token == null) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.getWriter().write("Missing Token");
 			filterChain.doFilter(request, response);
 			return;
