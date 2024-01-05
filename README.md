@@ -28,14 +28,12 @@
 
 ## 유사 서비스와의 차별점
 
-> **공모주 수익률 분석 기능** <br>
-수요예측결과를 기준으로 과거 공모주의 수익률을 분석할 수 있습니다. <br>
-과거 유사한 공모주의 평균 수익률을 제공함으로써 사용자의 투자 결정을 돕습니다.
-> 
-
-> **사용자 맞춤 알림 서비스** <br>
-사용자가 설정한 수요예측결과 기준을 만족하는 공모주를 선별하여 이메일로 청약 알림을 전송합니다.<br>
-각 사용자의 투자 기준에 부합하는 청약 정보만을 전달하여, 불필요한 알림으로 인한 사용자의 피로도를 줄이고자 노력했습니다.
+### **공모주 수익률 분석 기능**
+  - 수요예측결과를 기준으로 과거 공모주의 수익률을 분석할 수 있습니다.
+  - 과거 유사한 공모주의 평균 수익률을 제공함으로써 사용자의 투자 결정을 돕습니다.
+### **사용자 맞춤 알림 서비스**
+  - 사용자가 설정한 수요예측결과 기준을 만족하는 공모주를 선별하여 이메일로 청약 알림을 전송합니다.
+  - 각 사용자의 투자 기준에 부합하는 청약 정보만을 전달하여, 불필요한 알림으로 인한 사용자의 피로도를 줄이고자 노력했습니다.
 >
 
 <br>
@@ -128,6 +126,8 @@
 
 <br>
 
+
+
 # 서비스 개선 노력
 
 ### 로그인 유연성 개선
@@ -141,21 +141,23 @@
 - (위키 작성 예정)
 
 ### 성능 개선
-- [관련 PR](https://github.com/alzzaipo/alzzaipo-Backend/issues/88)
+- [관련 PR](https://github.com/alzzaipo/alzzaipo-Backend/pull/90)
 - (위키 작성 예정)
 
 <br>
 
 # 다이어그램
 
-## Infrastructure
-![알짜공모주_배포다이어그램](https://github.com/alzzaipo/alzzaipo-Backend/assets/107951175/0c3d5b8d-68e5-4c7c-b55c-e8790bc0321f)
+### [Infrastructure]
+<img width="800" alt="인프라 구조" src="https://github.com/alzzaipo/alzzaipo-Backend/assets/107951175/0c3d5b8d-68e5-4c7c-b55c-e8790bc0321f">
+<br>
 
-## CI/CD
-![알짜공모주_CI:CD](https://github.com/alzzaipo/alzzaipo-Backend/assets/107951175/5e590e81-ec80-42da-955a-7bea8da9c2fa)
+### [CI/CD]
+<img width="800" alt="CI/CD 파이프라인" src="https://github.com/alzzaipo/alzzaipo-Backend/assets/107951175/5e590e81-ec80-42da-955a-7bea8da9c2fa">
+<br>
 
-## DB Schema
-![알짜공모주 DB 스키마](https://github.com/alzzaipo/alzzaipo-Backend/assets/107951175/6a7486bb-e2f4-42b2-a76d-30c8dc2a32da)
+### [DB Schema]
+<img width="800" alt="DB 스키마" src="https://github.com/alzzaipo/alzzaipo-Backend/assets/107951175/6a7486bb-e2f4-42b2-a76d-30c8dc2a32da">
 
-## Usecase Diagram
-[유스케이스 다이어그램](https://github.com/alzzaipo/alzzaipo-Backend/wiki/%EC%9C%A0%EC%8A%A4%EC%BC%80%EC%9D%B4%EC%8A%A4-%EB%8B%A4%EC%9D%B4%EC%96%B4%EA%B7%B8%EB%9E%A8)
+### [UseCase Diagram]
+- [유스케이스 다이어그램](https://github.com/alzzaipo/alzzaipo-Backend/wiki/%EC%9C%A0%EC%8A%A4%EC%BC%80%EC%9D%B4%EC%8A%A4-%EB%8B%A4%EC%9D%B4%EC%96%B4%EA%B7%B8%EB%9E%A8)
