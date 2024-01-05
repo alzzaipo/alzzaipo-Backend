@@ -6,7 +6,7 @@ import com.alzzaipo.ipo.application.port.out.FindAnalyzeIpoProfitRateTargetPort;
 import com.alzzaipo.ipo.application.port.out.FindIpoByStockCodePort;
 import com.alzzaipo.ipo.application.port.out.FindIpoListPort;
 import com.alzzaipo.ipo.application.port.out.FindNotListedIposPort;
-import com.alzzaipo.ipo.application.port.out.RegisterIpoPort;
+import com.alzzaipo.ipo.application.port.out.SaveIposPort;
 import com.alzzaipo.ipo.application.port.out.UpdateListedIpoPort;
 import com.alzzaipo.ipo.application.port.out.dto.CheckIpoRegisteredPort;
 import com.alzzaipo.ipo.application.port.out.dto.UpdateListedIpoCommand;
@@ -19,8 +19,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class IpoPersistenceAdapter implements
-    RegisterIpoPort,
+public class IpoPersistenceAdapter implements SaveIposPort,
     FindIpoByStockCodePort,
     FindIpoListPort,
     FindAnalyzeIpoProfitRateTargetPort,
@@ -31,8 +30,12 @@ public class IpoPersistenceAdapter implements
     private final IpoRepository ipoRepository;
 
     @Override
-    public void registerIpo(Ipo ipo) {
-        ipoRepository.save(IpoJpaEntity.build(ipo));
+    public void saveAll(List<Ipo> ipos) {
+        List<IpoJpaEntity> ipoJpaEntities = ipos.parallelStream()
+            .map(IpoJpaEntity::build)
+            .toList();
+
+        ipoRepository.saveAll(ipoJpaEntities);
     }
 
     @Override

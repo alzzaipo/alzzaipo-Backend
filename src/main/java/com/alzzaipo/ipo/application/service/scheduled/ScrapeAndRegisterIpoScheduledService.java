@@ -5,15 +5,17 @@ import com.alzzaipo.ipo.application.port.out.dto.ScrapeIposCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Transactional
 @RequiredArgsConstructor
 public class ScrapeAndRegisterIpoScheduledService {
 
     private final ScrapeAndRegisterIposUseCase scrapeAndRegisterIposUseCase;
 
     @Scheduled(cron = "0 0 2 ? * MON-FRI")
-    private void scheduledTask() {
+    public void scheduledTask() {
         ScrapeIposCommand command = new ScrapeIposCommand(1, 1);
         scrapeAndRegisterIposUseCase.scrapeAndRegisterIposUseCase(command);
     }

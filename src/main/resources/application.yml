@@ -21,6 +21,12 @@ spring:
 
 server:
   shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
 ---
 spring:
   config:

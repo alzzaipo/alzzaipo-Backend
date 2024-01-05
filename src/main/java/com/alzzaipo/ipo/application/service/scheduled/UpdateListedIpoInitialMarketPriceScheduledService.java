@@ -23,12 +23,12 @@ public class UpdateListedIpoInitialMarketPriceScheduledService {
     private final QueryInitialMarketPricePort queryInitialMarketPricePort;
     private final UpdateListedIpoPort updateListedIpoPort;
 
-    @Scheduled(cron = "* * 18 ? * MON-FRI")
+    @Scheduled(cron = "0 0 18 ? * MON-FRI")
     public void updateListedIpos() {
         LocalDate currentDate = LocalDate.now();
 
         findNotListedIposPort.findNotListedIpos()
-            .stream()
+            .parallelStream()
             .filter(ipo -> currentDate.isAfter(ipo.getListedDate()))
             .forEach(this::queryInitialMarketPriceAndUpdate);
     }

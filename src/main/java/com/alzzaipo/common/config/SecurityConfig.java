@@ -22,46 +22,47 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
-	private final MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.cors().and()
-			.formLogin().disable()
-			.httpBasic().disable();
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .cors().and()
+            .formLogin().disable()
+            .httpBasic().disable();
 
-		http.addFilterBefore(new JwtFilter(memberRepository), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtFilter(memberRepository), UsernamePasswordAuthenticationFilter.class);
 
-		http.authorizeHttpRequests(requests -> requests
-			.requestMatchers("/member/register/**",
-				"/member/login",
-				"/ipo/**",
-				"/email/**",
-				"/login/**").permitAll()
-			.requestMatchers("/scraper").hasRole(Role.ADMIN.name())
-			.anyRequest().authenticated());
+        http.authorizeHttpRequests(requests -> requests
+            .requestMatchers("/member/register/**",
+                "/member/login",
+                "/ipo/**",
+                "/email/**",
+                "/login/**",
+                "/actuator/**").permitAll()
+            .requestMatchers("/scraper").hasRole(Role.ADMIN.name())
+            .anyRequest().authenticated());
 
-		return http.build();
-	}
+        return http.build();
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOrigins(List.of("https://alzzaipo.com"));
-		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-		config.addAllowedHeader("*");
-		config.setAllowCredentials(true);
-		config.addExposedHeader("Authorization");
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("https://alzzaipo.com"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.addAllowedHeader("*");
+        config.setAllowCredentials(true);
+        config.addExposedHeader("Authorization");
 
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", config);
-		return source;
-	}
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 }

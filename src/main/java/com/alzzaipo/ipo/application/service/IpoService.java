@@ -9,7 +9,7 @@ import com.alzzaipo.ipo.application.port.in.dto.AnalyzeIpoProfitRateCommand;
 import com.alzzaipo.ipo.application.port.in.dto.AnalyzeIpoProfitRateResult;
 import com.alzzaipo.ipo.application.port.out.FindAnalyzeIpoProfitRateTargetPort;
 import com.alzzaipo.ipo.application.port.out.FindIpoByStockCodePort;
-import com.alzzaipo.ipo.application.port.out.RegisterIpoPort;
+import com.alzzaipo.ipo.application.port.out.SaveIposPort;
 import com.alzzaipo.ipo.application.port.out.ScrapeIposPort;
 import com.alzzaipo.ipo.application.port.out.dto.CheckIpoRegisteredPort;
 import com.alzzaipo.ipo.application.port.out.dto.ScrapeIposCommand;
@@ -33,8 +33,8 @@ public class IpoService implements GetIpoListQuery,
     private final FindIpoByStockCodePort findIpoByStockCodePort;
     private final FindAnalyzeIpoProfitRateTargetPort findAnalyzeIpoProfitRateTargetsPort;
     private final ScrapeIposPort scrapeIposPort;
-    private final RegisterIpoPort registerIpoPort;
     private final CheckIpoRegisteredPort checkIpoRegisteredPort;
+    private final SaveIposPort saveIposPort;
 
     @Override
     @Transactional(readOnly = true)
@@ -65,11 +65,14 @@ public class IpoService implements GetIpoListQuery,
 
     @Override
     public int scrapeAndRegisterIposUseCase(ScrapeIposCommand scrapeIposCommand) {
-        return (int) scrapeIposPort.scrapeIpos(scrapeIposCommand)
+        List<Ipo> scrapedIpos = scrapeIposPort.scrapeIpos(scrapeIposCommand)
             .stream()
             .filter(ipoDto -> !checkIpoRegisteredPort.existsByStockCode(ipoDto.getStockCode()))
             .map(ScrapedIpoDto::toDomainEntity)
-            .peek(registerIpoPort::registerIpo)
-            .count();
+            .toList();
+
+        saveIposPort.saveAll(scrapedIpos);
+
+        return scrapedIpos.size();
     }
 }
