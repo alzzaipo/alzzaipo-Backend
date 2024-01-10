@@ -2,7 +2,6 @@ package com.alzzaipo.ipo.adapter.in.web;
 
 import com.alzzaipo.ipo.adapter.in.web.dto.ScrapeAndRegisterIposWebRequest;
 import com.alzzaipo.ipo.application.port.in.ScrapeAndRegisterIposUseCase;
-import com.alzzaipo.ipo.application.port.out.dto.ScrapeIposCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +16,8 @@ public class IpoScrapingController {
 	private final ScrapeAndRegisterIposUseCase scrapeAndRegisterIposUseCase;
 
 	@PostMapping("/scraper")
-	public ResponseEntity<String> scrapeAndRegisterIpos(@Valid @RequestBody ScrapeAndRegisterIposWebRequest dto) {
-		ScrapeIposCommand command = new ScrapeIposCommand(dto.getPageFrom(), dto.getPageTo());
-		int totalRegistrationCount = scrapeAndRegisterIposUseCase.scrapeAndRegisterIposUseCase(command);
+	public ResponseEntity<String> scrapeAndRegisterIpos(@Valid @RequestBody ScrapeAndRegisterIposWebRequest request) {
+		int totalRegistrationCount = scrapeAndRegisterIposUseCase.scrapeAndRegisterIposUseCase(request.toCommand());
 		return ResponseEntity.ok("[성공] " + totalRegistrationCount + "건 업데이트 완료");
 	}
 }

@@ -18,12 +18,8 @@ import com.alzzaipo.member.application.port.in.account.local.RegisterLocalAccoun
 import com.alzzaipo.member.application.port.in.account.local.SendSignUpEmailVerificationCodeUseCase;
 import com.alzzaipo.member.application.port.in.account.local.SendUpdateLocalAccountEmailVerificationCodeUseCase;
 import com.alzzaipo.member.application.port.in.account.local.VerifyLocalAccountPasswordQuery;
-import com.alzzaipo.member.application.port.in.dto.ChangeLocalAccountPasswordCommand;
 import com.alzzaipo.member.application.port.in.dto.CheckLocalAccountEmailVerificationCodeCommand;
 import com.alzzaipo.member.application.port.in.dto.MemberProfile;
-import com.alzzaipo.member.application.port.in.dto.RegisterLocalAccountCommand;
-import com.alzzaipo.member.application.port.in.dto.SendSignUpEmailVerificationCodeCommand;
-import com.alzzaipo.member.application.port.in.dto.UpdateMemberProfileCommand;
 import com.alzzaipo.member.application.port.in.member.FindMemberNicknameQuery;
 import com.alzzaipo.member.application.port.in.member.FindMemberProfileQuery;
 import com.alzzaipo.member.application.port.in.member.UpdateMemberProfileUseCase;
@@ -63,10 +59,8 @@ public class MemberController {
     private final SendUpdateLocalAccountEmailVerificationCodeUseCase sendUpdateLocalAccountEmailVerificationCodeUseCase;
 
     @GetMapping("/register/verify-account-id")
-    public ResponseEntity<String> checkLocalAccountIdAvailability(
-        @RequestParam("accountId") String accountId) {
-        LocalAccountId localAccountId = new LocalAccountId(accountId);
-        if (!checkLocalAccountIdAvailableQuery.checkAccountIdAvailable(localAccountId)) {
+    public ResponseEntity<String> checkLocalAccountIdAvailability(@RequestParam("accountId") String accountId) {
+        if (!checkLocalAccountIdAvailableQuery.checkAccountIdAvailable(new LocalAccountId(accountId))) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 등록된 아이디 입니다.");
         }
         return ResponseEntity.ok().body("사용 가능한 아이디 입니다.");
@@ -74,30 +68,23 @@ public class MemberController {
 
     @GetMapping("/register/verify-email")
     public ResponseEntity<String> checkLocalAccountEmailAvailability(@RequestParam("email") String email) {
-        Email localAccountEmail = new Email(email);
-        if (!checkLocalAccountEmailAvailableQuery.checkEmailAvailable(localAccountEmail)) {
+        if (!checkLocalAccountEmailAvailableQuery.checkEmailAvailable(new Email(email))) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 등록된 이메일 입니다.");
         }
         return ResponseEntity.ok().body("사용 가능한 이메일 입니다.");
     }
 
     @PostMapping("/register/send-verification-code")
-    public ResponseEntity<String> sendSignUpVerificationCode(
-        @Valid @RequestBody EmailDto emailDto) {
-
-        SendSignUpEmailVerificationCodeCommand command =
-            new SendSignUpEmailVerificationCodeCommand(emailDto.getEmail());
-
-        sendSignUpEmailVerificationCodeUseCase.sendSignUpEmailVerificationCode(command);
+    public ResponseEntity<String> sendSignUpVerificationCode(@Valid @RequestBody EmailDto emailDto) {
+        sendSignUpEmailVerificationCodeUseCase.sendSignUpEmailVerificationCode(new Email(emailDto.getEmail()));
         return ResponseEntity.ok().body("전송 완료");
     }
 
     @PostMapping("/register/validate-verification-code")
     public ResponseEntity<String> validateVerificationCode(
-        @Valid @RequestBody CheckLocalAccountEmailVerificationCodeRequest request) {
-
-        CheckLocalAccountEmailVerificationCodeCommand command = new CheckLocalAccountEmailVerificationCodeCommand(
-            request.getEmail(), request.getVerificationCode(), EmailVerificationPurpose.SIGN_UP);
+        @Valid @RequestBody CheckLocalAccountEmailVerificationCodeRequest request
+    ) {
+        CheckLocalAccountEmailVerificationCodeCommand command = request.toCommand(EmailVerificationPurpose.SIGN_UP);
 
         if (checkEmailVerificationCodeQuery.checkEmailVerificationCode(command)) {
             return ResponseEntity.ok().body("인증 성공");
@@ -107,15 +94,15 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterLocalAccountWebRequest dto) {
-        RegisterLocalAccountCommand command = RegisterLocalAccountCommand.build(dto);
-        registerLocalAccountUseCase.registerLocalAccount(command);
+        registerLocalAccountUseCase.registerLocalAccount(dto.toCommand());
         return ResponseEntity.ok().body("가입 완료");
     }
 
     @PostMapping("/verify-password")
-    public ResponseEntity<String> verifyPassword(@AuthenticationPrincipal MemberPrincipal principal,
-        @Valid @RequestBody LocalAccountPasswordDto dto) {
-
+    public ResponseEntity<String> verifyPassword(
+        @AuthenticationPrincipal MemberPrincipal principal,
+        @Valid @RequestBody LocalAccountPasswordDto dto
+    ) {
         Id memberId = principal.getMemberId();
         LocalAccountPassword localAccountPassword = new LocalAccountPassword(dto.getAccountPassword());
 
@@ -126,15 +113,11 @@ public class MemberController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@AuthenticationPrincipal MemberPrincipal principal,
-        @Valid @RequestBody ChangeLocalAccountPasswordWebRequest dto) {
-
-        ChangeLocalAccountPasswordCommand command = new ChangeLocalAccountPasswordCommand(
-            principal.getMemberId(),
-            dto.getCurrentPassword(),
-            dto.getNewPassword());
-
-        if (changeLocalAccountPasswordUseCase.changePassword(command)) {
+    public ResponseEntity<String> changePassword(
+        @AuthenticationPrincipal MemberPrincipal principal,
+        @Valid @RequestBody ChangeLocalAccountPasswordWebRequest request
+    ) {
+        if (changeLocalAccountPasswordUseCase.changePassword(request.toCommand(principal.getMemberId()))) {
             return ResponseEntity.ok().body("비밀번호 변경 완료");
         }
         return ResponseEntity.internalServerError().body("비밀번호 변경 실패");
@@ -148,7 +131,8 @@ public class MemberController {
 
     @GetMapping("/profile")
     public ResponseEntity<MemberProfile> findMemberProfile(@AuthenticationPrincipal MemberPrincipal principal) {
-        MemberProfile memberProfile = findMemberProfileQuery.findMemberProfile(principal.getMemberId(),
+        MemberProfile memberProfile = findMemberProfileQuery.findMemberProfile(
+            principal.getMemberId(),
             principal.getCurrentLoginType());
 
         return ResponseEntity.ok().body(memberProfile);
@@ -164,10 +148,9 @@ public class MemberController {
 
     @PostMapping("/profile/update/validate-verification-code")
     public ResponseEntity<String> validateRegisterVerificationCode(
-        @Valid @RequestBody CheckLocalAccountEmailVerificationCodeRequest request) {
-
-        CheckLocalAccountEmailVerificationCodeCommand command = new CheckLocalAccountEmailVerificationCodeCommand(
-            request.getEmail(), request.getVerificationCode(), EmailVerificationPurpose.UPDATE);
+        @Valid @RequestBody CheckLocalAccountEmailVerificationCodeRequest request
+    ) {
+        CheckLocalAccountEmailVerificationCodeCommand command = request.toCommand(EmailVerificationPurpose.UPDATE);
 
         if (checkEmailVerificationCodeQuery.checkEmailVerificationCode(command)) {
             return ResponseEntity.ok().body("인증 성공");
@@ -176,17 +159,11 @@ public class MemberController {
     }
 
     @PutMapping("/profile/update")
-    public ResponseEntity<String> updateMemberProfile(@AuthenticationPrincipal MemberPrincipal principal,
-        @Valid @RequestBody UpdateMemberProfileWebRequest request) {
-
-        UpdateMemberProfileCommand command = new UpdateMemberProfileCommand(
-            principal.getMemberId(),
-            request.getNickname(),
-            new Email(request.getEmail()),
-            request.getVerificationCode());
-
-        updateMemberProfileUseCase.updateMemberProfile(command);
-
+    public ResponseEntity<String> updateMemberProfile(
+        @AuthenticationPrincipal MemberPrincipal principal,
+        @Valid @RequestBody UpdateMemberProfileWebRequest request
+    ) {
+        updateMemberProfileUseCase.updateMemberProfile(request.toCommand(principal.getMemberId()));
         return ResponseEntity.ok().body("프로필 수정 완료");
     }
 

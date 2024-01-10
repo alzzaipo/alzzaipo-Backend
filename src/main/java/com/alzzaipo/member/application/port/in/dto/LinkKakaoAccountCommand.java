@@ -1,4 +1,4 @@
-package com.alzzaipo.portfolio.application.dto;
+package com.alzzaipo.member.application.port.in.dto;
 
 import com.alzzaipo.common.Id;
 import lombok.AllArgsConstructor;
@@ -6,8 +6,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class DeletePortfolioCommand {
+public class LinkKakaoAccountCommand {
 
     private final Id memberId;
-    private final Id portfolioId;
+    private final AuthorizationCode authorizationCode;
 }

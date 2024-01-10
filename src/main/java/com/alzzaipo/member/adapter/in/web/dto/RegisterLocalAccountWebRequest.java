@@ -1,5 +1,9 @@
 package com.alzzaipo.member.adapter.in.web.dto;
 
+import com.alzzaipo.common.email.domain.EmailVerificationCode;
+import com.alzzaipo.member.application.port.in.dto.RegisterLocalAccountCommand;
+import com.alzzaipo.member.domain.account.local.LocalAccountId;
+import com.alzzaipo.member.domain.account.local.LocalAccountPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -28,4 +32,13 @@ public class RegisterLocalAccountWebRequest {
 
     @NotBlank
     private String verificationCode;
+
+    public RegisterLocalAccountCommand toCommand() {
+        return new RegisterLocalAccountCommand(
+            new LocalAccountId(accountId),
+            new LocalAccountPassword(accountPassword),
+            new com.alzzaipo.common.email.domain.Email(email),
+            nickname,
+            new EmailVerificationCode(verificationCode));
+    }
 }

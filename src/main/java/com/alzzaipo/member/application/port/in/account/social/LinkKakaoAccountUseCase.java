@@ -1,9 +1,8 @@
 package com.alzzaipo.member.application.port.in.account.social;
 
-import com.alzzaipo.common.Id;
-import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
+import com.alzzaipo.member.application.port.in.dto.LinkKakaoAccountCommand;
 
 public interface LinkKakaoAccountUseCase {
 
-    void linkKakaoAccount(Id memberId, AuthorizationCode authorizationCode);
+    void linkKakaoAccount(LinkKakaoAccountCommand command);
 }

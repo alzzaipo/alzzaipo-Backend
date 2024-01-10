@@ -14,21 +14,20 @@ public class ScrapeIposCommand {
         this.pageFrom = pageFrom;
         this.pageTo = to;
 
-        selfValidate(pageFrom, to);
+        selfValidate();
     }
 
-    private void selfValidate(int from, int to) {
-        requirePositive("from", from);
-        requirePositive("to", to);
-
-        if (from > to) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "from이 to보다 큽니다.");
+    private void selfValidate() {
+        if (pageFrom <= 0) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, " pageFrom : 0 이하 불가");
         }
-    }
 
-    private void requirePositive(String parameter, int number) {
-        if (number <= 0) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, parameter + " : 0 이하 불가");
+        if (pageTo <= 0) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, " pageTo : 0 이하 불가");
+        }
+
+        if (pageFrom > pageTo) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "from이 to보다 큽니다.");
         }
     }
 }
