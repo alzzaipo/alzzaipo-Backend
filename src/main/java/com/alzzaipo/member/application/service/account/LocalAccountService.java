@@ -37,7 +37,6 @@ import com.alzzaipo.member.application.port.out.member.RegisterMemberPort;
 import com.alzzaipo.member.domain.account.local.LocalAccountId;
 import com.alzzaipo.member.domain.account.local.LocalAccountPassword;
 import com.alzzaipo.member.domain.member.Member;
-import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -72,7 +71,7 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     private final FindLocalAccountByMemberIdPort findLocalAccountByMemberIdPort;
 
     @Override
-    public void sendSignUpEmailVerificationCode(@Valid SendSignUpEmailVerificationCodeCommand command) {
+    public void sendSignUpEmailVerificationCode(SendSignUpEmailVerificationCodeCommand command) {
         String email = command.getEmail().get();
 
         if (!checkLocalAccountEmailAvailablePort.checkEmailAvailable(email)) {
@@ -93,7 +92,7 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     }
 
     @Override
-    public void sendUpdateLocalAccountEmailVerificationCode(@Valid Email email) {
+    public void sendUpdateLocalAccountEmailVerificationCode(Email email) {
         if (!checkLocalAccountEmailAvailablePort.checkEmailAvailable(email.get())) {
             throw new CustomException(HttpStatus.CONFLICT, "이메일 중복");
         }
@@ -105,18 +104,18 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkEmailAvailable(@Valid Email email) {
+    public boolean checkEmailAvailable(Email email) {
         return checkLocalAccountEmailAvailablePort.checkEmailAvailable(email.get());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkAccountIdAvailable(@Valid LocalAccountId localAccountId) {
+    public boolean checkAccountIdAvailable(LocalAccountId localAccountId) {
         return checkLocalAccountIdAvailablePort.checkAccountIdAvailable(localAccountId.get());
     }
 
     @Override
-    public void registerLocalAccount(@Valid RegisterLocalAccountCommand command) {
+    public void registerLocalAccount(RegisterLocalAccountCommand command) {
         checkRegistrationPossible(command);
 
         Member member = Member.build(command.getNickname());

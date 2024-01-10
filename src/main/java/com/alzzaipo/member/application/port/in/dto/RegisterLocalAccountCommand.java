@@ -5,21 +5,15 @@ import com.alzzaipo.common.email.domain.EmailVerificationCode;
 import com.alzzaipo.member.adapter.in.web.dto.RegisterLocalAccountWebRequest;
 import com.alzzaipo.member.domain.account.local.LocalAccountId;
 import com.alzzaipo.member.domain.account.local.LocalAccountPassword;
-import jakarta.validation.Valid;
 import lombok.Getter;
 
 @Getter
 public class RegisterLocalAccountCommand {
 
     private final LocalAccountId localAccountId;
-
     private final LocalAccountPassword localAccountPassword;
-
-    @Valid
     private final Email email;
-
     private final String nickname;
-
     private final EmailVerificationCode emailVerificationCode;
 
     public RegisterLocalAccountCommand(String accountId, String accountPassword, String email, String nickname,

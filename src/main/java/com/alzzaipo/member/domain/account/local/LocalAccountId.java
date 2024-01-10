@@ -7,17 +7,16 @@ import java.util.regex.Pattern;
 
 public class LocalAccountId {
 
+    private static final String regex = "^[a-z0-9_-]{5,20}$";
+
     private final String accountId;
 
     public LocalAccountId(String accountId) {
         this.accountId = accountId;
-
         validateFormat();
     }
 
     private void validateFormat() {
-        String regex = "^[a-z0-9_-]{5,20}$";
-
         if (!Pattern.matches(regex, accountId)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "아이디 형식 오류");
         }
