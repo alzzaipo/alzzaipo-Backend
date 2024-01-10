@@ -4,5 +4,5 @@ import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
 
 public interface SaveEmailVerificationCodePort {
 
-	void save(String email, String emailVerificationCode, String subject, EmailVerificationPurpose purpose);
+    void save(String email, String emailVerificationCode, EmailVerificationPurpose purpose);
 }

@@ -1,9 +1,8 @@
 package com.alzzaipo.notification.application.port.in.email;
 
-import com.alzzaipo.common.email.domain.Email;
-import com.alzzaipo.common.Id;
+import com.alzzaipo.notification.application.port.dto.ChangeNotificationEmailCommand;
 
 public interface ChangeNotificationEmailUseCase {
 
-    void changeNotificationEmail(Id memberId, Email email);
+    void changeNotificationEmail(ChangeNotificationEmailCommand command);
 }

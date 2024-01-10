@@ -1,26 +1,25 @@
 package com.alzzaipo.member.adapter.in.web;
 
-import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.common.Id;
+import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.common.email.domain.Email;
-import com.alzzaipo.common.email.domain.EmailVerificationCode;
 import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
 import com.alzzaipo.member.adapter.in.web.dto.ChangeLocalAccountPasswordWebRequest;
+import com.alzzaipo.member.adapter.in.web.dto.CheckLocalAccountEmailVerificationCodeRequest;
 import com.alzzaipo.member.adapter.in.web.dto.EmailDto;
-import com.alzzaipo.member.adapter.in.web.dto.EmailVerificationCodeDto;
 import com.alzzaipo.member.adapter.in.web.dto.LocalAccountPasswordDto;
 import com.alzzaipo.member.adapter.in.web.dto.RegisterLocalAccountWebRequest;
-import com.alzzaipo.member.adapter.in.web.dto.SendSignUpEmailVerificationCodeWebRequest;
 import com.alzzaipo.member.adapter.in.web.dto.UpdateMemberProfileWebRequest;
 import com.alzzaipo.member.application.port.in.account.local.ChangeLocalAccountPasswordUseCase;
+import com.alzzaipo.member.application.port.in.account.local.CheckEmailVerificationCodeQuery;
 import com.alzzaipo.member.application.port.in.account.local.CheckLocalAccountEmailAvailableQuery;
 import com.alzzaipo.member.application.port.in.account.local.CheckLocalAccountIdAvailableQuery;
 import com.alzzaipo.member.application.port.in.account.local.RegisterLocalAccountUseCase;
 import com.alzzaipo.member.application.port.in.account.local.SendSignUpEmailVerificationCodeUseCase;
-import com.alzzaipo.member.application.port.in.account.local.SendUpdateEmailVerificationCodeUseCase;
-import com.alzzaipo.member.application.port.in.account.local.VerifyEmailVerificationCodeUseCase;
+import com.alzzaipo.member.application.port.in.account.local.SendUpdateLocalAccountEmailVerificationCodeUseCase;
 import com.alzzaipo.member.application.port.in.account.local.VerifyLocalAccountPasswordQuery;
 import com.alzzaipo.member.application.port.in.dto.ChangeLocalAccountPasswordCommand;
+import com.alzzaipo.member.application.port.in.dto.CheckLocalAccountEmailVerificationCodeCommand;
 import com.alzzaipo.member.application.port.in.dto.MemberProfile;
 import com.alzzaipo.member.application.port.in.dto.RegisterLocalAccountCommand;
 import com.alzzaipo.member.application.port.in.dto.SendSignUpEmailVerificationCodeCommand;
@@ -60,8 +59,8 @@ public class MemberController {
     private final UpdateMemberProfileUseCase updateMemberProfileUseCase;
     private final WithdrawMemberUseCase withdrawMemberUseCase;
     private final SendSignUpEmailVerificationCodeUseCase sendSignUpEmailVerificationCodeUseCase;
-    private final VerifyEmailVerificationCodeUseCase verifyEmailVerificationCodeUseCase;
-    private final SendUpdateEmailVerificationCodeUseCase sendUpdateEmailVerificationCodeUseCase;
+    private final CheckEmailVerificationCodeQuery checkEmailVerificationCodeQuery;
+    private final SendUpdateLocalAccountEmailVerificationCodeUseCase sendUpdateLocalAccountEmailVerificationCodeUseCase;
 
     @GetMapping("/register/verify-account-id")
     public ResponseEntity<String> checkLocalAccountIdAvailability(
@@ -84,21 +83,23 @@ public class MemberController {
 
     @PostMapping("/register/send-verification-code")
     public ResponseEntity<String> sendSignUpVerificationCode(
-        @Valid @RequestBody SendSignUpEmailVerificationCodeWebRequest dto) {
+        @Valid @RequestBody EmailDto emailDto) {
 
         SendSignUpEmailVerificationCodeCommand command =
-            new SendSignUpEmailVerificationCodeCommand(dto.getAccountId(), dto.getEmail());
+            new SendSignUpEmailVerificationCodeCommand(emailDto.getEmail());
 
         sendSignUpEmailVerificationCodeUseCase.sendSignUpEmailVerificationCode(command);
         return ResponseEntity.ok().body("전송 완료");
     }
 
     @PostMapping("/register/validate-verification-code")
-    public ResponseEntity<String> validateVerificationCode(@Valid @RequestBody EmailVerificationCodeDto dto) {
-        EmailVerificationCode verificationCode = new EmailVerificationCode(dto.getVerificationCode());
-        boolean verified = verifyEmailVerificationCodeUseCase.verifyEmailVerificationCode(verificationCode,
-            EmailVerificationPurpose.SIGN_UP);
-        if (verified) {
+    public ResponseEntity<String> validateVerificationCode(
+        @Valid @RequestBody CheckLocalAccountEmailVerificationCodeRequest request) {
+
+        CheckLocalAccountEmailVerificationCodeCommand command = new CheckLocalAccountEmailVerificationCodeCommand(
+            request.getEmail(), request.getVerificationCode(), EmailVerificationPurpose.SIGN_UP);
+
+        if (checkEmailVerificationCodeQuery.checkEmailVerificationCode(command)) {
             return ResponseEntity.ok().body("인증 성공");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
@@ -146,8 +147,7 @@ public class MemberController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<MemberProfile> findMemberProfile(
-        @AuthenticationPrincipal MemberPrincipal principal) {
+    public ResponseEntity<MemberProfile> findMemberProfile(@AuthenticationPrincipal MemberPrincipal principal) {
         MemberProfile memberProfile = findMemberProfileQuery.findMemberProfile(principal.getMemberId(),
             principal.getCurrentLoginType());
 
@@ -155,33 +155,35 @@ public class MemberController {
     }
 
     @PostMapping("/profile/update/send-verification-code")
-    public ResponseEntity<String> sendUpdateEmailVerificationCode(
-        @AuthenticationPrincipal MemberPrincipal principal,
-        @Valid @RequestBody EmailDto dto) {
-        sendUpdateEmailVerificationCodeUseCase.sendUpdateEmailVerificationCode(new Email(dto.getEmail()),
-            principal.getMemberId());
+    public ResponseEntity<String> sendUpdateEmailVerificationCode(@Valid @RequestBody EmailDto dto) {
+        sendUpdateLocalAccountEmailVerificationCodeUseCase.sendUpdateLocalAccountEmailVerificationCode(
+            new Email(dto.getEmail()));
+
         return ResponseEntity.ok().body("전송 완료");
     }
 
     @PostMapping("/profile/update/validate-verification-code")
     public ResponseEntity<String> validateRegisterVerificationCode(
-        @Valid @RequestBody EmailVerificationCodeDto dto) {
-        EmailVerificationCode emailVerificationCode = new EmailVerificationCode(dto.getVerificationCode());
-        if (!verifyEmailVerificationCodeUseCase.verifyEmailVerificationCode(emailVerificationCode,
-            EmailVerificationPurpose.UPDATE)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
+        @Valid @RequestBody CheckLocalAccountEmailVerificationCodeRequest request) {
+
+        CheckLocalAccountEmailVerificationCodeCommand command = new CheckLocalAccountEmailVerificationCodeCommand(
+            request.getEmail(), request.getVerificationCode(), EmailVerificationPurpose.UPDATE);
+
+        if (checkEmailVerificationCodeQuery.checkEmailVerificationCode(command)) {
+            return ResponseEntity.ok().body("인증 성공");
         }
-        return ResponseEntity.ok().body("인증 성공");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
     }
 
     @PutMapping("/profile/update")
     public ResponseEntity<String> updateMemberProfile(@AuthenticationPrincipal MemberPrincipal principal,
-        @Valid @RequestBody UpdateMemberProfileWebRequest dto) {
+        @Valid @RequestBody UpdateMemberProfileWebRequest request) {
 
         UpdateMemberProfileCommand command = new UpdateMemberProfileCommand(
             principal.getMemberId(),
-            dto.getNickname(),
-            new Email(dto.getEmail()));
+            request.getNickname(),
+            new Email(request.getEmail()),
+            request.getVerificationCode());
 
         updateMemberProfileUseCase.updateMemberProfile(command);
 

@@ -25,4 +25,7 @@ public class RegisterLocalAccountWebRequest {
 
     @NotBlank
     private String nickname;
+
+    @NotBlank
+    private String verificationCode;
 }

@@ -9,10 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UpdateMemberProfileWebRequest {
-
-    @NotBlank
-    private String nickname;
+public class CheckLocalAccountEmailVerificationCodeRequest {
 
     @Email
     @NotBlank
