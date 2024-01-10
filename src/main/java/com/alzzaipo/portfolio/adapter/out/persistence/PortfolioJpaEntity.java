@@ -3,6 +3,7 @@ package com.alzzaipo.portfolio.adapter.out.persistence;
 import com.alzzaipo.common.BaseTimeEntity;
 import com.alzzaipo.ipo.adapter.out.persistence.IpoJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
+import com.alzzaipo.portfolio.domain.Portfolio;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,5 +50,30 @@ public class PortfolioJpaEntity extends BaseTimeEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public static PortfolioJpaEntity build(MemberJpaEntity memberJpaEntity, IpoJpaEntity ipoJpaEntity, Portfolio portfolio) {
+        return new PortfolioJpaEntity(
+            portfolio.getPortfolioId().get(),
+            portfolio.getSharesCnt(),
+            portfolio.getProfit(),
+            portfolio.getProfitRate(),
+            portfolio.getAgents(),
+            portfolio.getMemo(),
+            memberJpaEntity,
+            ipoJpaEntity);
+    }
+
+    public Portfolio toDomainEntity() {
+        return new Portfolio(
+            new com.alzzaipo.common.Id(id),
+            new com.alzzaipo.common.Id(memberJpaEntity.getId()),
+            ipoJpaEntity.getStockName(),
+            ipoJpaEntity.getStockCode(),
+            sharesCnt,
+            profit,
+            profitRate,
+            agents,
+            memo);
     }
 }

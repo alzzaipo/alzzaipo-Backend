@@ -1,7 +1,10 @@
 package com.alzzaipo.member.adapter.out.persistence.account.social;
 
 import com.alzzaipo.common.BaseTimeEntity;
+import com.alzzaipo.common.LoginType;
+import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
+import com.alzzaipo.member.domain.account.social.SocialAccount;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,4 +35,19 @@ public class SocialAccountJpaEntity extends BaseTimeEntity {
         this.loginType = loginType;
         this.memberJpaEntity = memberJpaEntity;
     }
+
+    public SocialAccount toDomainEntity() {
+        return new SocialAccount(
+            new com.alzzaipo.common.Id(memberJpaEntity.getId()),
+            new Email(email),
+            LoginType.valueOf(loginType));
+    }
+
+    public static SocialAccountJpaEntity build(MemberJpaEntity memberJpaEntity, SocialAccount socialAccount) {
+        return new SocialAccountJpaEntity(
+            socialAccount.getEmail().get(),
+            socialAccount.getLoginType().name(),
+            memberJpaEntity);
+    }
+
 }

@@ -3,6 +3,7 @@ package com.alzzaipo.member.adapter.out.persistence.member;
 import com.alzzaipo.common.BaseTimeEntity;
 import com.alzzaipo.member.adapter.out.persistence.account.local.LocalAccountJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.account.social.SocialAccountJpaEntity;
+import com.alzzaipo.member.domain.member.Member;
 import com.alzzaipo.member.domain.member.Role;
 import com.alzzaipo.notification.adapter.out.persistence.criterion.NotificationCriterionJpaEntity;
 import com.alzzaipo.portfolio.adapter.out.persistence.PortfolioJpaEntity;
@@ -55,5 +56,12 @@ public class MemberJpaEntity extends BaseTimeEntity {
 
 	public void changeNickname(String nickname) {
 		this.nickname = nickname;
+	}
+
+	public Member toDomainEntity() {
+		return new Member(
+			new com.alzzaipo.common.Id(id),
+			nickname,
+			role);
 	}
 }

@@ -2,6 +2,7 @@ package com.alzzaipo.notification.adapter.out.persistence.email;
 
 import com.alzzaipo.common.BaseTimeEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
+import com.alzzaipo.notification.domain.email.EmailNotification;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,9 @@ public class EmailNotificationJpaEntity extends BaseTimeEntity {
 
     void changeEmail(String email) {
         this.email = email;
+    }
+
+    public static EmailNotificationJpaEntity build(EmailNotification domainEntity, MemberJpaEntity memberJpaEntity) {
+        return new EmailNotificationJpaEntity(domainEntity.getEmail().get(), memberJpaEntity);
     }
 }

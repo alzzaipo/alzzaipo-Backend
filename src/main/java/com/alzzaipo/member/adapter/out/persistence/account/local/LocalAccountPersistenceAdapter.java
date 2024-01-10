@@ -37,19 +37,19 @@ public class LocalAccountPersistenceAdapter implements FindLocalAccountByIdPort,
     @Override
     public Optional<SecureLocalAccount> findLocalAccountById(LocalAccountId localAccountId) {
         return localAccountRepository.findByAccountId(localAccountId.get())
-            .map(this::toSecureLocalAccount);
+            .map(LocalAccountJpaEntity::toDomainEntity);
     }
 
     @Override
     public Optional<SecureLocalAccount> findByMemberId(Id memberId) {
         return localAccountRepository.findByMemberJpaEntityId(memberId.get())
-            .map(this::toSecureLocalAccount);
+            .map(LocalAccountJpaEntity::toDomainEntity);
     }
 
     @Override
     public void registerLocalAccountPort(SecureLocalAccount secureLocalAccount) {
         MemberJpaEntity memberJpaEntity = memberRepository.findEntityById(secureLocalAccount.getMemberId().get());
-        LocalAccountJpaEntity localAccountJpaEntity = toJpaEntity(memberJpaEntity, secureLocalAccount);
+        LocalAccountJpaEntity localAccountJpaEntity = LocalAccountJpaEntity.build(memberJpaEntity, secureLocalAccount);
         localAccountRepository.save(localAccountJpaEntity);
     }
 
@@ -75,20 +75,5 @@ public class LocalAccountPersistenceAdapter implements FindLocalAccountByIdPort,
     @Override
     public boolean checkEmailAvailable(Email email) {
         return !localAccountRepository.existsByEmail(email.get());
-    }
-
-    private SecureLocalAccount toSecureLocalAccount(LocalAccountJpaEntity jpaEntity) {
-        Id memberId = new Id(jpaEntity.getMemberJpaEntity().getId());
-        LocalAccountId localAccountId = new LocalAccountId(jpaEntity.getAccountId());
-        String encryptedLocalAccountPassword = jpaEntity.getAccountPassword();
-        Email email = new Email(jpaEntity.getEmail());
-        return new SecureLocalAccount(memberId, localAccountId, encryptedLocalAccountPassword, email);
-    }
-
-    private LocalAccountJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity, SecureLocalAccount secureLocalAccount) {
-        String accountId = secureLocalAccount.getAccountId().get();
-        String encryptedAccountPassword = secureLocalAccount.getEncryptedAccountPassword();
-        String email = secureLocalAccount.getEmail().get();
-        return new LocalAccountJpaEntity(accountId, encryptedAccountPassword, email, memberJpaEntity);
     }
 }

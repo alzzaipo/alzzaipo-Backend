@@ -39,7 +39,10 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 		MemberJpaEntity memberJpaEntity
 			= memberRepository.findEntityById(notificationCriterion.getMemberId().get());
 
-		NotificationCriterionJpaEntity entity = toJpaEntity(notificationCriterion, memberJpaEntity);
+		NotificationCriterionJpaEntity entity = NotificationCriterionJpaEntity.build(
+			notificationCriterion,
+			memberJpaEntity);
+
 		notificationCriterionRepository.save(entity);
 	}
 
@@ -47,7 +50,7 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 	public List<NotificationCriterion> findMemberNotificationCriteria(Id memberId) {
 		return notificationCriterionRepository.findByMemberJpaEntityId(memberId.get())
 			.stream()
-			.map(this::toDomainEntity)
+			.map(NotificationCriterionJpaEntity::toDomainEntity)
 			.collect(Collectors.toList());
 	}
 
@@ -76,7 +79,7 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 	public List<NotificationCriterion> findAllNotificationCriterion() {
 		return notificationCriterionRepository.findAll()
 			.stream()
-			.map(this::toDomainEntity)
+			.map(NotificationCriterionJpaEntity::toDomainEntity)
 			.collect(Collectors.toList());
 	}
 
@@ -88,19 +91,5 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 	@Override
 	public boolean checkOwnership(Id memberId, Id notificationCriterionId) {
 		return notificationCriterionRepository.checkOwnership(memberId.get(), notificationCriterionId.get());
-	}
-
-	private NotificationCriterionJpaEntity toJpaEntity(NotificationCriterion domainEntity, MemberJpaEntity memberJpaEntity) {
-		return new NotificationCriterionJpaEntity(domainEntity.getNotificationCriterionId().get(),
-			domainEntity.getMinCompetitionRate(),
-			domainEntity.getMinLockupRate(),
-			memberJpaEntity);
-	}
-
-	private NotificationCriterion toDomainEntity(NotificationCriterionJpaEntity jpaEntity) {
-		return new NotificationCriterion(new Id(jpaEntity.getId()),
-			new Id(jpaEntity.getMemberJpaEntity().getId()),
-			jpaEntity.getMinCompetitionRate(),
-			jpaEntity.getMinLockupRate());
 	}
 }
