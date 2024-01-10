@@ -1,6 +1,7 @@
 package com.alzzaipo.notification.adapter.out.persistence.email;
 
 import com.alzzaipo.common.Id;
+import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
@@ -44,10 +45,10 @@ public class EmailNotificationPersistenceAdapter implements FindNotificationEmai
 	}
 
 	@Override
-	public void changeEmail(Long memberId, String email) {
-		EmailNotificationJpaEntity entity = emailNotificationRepository.findByMemberJpaEntityId(memberId)
+	public void changeEmail(Id memberId, Email email) {
+		EmailNotificationJpaEntity entity = emailNotificationRepository.findByMemberJpaEntityId(memberId.get())
 			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "이메일 알림 조회 실패"));
-		entity.changeEmail(email);
+		entity.changeEmail(email.get());
 	}
 
 	@Override
@@ -58,8 +59,8 @@ public class EmailNotificationPersistenceAdapter implements FindNotificationEmai
 	}
 
 	@Override
-	public boolean checkEmailAvailable(String email) {
-		return emailNotificationRepository.existsByEmail(email);
+	public boolean checkEmailAvailable(Email email) {
+		return emailNotificationRepository.existsByEmail(email.get());
 	}
 
 	@Override

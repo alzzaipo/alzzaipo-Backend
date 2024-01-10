@@ -81,13 +81,13 @@ public class NotificationCriterionPersistenceAdapter implements RegisterNotifica
 	}
 
 	@Override
-	public int count(Long memberId) {
-		return notificationCriterionRepository.countByMemberJpaEntityId(memberId);
+	public int count(Id memberId) {
+		return notificationCriterionRepository.countByMemberJpaEntityId(memberId.get());
 	}
 
 	@Override
-	public boolean checkOwnership(long memberId, long notificationCriterionId) {
-		return notificationCriterionRepository.checkOwnership(memberId, notificationCriterionId);
+	public boolean checkOwnership(Id memberId, Id notificationCriterionId) {
+		return notificationCriterionRepository.checkOwnership(memberId.get(), notificationCriterionId.get());
 	}
 
 	private NotificationCriterionJpaEntity toJpaEntity(NotificationCriterion domainEntity, MemberJpaEntity memberJpaEntity) {

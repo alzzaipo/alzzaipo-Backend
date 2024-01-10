@@ -1,5 +1,7 @@
 package com.alzzaipo.common.email.adapter.out.persistence;
 
+import com.alzzaipo.common.email.domain.Email;
+import com.alzzaipo.common.email.domain.EmailVerificationCode;
 import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
 import com.alzzaipo.common.email.port.out.verification.CheckEmailVerificationCodePort;
 import com.alzzaipo.common.email.port.out.verification.DeleteEmailVerificationStatusPort;
@@ -24,24 +26,24 @@ public class EmailVerificationPersistenceAdapter implements SaveEmailVerificatio
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public void save(String email, String verificationCode, EmailVerificationPurpose purpose) {
+    public void save(Email email, EmailVerificationCode verificationCode, EmailVerificationPurpose purpose) {
         String namespace = purpose.getNamespace();
 
         redisTemplate.opsForValue()
-            .set(namespace + email, verificationCode, EXPIRATION_TIME_MILLIS, TimeUnit.MILLISECONDS);
+            .set(namespace + email.get(), verificationCode.get(), EXPIRATION_TIME_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     @Override
-    public boolean check(String email, String userInputVerificationCode, EmailVerificationPurpose purpose) {
+    public boolean check(Email email, EmailVerificationCode userInputVerificationCode, EmailVerificationPurpose purpose) {
         String namespace = purpose.getNamespace();
-        String validVerificationCode = redisTemplate.opsForValue().get(namespace + email);
-        return validVerificationCode != null && validVerificationCode.equals(userInputVerificationCode);
+        String validVerificationCode = redisTemplate.opsForValue().get(namespace + email.get());
+        return validVerificationCode != null && validVerificationCode.equals(userInputVerificationCode.get());
     }
 
     @Override
-    public void delete(String email, EmailVerificationPurpose purpose) {
+    public void delete(Email email, EmailVerificationPurpose purpose) {
         String namespace = purpose.getNamespace();
-        redisTemplate.delete(namespace + email);
+        redisTemplate.delete(namespace + email.get());
     }
 
 }

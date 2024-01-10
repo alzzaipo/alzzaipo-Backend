@@ -2,6 +2,7 @@ package com.alzzaipo.notification.application.service;
 
 import com.alzzaipo.common.Id;
 import com.alzzaipo.common.email.domain.Email;
+import com.alzzaipo.common.email.domain.EmailVerificationCode;
 import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
 import com.alzzaipo.common.email.port.out.smtp.SendEmailVerificationCodePort;
 import com.alzzaipo.common.email.port.out.verification.CheckEmailVerificationCodePort;
@@ -128,11 +129,11 @@ public class NotificationService implements RegisterNotificationCriterionUseCase
 
     @Override
     public void sendVerificationCode(Email email) {
-        if (checkNotificationEmailAvailablePort.checkEmailAvailable(email.get())) {
+        if (checkNotificationEmailAvailablePort.checkEmailAvailable(email)) {
             throw new CustomException(HttpStatus.CONFLICT, "이미 등록된 이메일");
         }
-        String sentVerificationCode = sendEmailVerificationCodePort.sendVerificationCode(email.get());
-        saveEmailVerificationCodePort.save(email.get(), sentVerificationCode, EMAIL_VERIFICATION_PURPOSE);
+        EmailVerificationCode sentVerificationCode = sendEmailVerificationCodePort.sendVerificationCode(email);
+        saveEmailVerificationCodePort.save(email, sentVerificationCode, EMAIL_VERIFICATION_PURPOSE);
     }
 
     @Override
@@ -150,8 +151,7 @@ public class NotificationService implements RegisterNotificationCriterionUseCase
         }
         checkEmailVerified(command.getMemberId(), command.getEmail(), command.getEmailVerificationCode());
 
-        EmailNotification emailNotification = new EmailNotification(command.getMemberId(),
-            new Email(command.getEmail()));
+        EmailNotification emailNotification = new EmailNotification(command.getMemberId(), command.getEmail());
 
         registerEmailNotificationPort.register(emailNotification);
 
@@ -170,27 +170,27 @@ public class NotificationService implements RegisterNotificationCriterionUseCase
         }
         checkEmailVerified(command.getMemberId(), command.getEmail(), command.getEmailVerificationCode());
 
-        changeNotificationEmailPort.changeEmail(command.getMemberId().get(), command.getEmail());
+        changeNotificationEmailPort.changeEmail(command.getMemberId(), command.getEmail());
         deleteEmailVerificationStatusPort.delete(command.getEmail(), EMAIL_VERIFICATION_PURPOSE);
     }
 
-    private void checkNotificationCriteriaCapacity(Id memberID) {
-        int totalCount = countMemberNotificationCriteriaPort.count(memberID.get());
+    private void checkNotificationCriteriaCapacity(Id memberId) {
+        int totalCount = countMemberNotificationCriteriaPort.count(memberId);
         if (totalCount >= NOTIFICATION_CRITERIA_LIMIT) {
             throw new CustomException(HttpStatus.FORBIDDEN, "오류 : 최대 개수 초과");
         }
     }
 
     private void checkNotificationCriterionOwnership(Id memberId, Id notificationCriterionId) {
-        if (!checkNotificationCriterionOwnershipPort.checkOwnership(memberId.get(), notificationCriterionId.get())) {
+        if (!checkNotificationCriterionOwnershipPort.checkOwnership(memberId, notificationCriterionId)) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "오류: 권한 없음");
         }
     }
 
-    private void checkEmailVerified(Id memberId, String email, String emailVerificationCode) {
+    private void checkEmailVerified(Id memberId, Email email, EmailVerificationCode emailVerificationCode) {
         boolean isAccountEmail = findMemberAccountEmailsQuery.findEmails(memberId)
             .stream()
-            .anyMatch(accountEmail -> accountEmail.equals(email));
+            .anyMatch(accountEmail -> accountEmail.equals(email.get()));
 
         boolean isVerificationCodeValid = checkEmailVerificationCodePort.check(email, emailVerificationCode,
             EMAIL_VERIFICATION_PURPOSE);

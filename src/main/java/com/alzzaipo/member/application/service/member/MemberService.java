@@ -91,13 +91,13 @@ public class MemberService implements FindMemberNicknameQuery,
     }
 
     private void checkChangeLocalAccountEmailPossible(UpdateMemberProfileCommand command) {
-        if (!checkLocalAccountEmailAvailablePort.checkEmailAvailable(command.getEmail().get())) {
+        if (!checkLocalAccountEmailAvailablePort.checkEmailAvailable(command.getEmail())) {
             throw new CustomException(HttpStatus.CONFLICT, "이메일 중복");
         }
 
         boolean isVerificationCodeValid = checkEmailVerificationCodePort.check(
-            command.getEmail().get(),
-            command.getEmailVerificationCode().get(),
+            command.getEmail(),
+            command.getEmailVerificationCode(),
             EmailVerificationPurpose.UPDATE);
 
         if (!isVerificationCodeValid) {

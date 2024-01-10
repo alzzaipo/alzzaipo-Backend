@@ -24,71 +24,71 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class LocalAccountPersistenceAdapter implements FindLocalAccountByIdPort,
-	RegisterLocalAccountPort,
-	FindLocalAccountByMemberIdPort,
-	ChangeLocalAccountPasswordPort,
-	ChangeLocalAccountEmailPort,
-	CheckLocalAccountIdAvailablePort,
-	CheckLocalAccountEmailAvailablePort {
+    RegisterLocalAccountPort,
+    FindLocalAccountByMemberIdPort,
+    ChangeLocalAccountPasswordPort,
+    ChangeLocalAccountEmailPort,
+    CheckLocalAccountIdAvailablePort,
+    CheckLocalAccountEmailAvailablePort {
 
-	private final MemberRepository memberRepository;
-	private final LocalAccountRepository localAccountRepository;
+    private final MemberRepository memberRepository;
+    private final LocalAccountRepository localAccountRepository;
 
-	@Override
-	public Optional<SecureLocalAccount> findLocalAccountById(LocalAccountId localAccountId) {
-		return localAccountRepository.findByAccountId(localAccountId.get())
-			.map(this::toSecureLocalAccount);
-	}
+    @Override
+    public Optional<SecureLocalAccount> findLocalAccountById(LocalAccountId localAccountId) {
+        return localAccountRepository.findByAccountId(localAccountId.get())
+            .map(this::toSecureLocalAccount);
+    }
 
-	@Override
-	public Optional<SecureLocalAccount> findByMemberId(Id memberId) {
-		return localAccountRepository.findByMemberJpaEntityId(memberId.get())
-			.map(this::toSecureLocalAccount);
-	}
+    @Override
+    public Optional<SecureLocalAccount> findByMemberId(Id memberId) {
+        return localAccountRepository.findByMemberJpaEntityId(memberId.get())
+            .map(this::toSecureLocalAccount);
+    }
 
-	@Override
-	public void registerLocalAccountPort(SecureLocalAccount secureLocalAccount) {
-		MemberJpaEntity memberJpaEntity = memberRepository.findEntityById(secureLocalAccount.getMemberId().get());
-		LocalAccountJpaEntity localAccountJpaEntity = toJpaEntity(memberJpaEntity, secureLocalAccount);
-		localAccountRepository.save(localAccountJpaEntity);
-	}
+    @Override
+    public void registerLocalAccountPort(SecureLocalAccount secureLocalAccount) {
+        MemberJpaEntity memberJpaEntity = memberRepository.findEntityById(secureLocalAccount.getMemberId().get());
+        LocalAccountJpaEntity localAccountJpaEntity = toJpaEntity(memberJpaEntity, secureLocalAccount);
+        localAccountRepository.save(localAccountJpaEntity);
+    }
 
-	@Override
-	public void changePassword(long memberId, String password) {
-		LocalAccountJpaEntity localAccount = localAccountRepository.findByMemberJpaEntityId(memberId)
-			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "계정 조회 실패"));
+    @Override
+    public void changePassword(Id memberId, String password) {
+        LocalAccountJpaEntity localAccount = localAccountRepository.findByMemberJpaEntityId(memberId.get())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "계정 조회 실패"));
 
-		localAccount.changePassword(password);
-	}
+        localAccount.changePassword(password);
+    }
 
-	@Override
-	public void changeLocalAccountEmail(LocalAccountId localAccountId, Email email) {
-		localAccountRepository.findByAccountId(localAccountId.get())
-			.ifPresent(entity -> entity.changeEmail(email.get()));
-	}
+    @Override
+    public void changeLocalAccountEmail(LocalAccountId localAccountId, Email email) {
+        localAccountRepository.findByAccountId(localAccountId.get())
+            .ifPresent(entity -> entity.changeEmail(email.get()));
+    }
 
-	@Override
-	public boolean checkAccountIdAvailable(String accountId) {
-		return !localAccountRepository.existsByAccountId(accountId);
-	}
+    @Override
+    public boolean checkAccountIdAvailable(LocalAccountId accountId) {
+        return !localAccountRepository.existsByAccountId(accountId.get());
+    }
 
-	@Override
-	public boolean checkEmailAvailable(String email) {
-		return !localAccountRepository.existsByEmail(email);
-	}
+    @Override
+    public boolean checkEmailAvailable(Email email) {
+        return !localAccountRepository.existsByEmail(email.get());
+    }
 
-	private SecureLocalAccount toSecureLocalAccount(LocalAccountJpaEntity jpaEntity) {
-		Id memberId = new Id(jpaEntity.getMemberJpaEntity().getId());
-		LocalAccountId localAccountId = new LocalAccountId(jpaEntity.getAccountId());
-		String encryptedLocalAccountPassword = jpaEntity.getAccountPassword();
-		Email email = new Email(jpaEntity.getEmail());
-		return new SecureLocalAccount(memberId, localAccountId, encryptedLocalAccountPassword, email);
-	}
+    private SecureLocalAccount toSecureLocalAccount(LocalAccountJpaEntity jpaEntity) {
+        Id memberId = new Id(jpaEntity.getMemberJpaEntity().getId());
+        LocalAccountId localAccountId = new LocalAccountId(jpaEntity.getAccountId());
+        String encryptedLocalAccountPassword = jpaEntity.getAccountPassword();
+        Email email = new Email(jpaEntity.getEmail());
+        return new SecureLocalAccount(memberId, localAccountId, encryptedLocalAccountPassword, email);
+    }
 
-	private LocalAccountJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity, SecureLocalAccount secureLocalAccount) {
-		String accountId = secureLocalAccount.getAccountId().get();
-		String encryptedAccountPassword = secureLocalAccount.getEncryptedAccountPassword();
-		String email = secureLocalAccount.getEmail().get();
-		return new LocalAccountJpaEntity(accountId, encryptedAccountPassword, email, memberJpaEntity);
-	}
+    private LocalAccountJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity, SecureLocalAccount secureLocalAccount) {
+        String accountId = secureLocalAccount.getAccountId().get();
+        String encryptedAccountPassword = secureLocalAccount.getEncryptedAccountPassword();
+        String email = secureLocalAccount.getEmail().get();
+        return new LocalAccountJpaEntity(accountId, encryptedAccountPassword, email, memberJpaEntity);
+    }
 }

@@ -1,26 +1,26 @@
 package com.alzzaipo.member.application.service.account;
 
 import com.alzzaipo.common.LoginType;
-import com.alzzaipo.common.Id;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.common.token.TokenUtil;
 import com.alzzaipo.common.token.application.port.out.SaveRefreshTokenPort;
 import com.alzzaipo.common.token.domain.TokenInfo;
-import com.alzzaipo.member.application.port.in.account.social.UnlinkSocialAccountUseCase;
-import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
-import com.alzzaipo.member.application.port.in.dto.LoginResult;
-import com.alzzaipo.member.application.port.in.dto.UnlinkSocialAccountCommand;
 import com.alzzaipo.member.application.port.in.account.social.KakaoLoginUseCase;
 import com.alzzaipo.member.application.port.in.account.social.LinkKakaoAccountUseCase;
+import com.alzzaipo.member.application.port.in.account.social.UnlinkSocialAccountUseCase;
+import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
+import com.alzzaipo.member.application.port.in.dto.LinkKakaoAccountCommand;
+import com.alzzaipo.member.application.port.in.dto.LoginResult;
+import com.alzzaipo.member.application.port.in.dto.UnlinkSocialAccountCommand;
 import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberIdPort;
 import com.alzzaipo.member.application.port.out.account.social.DeleteSocialAccountPort;
+import com.alzzaipo.member.application.port.out.account.social.ExchangeKakaoAccessTokenPort;
+import com.alzzaipo.member.application.port.out.account.social.FetchKakaoUserProfilePort;
 import com.alzzaipo.member.application.port.out.account.social.FindSocialAccountPort;
 import com.alzzaipo.member.application.port.out.account.social.RegisterSocialAccountPort;
 import com.alzzaipo.member.application.port.out.dto.AccessToken;
 import com.alzzaipo.member.application.port.out.dto.FindSocialAccountCommand;
 import com.alzzaipo.member.application.port.out.dto.UserProfile;
-import com.alzzaipo.member.application.port.out.account.social.ExchangeKakaoAccessTokenPort;
-import com.alzzaipo.member.application.port.out.account.social.FetchKakaoUserProfilePort;
 import com.alzzaipo.member.application.port.out.member.RegisterMemberPort;
 import com.alzzaipo.member.domain.account.social.SocialAccount;
 import com.alzzaipo.member.domain.member.Member;
@@ -46,18 +46,18 @@ public class SocialAccountService implements LinkKakaoAccountUseCase,
     private final RegisterMemberPort registerMemberPort;
 
     @Override
-    public void linkKakaoAccount(Id memberId, AuthorizationCode authorizationCode) {
-        findLocalAccountByMemberIdPort.findByMemberId(memberId)
+    public void linkKakaoAccount(LinkKakaoAccountCommand command) {
+        findLocalAccountByMemberIdPort.findByMemberId(command.getMemberId())
             .orElseThrow(() -> new CustomException(HttpStatus.FORBIDDEN, "로컬 계정에서만 가능합니다"));
 
-        AccessToken accessToken = exchangeKakaoAccessTokenPort.exchangeKakaoAccessToken(authorizationCode);
+        AccessToken accessToken = exchangeKakaoAccessTokenPort.exchangeKakaoAccessToken(command.getAuthorizationCode());
 
         UserProfile userProfile = fetchKakaoUserProfilePort.fetchKakaoUserProfile(accessToken);
 
         checkLinkedKakaoAccountExists(userProfile);
 
         registerSocialAccountPort.registerSocialAccount(
-            new SocialAccount(memberId, userProfile.getEmail(), LoginType.KAKAO));
+            new SocialAccount(command.getMemberId(), userProfile.getEmail(), LoginType.KAKAO));
     }
 
     @Override
@@ -77,7 +77,8 @@ public class SocialAccountService implements LinkKakaoAccountUseCase,
             UserProfile kakaoUserProfile
                 = fetchKakaoUserProfilePort.fetchKakaoUserProfile(kakaoAccessToken);
 
-            FindSocialAccountCommand command = new FindSocialAccountCommand(LoginType.KAKAO, kakaoUserProfile.getEmail());
+            FindSocialAccountCommand command = new FindSocialAccountCommand(LoginType.KAKAO,
+                kakaoUserProfile.getEmail());
             SocialAccount socialAccount = findSocialAccountPort.findSocialAccount(command)
                 .orElseGet(() -> registerSocialAccount(kakaoUserProfile));
 
