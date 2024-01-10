@@ -1,4 +1,4 @@
-package com.alzzaipo.member.adapter.in.web.dto;
+package com.alzzaipo.notification.adapter.in.web.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,10 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UpdateMemberProfileWebRequest {
-
-    @NotBlank
-    private String nickname;
+public class UpdateNotificationEmailRequest {
 
     @Email
     @NotBlank
@@ -20,5 +17,4 @@ public class UpdateMemberProfileWebRequest {
 
     @NotBlank
     private String verificationCode;
-
 }

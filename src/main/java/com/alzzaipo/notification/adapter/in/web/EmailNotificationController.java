@@ -1,13 +1,16 @@
 package com.alzzaipo.notification.adapter.in.web;
 
-import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.common.Id;
+import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.common.email.domain.Email;
-import com.alzzaipo.common.email.domain.EmailVerificationCode;
-import com.alzzaipo.member.adapter.in.web.dto.EmailVerificationCodeDto;
+import com.alzzaipo.notification.adapter.in.web.dto.CheckNotificationEmailVerificationCodeRequest;
 import com.alzzaipo.notification.adapter.in.web.dto.EmailDto;
 import com.alzzaipo.notification.adapter.in.web.dto.RegisterNotificationCriterionWebRequest;
+import com.alzzaipo.notification.adapter.in.web.dto.SubscribeEmailNotificationRequest;
 import com.alzzaipo.notification.adapter.in.web.dto.UpdateNotificationCriterionWebRequest;
+import com.alzzaipo.notification.adapter.in.web.dto.UpdateNotificationEmailRequest;
+import com.alzzaipo.notification.application.port.dto.ChangeNotificationEmailCommand;
+import com.alzzaipo.notification.application.port.dto.CheckNotificationEmailVerificationCodeCommand;
 import com.alzzaipo.notification.application.port.dto.DeleteNotificationCriterionCommand;
 import com.alzzaipo.notification.application.port.dto.EmailNotificationStatus;
 import com.alzzaipo.notification.application.port.dto.NotificationCriterionView;
@@ -19,7 +22,7 @@ import com.alzzaipo.notification.application.port.in.criterion.FindMemberNotific
 import com.alzzaipo.notification.application.port.in.criterion.RegisterNotificationCriterionUseCase;
 import com.alzzaipo.notification.application.port.in.criterion.UpdateNotificationCriterionUseCase;
 import com.alzzaipo.notification.application.port.in.email.ChangeNotificationEmailUseCase;
-import com.alzzaipo.notification.application.port.in.email.CheckNotificationEmailVerificationCodeUseCase;
+import com.alzzaipo.notification.application.port.in.email.CheckNotificationEmailVerificationCodeQuery;
 import com.alzzaipo.notification.application.port.in.email.FindEmailNotificationStatusQuery;
 import com.alzzaipo.notification.application.port.in.email.SendNotificationEmailVerificationCodeUseCase;
 import com.alzzaipo.notification.application.port.in.email.SubscribeEmailNotificationUseCase;
@@ -44,109 +47,118 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class EmailNotificationController {
 
-	private final SubscribeEmailNotificationUseCase subscribeEmailNotificationUseCase;
-	private final FindEmailNotificationStatusQuery findEmailNotificationStatusQuery;
-	private final ChangeNotificationEmailUseCase changeNotificationEmailUseCase;
-	private final UnsubscribeEmailNotificationUseCase unsubscribeEmailNotificationUseCase;
-	private final SendNotificationEmailVerificationCodeUseCase sendNotificationEmailVerificationCodeUseCase;
-	private final CheckNotificationEmailVerificationCodeUseCase checkNotificationEmailVerificationCodeUseCase;
-	private final RegisterNotificationCriterionUseCase registerNotificationCriterionUseCase;
-	private final FindMemberNotificationCriteriaQuery findMemberNotificationCriteriaQuery;
-	private final UpdateNotificationCriterionUseCase updateNotificationCriterionUseCase;
-	private final DeleteNotificationCriterionUseCase deleteNotificationCriterionUseCase;
+    private final SubscribeEmailNotificationUseCase subscribeEmailNotificationUseCase;
+    private final FindEmailNotificationStatusQuery findEmailNotificationStatusQuery;
+    private final ChangeNotificationEmailUseCase changeNotificationEmailUseCase;
+    private final UnsubscribeEmailNotificationUseCase unsubscribeEmailNotificationUseCase;
+    private final SendNotificationEmailVerificationCodeUseCase sendNotificationEmailVerificationCodeUseCase;
+    private final CheckNotificationEmailVerificationCodeQuery checkNotificationEmailVerificationCodeQuery;
+    private final RegisterNotificationCriterionUseCase registerNotificationCriterionUseCase;
+    private final FindMemberNotificationCriteriaQuery findMemberNotificationCriteriaQuery;
+    private final UpdateNotificationCriterionUseCase updateNotificationCriterionUseCase;
+    private final DeleteNotificationCriterionUseCase deleteNotificationCriterionUseCase;
 
-	@PostMapping("/send-verification-code")
-	public ResponseEntity<String> sendVerificationCode(@AuthenticationPrincipal MemberPrincipal principal,
-		@Valid @RequestBody EmailDto dto) {
-		sendNotificationEmailVerificationCodeUseCase.sendVerificationCode(principal.getMemberId(), new Email(dto.getEmail()));
-		return ResponseEntity.ok().body("전송 완료");
-	}
+    @PostMapping("/send-verification-code")
+    public ResponseEntity<String> sendVerificationCode(@Valid @RequestBody EmailDto dto) {
+        sendNotificationEmailVerificationCodeUseCase.sendVerificationCode(new Email(dto.getEmail()));
+        return ResponseEntity.ok().body("전송 완료");
+    }
 
-	@PostMapping("/validate-verification-code")
-	public ResponseEntity<String> validateVerificationCode(@Valid @RequestBody EmailVerificationCodeDto dto) {
-		EmailVerificationCode verificationCode = new EmailVerificationCode(dto.getVerificationCode());
-		if (checkNotificationEmailVerificationCodeUseCase.checkVerificationCode(verificationCode)) {
-			return ResponseEntity.ok().body("인증 성공");
-		}
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
-	}
+    @PostMapping("/validate-verification-code")
+    public ResponseEntity<String> validateVerificationCode(
+        @Valid @RequestBody CheckNotificationEmailVerificationCodeRequest dto) {
+        CheckNotificationEmailVerificationCodeCommand command = new CheckNotificationEmailVerificationCodeCommand(
+            dto.getEmail(),
+            dto.getVerificationCode());
 
-	@PostMapping("/subscribe")
-	public ResponseEntity<String> subscribeEmailNotification(@AuthenticationPrincipal MemberPrincipal principal,
-		@Valid @RequestBody EmailDto emailDto) {
+        if (checkNotificationEmailVerificationCodeQuery.checkVerificationCode(command)) {
+            return ResponseEntity.ok().body("인증 성공");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
+    }
 
-		SubscribeEmailNotificationCommand command =
-			new SubscribeEmailNotificationCommand(principal.getMemberId(), new Email(emailDto.getEmail()));
+    @PostMapping("/subscribe")
+    public ResponseEntity<String> subscribeEmailNotification(@AuthenticationPrincipal MemberPrincipal principal,
+        @Valid @RequestBody SubscribeEmailNotificationRequest request) {
 
-		subscribeEmailNotificationUseCase.subscribeEmailNotification(command);
+        SubscribeEmailNotificationCommand command = new SubscribeEmailNotificationCommand(principal.getMemberId(),
+            request.getEmail(), request.getVerificationCode());
 
-		return ResponseEntity.ok("신청 완료");
-	}
+        subscribeEmailNotificationUseCase.subscribeEmailNotification(command);
 
-	@GetMapping("/status")
-	public ResponseEntity<EmailNotificationStatus> findEmailNotificationStatus(@AuthenticationPrincipal MemberPrincipal principal) {
-		EmailNotificationStatus emailNotificationStatus = findEmailNotificationStatusQuery.findStatus(principal.getMemberId());
-		return ResponseEntity.ok(emailNotificationStatus);
-	}
+        return ResponseEntity.ok("신청 완료");
+    }
 
-	@PutMapping("/update")
-	public ResponseEntity<String> updateEmailNotification(@AuthenticationPrincipal MemberPrincipal principal,
-		@Valid @RequestBody EmailDto dto) {
-		changeNotificationEmailUseCase.changeNotificationEmail(principal.getMemberId(), new Email(dto.getEmail()));
-		return ResponseEntity.ok("수정 완료");
-	}
+    @GetMapping("/status")
+    public ResponseEntity<EmailNotificationStatus> findEmailNotificationStatus(
+        @AuthenticationPrincipal MemberPrincipal principal) {
+        EmailNotificationStatus emailNotificationStatus = findEmailNotificationStatusQuery.findStatus(
+            principal.getMemberId());
+        return ResponseEntity.ok(emailNotificationStatus);
+    }
 
-	@DeleteMapping("/unsubscribe")
-	public ResponseEntity<String> unsubscribeEmailNotification(@AuthenticationPrincipal MemberPrincipal principal) {
-		unsubscribeEmailNotificationUseCase.unsubscribeEmailNotification(principal.getMemberId());
-		return ResponseEntity.ok("해지 완료");
-	}
+    @PutMapping("/update")
+    public ResponseEntity<String> updateEmailNotification(@AuthenticationPrincipal MemberPrincipal principal,
+        @Valid @RequestBody UpdateNotificationEmailRequest request) {
 
-	@PostMapping("/criteria/add")
-	public ResponseEntity<String> addNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
-		@Valid @RequestBody RegisterNotificationCriterionWebRequest dto) {
+        ChangeNotificationEmailCommand command = new ChangeNotificationEmailCommand(
+            principal.getMemberId(), request.getEmail(), request.getVerificationCode());
 
-		RegisterNotificationCriterionCommand command = new RegisterNotificationCriterionCommand(
-			principal.getMemberId(),
-			dto.getCompetitionRate(),
-			dto.getLockupRate());
+        changeNotificationEmailUseCase.changeNotificationEmail(command);
+        return ResponseEntity.ok("수정 완료");
+    }
 
-		registerNotificationCriterionUseCase.registerNotificationCriterion(command);
+    @DeleteMapping("/unsubscribe")
+    public ResponseEntity<String> unsubscribeEmailNotification(@AuthenticationPrincipal MemberPrincipal principal) {
+        unsubscribeEmailNotificationUseCase.unsubscribeEmailNotification(principal.getMemberId());
+        return ResponseEntity.ok("해지 완료");
+    }
 
-		return ResponseEntity.ok().body("알림 기준 추가 완료");
-	}
+    @PostMapping("/criteria/add")
+    public ResponseEntity<String> addNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
+        @Valid @RequestBody RegisterNotificationCriterionWebRequest dto) {
 
-	@GetMapping("/criteria/list")
-	public ResponseEntity<List<NotificationCriterionView>> findNotificationCriteria(
-		@AuthenticationPrincipal MemberPrincipal principal) {
+        RegisterNotificationCriterionCommand command = new RegisterNotificationCriterionCommand(
+            principal.getMemberId(),
+            dto.getCompetitionRate(),
+            dto.getLockupRate());
 
-		List<NotificationCriterionView> memberNotificationCriteria =
-			findMemberNotificationCriteriaQuery.findMemberNotificationCriteria(principal.getMemberId());
+        registerNotificationCriterionUseCase.registerNotificationCriterion(command);
 
-		return ResponseEntity.ok().body(memberNotificationCriteria);
-	}
+        return ResponseEntity.ok().body("알림 기준 추가 완료");
+    }
 
-	@PutMapping("/criteria/update")
-	public ResponseEntity<String> updateNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
-		@Valid @RequestBody UpdateNotificationCriterionWebRequest dto) {
+    @GetMapping("/criteria/list")
+    public ResponseEntity<List<NotificationCriterionView>> findNotificationCriteria(
+        @AuthenticationPrincipal MemberPrincipal principal) {
 
-		UpdateNotificationCriterionCommand command = new UpdateNotificationCriterionCommand(principal.getMemberId(),
-			Id.fromString(dto.getId()), dto.getCompetitionRate(), dto.getLockupRate());
+        List<NotificationCriterionView> memberNotificationCriteria =
+            findMemberNotificationCriteriaQuery.findMemberNotificationCriteria(principal.getMemberId());
 
-		updateNotificationCriterionUseCase.updateNotificationCriterion(command);
+        return ResponseEntity.ok().body(memberNotificationCriteria);
+    }
 
-		return ResponseEntity.ok().body("알림 기준 수정 완료");
-	}
+    @PutMapping("/criteria/update")
+    public ResponseEntity<String> updateNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
+        @Valid @RequestBody UpdateNotificationCriterionWebRequest dto) {
 
-	@DeleteMapping("/criteria/delete")
-	public ResponseEntity<String> deleteNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
-		@RequestParam("id") String id) {
+        UpdateNotificationCriterionCommand command = new UpdateNotificationCriterionCommand(principal.getMemberId(),
+            Id.fromString(dto.getId()), dto.getCompetitionRate(), dto.getLockupRate());
 
-		DeleteNotificationCriterionCommand command = new DeleteNotificationCriterionCommand(principal.getMemberId(),
-			Id.fromString(id));
+        updateNotificationCriterionUseCase.updateNotificationCriterion(command);
 
-		deleteNotificationCriterionUseCase.deleteNotificationCriterion(command);
+        return ResponseEntity.ok().body("알림 기준 수정 완료");
+    }
 
-		return ResponseEntity.ok().body("알림 기준 삭제 완료");
-	}
+    @DeleteMapping("/criteria/delete")
+    public ResponseEntity<String> deleteNotificationCriterion(@AuthenticationPrincipal MemberPrincipal principal,
+        @RequestParam("id") String id) {
+
+        DeleteNotificationCriterionCommand command = new DeleteNotificationCriterionCommand(principal.getMemberId(),
+            Id.fromString(id));
+
+        deleteNotificationCriterionUseCase.deleteNotificationCriterion(command);
+
+        return ResponseEntity.ok().body("알림 기준 삭제 완료");
+    }
 }
