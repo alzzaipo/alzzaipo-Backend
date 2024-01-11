@@ -1,8 +1,18 @@
 package com.alzzaipo.member.adapter.out.persistence.account.local;
 
 import com.alzzaipo.common.BaseTimeEntity;
+import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
-import jakarta.persistence.*;
+import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
+import com.alzzaipo.member.domain.account.local.LocalAccountId;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,7 +39,8 @@ public class LocalAccountJpaEntity extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private MemberJpaEntity memberJpaEntity;
 
-    public LocalAccountJpaEntity(String accountId, String accountPassword, String email, MemberJpaEntity memberJpaEntity) {
+    public LocalAccountJpaEntity(String accountId, String accountPassword, String email,
+        MemberJpaEntity memberJpaEntity) {
         this.accountId = accountId;
         this.accountPassword = accountPassword;
         this.email = email;
@@ -42,5 +53,21 @@ public class LocalAccountJpaEntity extends BaseTimeEntity {
 
     public void changeEmail(String email) {
         this.email = email;
+    }
+
+    public static LocalAccountJpaEntity build(MemberJpaEntity memberJpaEntity, SecureLocalAccount secureLocalAccount) {
+        return new LocalAccountJpaEntity(
+            secureLocalAccount.getAccountId().get(),
+            secureLocalAccount.getEncryptedAccountPassword(),
+            secureLocalAccount.getEmail().get(),
+            memberJpaEntity);
+    }
+
+    public SecureLocalAccount toDomainEntity() {
+        return new SecureLocalAccount(
+            new com.alzzaipo.common.Id(memberJpaEntity.getId()),
+            new LocalAccountId(accountId),
+            accountPassword,
+            new Email(email));
     }
 }

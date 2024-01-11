@@ -2,6 +2,7 @@ package com.alzzaipo.notification.adapter.out.persistence.criterion;
 
 import com.alzzaipo.common.BaseTimeEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
+import com.alzzaipo.notification.domain.criterion.NotificationCriterion;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,5 +42,21 @@ public class NotificationCriterionJpaEntity extends BaseTimeEntity {
 
     public void changeMinLockupRate(int minLockupRate) {
         this.minLockupRate = minLockupRate;
+    }
+
+    public NotificationCriterion toDomainEntity() {
+        return new NotificationCriterion(
+            new com.alzzaipo.common.Id(id),
+            new com.alzzaipo.common.Id(memberJpaEntity.getId()),
+            minCompetitionRate,
+            minLockupRate);
+    }
+
+    public static NotificationCriterionJpaEntity build(NotificationCriterion domainEntity, MemberJpaEntity memberJpaEntity) {
+        return new NotificationCriterionJpaEntity(
+            domainEntity.getNotificationCriterionId().get(),
+            domainEntity.getMinCompetitionRate(),
+            domainEntity.getMinLockupRate(),
+            memberJpaEntity);
     }
 }

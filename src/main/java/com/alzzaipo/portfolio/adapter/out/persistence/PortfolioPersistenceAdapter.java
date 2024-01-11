@@ -38,17 +38,13 @@ public class PortfolioPersistenceAdapter implements
 
     @Override
     public void registerPortfolio(Portfolio portfolio) {
-        MemberJpaEntity memberJpaEntity =
-            memberRepository.findEntityById(portfolio.getMemberId().get());
+        MemberJpaEntity memberJpaEntity = memberRepository.findEntityById(
+            portfolio.getMemberId().get());
 
         IpoJpaEntity ipoJpaEntity = ipoRepository.findByStockCode(portfolio.getStockCode())
             .orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "공모주 조회 실패"));
 
-        PortfolioJpaEntity portfolioJpaEntity = toJpaEntity(
-            memberJpaEntity,
-            ipoJpaEntity,
-            portfolio);
-
+        PortfolioJpaEntity portfolioJpaEntity = PortfolioJpaEntity.build(memberJpaEntity, ipoJpaEntity, portfolio);
         portfolioRepository.save(portfolioJpaEntity);
     }
 
@@ -56,14 +52,14 @@ public class PortfolioPersistenceAdapter implements
     public List<Portfolio> findMemberPortfolios(Id memberId) {
         return portfolioRepository.findByMemberJpaEntityId(memberId.get())
             .stream()
-            .map(this::toDomainEntity)
+            .map(PortfolioJpaEntity::toDomainEntity)
             .collect(Collectors.toList());
     }
 
     @Override
     public Optional<Portfolio> findPortfolio(Id portfolioId) {
         return portfolioRepository.findById(portfolioId.get())
-            .map(this::toDomainEntity);
+            .map(PortfolioJpaEntity::toDomainEntity);
     }
 
     @Override
@@ -71,12 +67,12 @@ public class PortfolioPersistenceAdapter implements
         PortfolioJpaEntity oldEntity = portfolioRepository.findById(portfolio.getPortfolioId().get())
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
 
-        IpoJpaEntity newIpoJpaEntity = ipoRepository.findByStockCode(portfolio.getStockCode())
+        IpoJpaEntity ipoJpaEntity = ipoRepository.findByStockCode(portfolio.getStockCode())
             .orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "공모주 조회 실패"));
 
-        PortfolioJpaEntity newEntity = toJpaEntity(
+        PortfolioJpaEntity newEntity = PortfolioJpaEntity.build(
             oldEntity.getMemberJpaEntity(),
-            newIpoJpaEntity,
+            ipoJpaEntity,
             portfolio);
 
         newEntity.setId(oldEntity.getId());
@@ -90,30 +86,5 @@ public class PortfolioPersistenceAdapter implements
             .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "포트폴리오 조회 실패"));
 
         portfolioRepository.delete(entity);
-    }
-
-    private PortfolioJpaEntity toJpaEntity(MemberJpaEntity memberJpaEntity, IpoJpaEntity ipoJpaEntity, Portfolio portfolio) {
-        return new PortfolioJpaEntity(
-            portfolio.getPortfolioId().get(),
-            portfolio.getSharesCnt(),
-            portfolio.getProfit(),
-            portfolio.getProfitRate(),
-            portfolio.getAgents(),
-            portfolio.getMemo(),
-            memberJpaEntity,
-            ipoJpaEntity);
-    }
-
-    private Portfolio toDomainEntity(PortfolioJpaEntity portfolioJpaEntity) {
-        return new Portfolio(
-            new Id(portfolioJpaEntity.getId()),
-            new Id(portfolioJpaEntity.getMemberJpaEntity().getId()),
-            portfolioJpaEntity.getIpoJpaEntity().getStockName(),
-            portfolioJpaEntity.getIpoJpaEntity().getStockCode(),
-            portfolioJpaEntity.getSharesCnt(),
-            portfolioJpaEntity.getProfit(),
-            portfolioJpaEntity.getProfitRate(),
-            portfolioJpaEntity.getAgents(),
-            portfolioJpaEntity.getMemo());
     }
 }

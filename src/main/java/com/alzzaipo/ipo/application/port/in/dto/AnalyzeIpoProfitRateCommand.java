@@ -18,12 +18,10 @@ public class AnalyzeIpoProfitRateCommand {
         this.minCompetitionRate = minCompetitionRate;
         this.minLockupRate = minLockupRate;
 
-        validateYear(yearFrom, yearTo);
-        validateCompetitionRate(minCompetitionRate);
-        validateMinLockupRate(minLockupRate);
+        selfValidate();
     }
 
-    private void validateYear(int yearFrom, int yearTo) {
+    private void selfValidate() {
         if (yearFrom < 0) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "from : 0 이상");
         }
@@ -35,19 +33,13 @@ public class AnalyzeIpoProfitRateCommand {
         if (yearFrom > yearTo) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "from이 to보다 큽니다.");
         }
-    }
 
-    private void validateCompetitionRate(int minCompetitionRate) {
         if (minCompetitionRate < 0) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "minCompetitionRate : 0 이상");
         }
-    }
 
-    private void validateMinLockupRate(int minLockupRate) {
         if (minLockupRate < 0 || minLockupRate > 100) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "minLockupRate : 0 이상 100 이하");
-
         }
     }
-
 }

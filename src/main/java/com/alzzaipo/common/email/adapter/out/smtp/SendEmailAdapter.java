@@ -1,8 +1,9 @@
 package com.alzzaipo.common.email.adapter.out.smtp;
 
+import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.email.domain.EmailVerificationCode;
-import com.alzzaipo.common.email.port.out.smtp.SendCustomEmailPort;
-import com.alzzaipo.common.email.port.out.smtp.SendEmailVerificationCodePort;
+import com.alzzaipo.common.email.application.port.out.smtp.SendCustomEmailPort;
+import com.alzzaipo.common.email.application.port.out.smtp.SendEmailVerificationCodePort;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.common.util.EmailUtil;
 import java.util.Random;
@@ -28,10 +29,10 @@ public class SendEmailAdapter implements SendCustomEmailPort, SendEmailVerificat
 	private final JavaMailSender javaMailSender;
 
 	@Override
-	public void send(String to, String subject, String text) {
+	public void send(Email to, String subject, String text) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(from);
-		message.setTo(to);
+		message.setTo(to.get());
 		message.setSubject(subject);
 		message.setText(text);
 
@@ -43,11 +44,12 @@ public class SendEmailAdapter implements SendCustomEmailPort, SendEmailVerificat
 	}
 
 	@Override
-	public String sendVerificationCode(String email) {
-		String verificationCode = generateEmailVerificationCode();
-		SimpleMailMessage simpleMailMessage = EmailUtil.createMailMessage(email,
+	public EmailVerificationCode sendVerificationCode(Email email) {
+		EmailVerificationCode verificationCode = generateEmailVerificationCode();
+
+		SimpleMailMessage simpleMailMessage = EmailUtil.createMailMessage(email.get(),
 			"[알짜공모주] 이메일 인증코드",
-			"이메일 인증코드 : " + verificationCode);
+			"이메일 인증코드 : " + verificationCode.get());
 
 		try {
 			javaMailSender.send(simpleMailMessage);
@@ -59,7 +61,7 @@ public class SendEmailAdapter implements SendCustomEmailPort, SendEmailVerificat
 		return verificationCode;
 	}
 
-	private String generateEmailVerificationCode() {
+	private EmailVerificationCode generateEmailVerificationCode() {
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 		StringBuilder verificationCode = new StringBuilder();
 		Random random = new Random();
@@ -69,6 +71,6 @@ public class SendEmailAdapter implements SendCustomEmailPort, SendEmailVerificat
 			verificationCode.append(characters.charAt(index));
 		}
 
-		return verificationCode.toString();
+		return new EmailVerificationCode(verificationCode.toString());
 	}
 }

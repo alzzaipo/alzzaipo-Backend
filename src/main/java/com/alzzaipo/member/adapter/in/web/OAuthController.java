@@ -4,6 +4,7 @@ import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.member.application.port.in.account.social.UnlinkSocialAccountUseCase;
 import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
+import com.alzzaipo.member.application.port.in.dto.LinkKakaoAccountCommand;
 import com.alzzaipo.member.application.port.in.dto.UnlinkSocialAccountCommand;
 import com.alzzaipo.member.application.port.in.account.social.LinkKakaoAccountUseCase;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,8 @@ public class OAuthController {
 	@GetMapping("/kakao/link")
 	public ResponseEntity<String> kakaoLink(@AuthenticationPrincipal MemberPrincipal principal,
 		@RequestParam("code") String authCode) {
-		linkKakaoAccountUseCase.linkKakaoAccount(principal.getMemberId(), new AuthorizationCode(authCode));
+		LinkKakaoAccountCommand command = new LinkKakaoAccountCommand(principal.getMemberId(), new AuthorizationCode(authCode));
+		linkKakaoAccountUseCase.linkKakaoAccount(command);
 		return ResponseEntity.ok().body("연동 완료");
 	}
 

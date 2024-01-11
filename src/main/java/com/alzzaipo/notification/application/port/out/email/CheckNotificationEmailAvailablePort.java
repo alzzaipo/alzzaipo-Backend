@@ -1,6 +1,8 @@
 package com.alzzaipo.notification.application.port.out.email;
 
+import com.alzzaipo.common.email.domain.Email;
+
 public interface CheckNotificationEmailAvailablePort {
 
-	boolean checkEmailAvailable(String email);
+	boolean checkEmailAvailable(Email email);
 }

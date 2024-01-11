@@ -3,10 +3,11 @@ package com.alzzaipo.member.application.service.account;
 import com.alzzaipo.common.Id;
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.email.domain.Email;
+import com.alzzaipo.common.email.domain.EmailVerificationCode;
 import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
-import com.alzzaipo.common.email.port.out.smtp.SendEmailVerificationCodePort;
-import com.alzzaipo.common.email.port.out.verification.CheckEmailVerificationCodePort;
-import com.alzzaipo.common.email.port.out.verification.SaveEmailVerificationCodePort;
+import com.alzzaipo.common.email.application.port.out.smtp.SendEmailVerificationCodePort;
+import com.alzzaipo.common.email.application.port.out.verification.CheckEmailVerificationCodePort;
+import com.alzzaipo.common.email.application.port.out.verification.SaveEmailVerificationCodePort;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.common.token.TokenUtil;
 import com.alzzaipo.common.token.application.port.out.SaveRefreshTokenPort;
@@ -25,7 +26,6 @@ import com.alzzaipo.member.application.port.in.dto.CheckLocalAccountEmailVerific
 import com.alzzaipo.member.application.port.in.dto.LocalLoginCommand;
 import com.alzzaipo.member.application.port.in.dto.LoginResult;
 import com.alzzaipo.member.application.port.in.dto.RegisterLocalAccountCommand;
-import com.alzzaipo.member.application.port.in.dto.SendSignUpEmailVerificationCodeCommand;
 import com.alzzaipo.member.application.port.out.account.local.ChangeLocalAccountPasswordPort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountEmailAvailablePort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountIdAvailablePort;
@@ -37,7 +37,6 @@ import com.alzzaipo.member.application.port.out.member.RegisterMemberPort;
 import com.alzzaipo.member.domain.account.local.LocalAccountId;
 import com.alzzaipo.member.domain.account.local.LocalAccountPassword;
 import com.alzzaipo.member.domain.member.Member;
-import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -72,16 +71,12 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     private final FindLocalAccountByMemberIdPort findLocalAccountByMemberIdPort;
 
     @Override
-    public void sendSignUpEmailVerificationCode(@Valid SendSignUpEmailVerificationCodeCommand command) {
-        String email = command.getEmail().get();
-
+    public void sendSignUpEmailVerificationCode(Email email) {
         if (!checkLocalAccountEmailAvailablePort.checkEmailAvailable(email)) {
             throw new CustomException(HttpStatus.CONFLICT, "이메일 중복");
         }
-
-        String sentVerificationCode = sendEmailVerificationCodePort.sendVerificationCode(email);
-
-        saveEmailVerificationCodePort.save(email, sentVerificationCode, EmailVerificationPurpose.SIGN_UP);
+        EmailVerificationCode verificationCode = sendEmailVerificationCodePort.sendVerificationCode(email);
+        saveEmailVerificationCodePort.save(email, verificationCode, EmailVerificationPurpose.SIGN_UP);
     }
 
     @Override
@@ -93,35 +88,34 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     }
 
     @Override
-    public void sendUpdateLocalAccountEmailVerificationCode(@Valid Email email) {
-        if (!checkLocalAccountEmailAvailablePort.checkEmailAvailable(email.get())) {
+    public void sendUpdateLocalAccountEmailVerificationCode(Email email) {
+        if (!checkLocalAccountEmailAvailablePort.checkEmailAvailable(email)) {
             throw new CustomException(HttpStatus.CONFLICT, "이메일 중복");
         }
-
-        String verificationCode = sendEmailVerificationCodePort.sendVerificationCode(email.get());
-
-        saveEmailVerificationCodePort.save(email.get(), verificationCode, EmailVerificationPurpose.UPDATE);
+        EmailVerificationCode verificationCode = sendEmailVerificationCodePort.sendVerificationCode(email);
+        saveEmailVerificationCodePort.save(email, verificationCode, EmailVerificationPurpose.UPDATE);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkEmailAvailable(@Valid Email email) {
-        return checkLocalAccountEmailAvailablePort.checkEmailAvailable(email.get());
+    public boolean checkEmailAvailable(Email email) {
+        return checkLocalAccountEmailAvailablePort.checkEmailAvailable(email);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkAccountIdAvailable(@Valid LocalAccountId localAccountId) {
-        return checkLocalAccountIdAvailablePort.checkAccountIdAvailable(localAccountId.get());
+    public boolean checkAccountIdAvailable(LocalAccountId localAccountId) {
+        return checkLocalAccountIdAvailablePort.checkAccountIdAvailable(localAccountId);
     }
 
     @Override
-    public void registerLocalAccount(@Valid RegisterLocalAccountCommand command) {
+    public void registerLocalAccount(RegisterLocalAccountCommand command) {
         checkRegistrationPossible(command);
 
         Member member = Member.build(command.getNickname());
 
-        SecureLocalAccount secureLocalAccount = new SecureLocalAccount(member.getId(),
+        SecureLocalAccount secureLocalAccount = new SecureLocalAccount(
+            member.getId(),
             command.getLocalAccountId(),
             passwordEncoder.encode(command.getLocalAccountPassword().get()),
             command.getEmail());
@@ -131,15 +125,15 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     }
 
     private void checkRegistrationPossible(RegisterLocalAccountCommand command) {
-        if (!checkLocalAccountIdAvailablePort.checkAccountIdAvailable(command.getLocalAccountId().get())) {
+        if (!checkLocalAccountIdAvailablePort.checkAccountIdAvailable(command.getLocalAccountId())) {
             throw new CustomException(HttpStatus.CONFLICT, "아이디 중복");
         }
 
-        if (!checkLocalAccountEmailAvailablePort.checkEmailAvailable(command.getEmail().get())) {
+        if (!checkLocalAccountEmailAvailablePort.checkEmailAvailable(command.getEmail())) {
             throw new CustomException(HttpStatus.CONFLICT, "이메일 중복");
         }
 
-        if (!checkEmailVerificationCodePort.check(command.getEmail().get(), command.getEmailVerificationCode().get(),
+        if (!checkEmailVerificationCodePort.check(command.getEmail(), command.getEmailVerificationCode(),
             EmailVerificationPurpose.SIGN_UP)) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "이메일 미인증");
         }
@@ -156,11 +150,12 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
 
     @Override
     public boolean changePassword(ChangeLocalAccountPasswordCommand command) {
-        Long memberId = command.getMemberId().get();
+        Id memberId = command.getMemberId();
+        LocalAccountPassword currentPassword = command.getCurrentPassword();
         String newPassword = command.getNewPassword().get();
 
-        if (verifyLocalAccountPassword(command.getMemberId(), command.getCurrentPassword())) {
-            changeLocalAccountPasswordPort.changePassword(memberId, passwordEncoder.encode(newPassword));
+        if (verifyLocalAccountPassword(memberId, currentPassword)) {
+            changeLocalAccountPasswordPort.changePassword(command.getMemberId(), passwordEncoder.encode(newPassword));
             return true;
         }
         return false;

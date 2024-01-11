@@ -1,7 +1,7 @@
 package com.alzzaipo.portfolio.adapter.in.web;
 
-import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.common.Id;
+import com.alzzaipo.common.MemberPrincipal;
 import com.alzzaipo.portfolio.adapter.in.web.dto.RegisterPortfolioWebRequest;
 import com.alzzaipo.portfolio.adapter.in.web.dto.UpdatePortfolioWebRequest;
 import com.alzzaipo.portfolio.application.dto.DeletePortfolioCommand;
@@ -33,87 +33,56 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PortfolioController {
 
-	private final RegisterPortfolioUseCase registerPortfolioUseCase;
-	private final FindMemberPortfoliosQuery findMemberPortfoliosQuery;
-	private final UpdatePortfolioUseCase updatePortfolioUseCase;
-	private final DeletePortfolioUseCase deletePortfolioUseCase;
-	private final FindPortfolioQuery findPortfolioQuery;
+    private final RegisterPortfolioUseCase registerPortfolioUseCase;
+    private final FindMemberPortfoliosQuery findMemberPortfoliosQuery;
+    private final UpdatePortfolioUseCase updatePortfolioUseCase;
+    private final DeletePortfolioUseCase deletePortfolioUseCase;
+    private final FindPortfolioQuery findPortfolioQuery;
 
-	@PostMapping("/create")
-	public ResponseEntity<String> createPortfolio(
-		@AuthenticationPrincipal MemberPrincipal principal,
-		@Valid @RequestBody RegisterPortfolioWebRequest dto) {
-		RegisterPortfolioCommand command = toRegisterPortfolioCommand(principal, dto);
+    @PostMapping("/create")
+    public ResponseEntity<String> createPortfolio(
+        @AuthenticationPrincipal MemberPrincipal principal,
+        @Valid @RequestBody RegisterPortfolioWebRequest request
+    ) {
+        RegisterPortfolioCommand command = request.toCommand(principal.getMemberId());
+        registerPortfolioUseCase.registerPortfolio(command);
+        return ResponseEntity.ok().body("포트폴리오 생성 완료");
+    }
 
-		registerPortfolioUseCase.registerPortfolio(command);
+    @GetMapping
+    public ResponseEntity<PortfolioView> find(
+        @AuthenticationPrincipal MemberPrincipal principal,
+        @RequestParam("id") String portfolioId
+    ) {
+        FindPortfolioCommand command = new FindPortfolioCommand(principal.getMemberId(), Id.fromString(portfolioId));
+        PortfolioView portfolio = findPortfolioQuery.findPortfolio(command);
+        return ResponseEntity.ok().body(portfolio);
+    }
 
-		return ResponseEntity.ok().body("포트폴리오 생성 완료");
-	}
+    @GetMapping("/list")
+    public ResponseEntity<MemberPortfolioSummary> findPortfolios(@AuthenticationPrincipal MemberPrincipal principal) {
+        MemberPortfolioSummary memberPortfolioSummary = findMemberPortfoliosQuery.findMemberPortfolios(
+            principal.getMemberId());
+        return ResponseEntity.ok().body(memberPortfolioSummary);
+    }
 
-	@GetMapping
-	public ResponseEntity<PortfolioView> find(@AuthenticationPrincipal MemberPrincipal principal,
-		@RequestParam("id") String portfolioId) {
+    @PutMapping("/update")
+    public ResponseEntity<String> updateMemberPortfolio(
+        @AuthenticationPrincipal MemberPrincipal principal,
+        @Valid @RequestBody UpdatePortfolioWebRequest request
+    ) {
+        UpdatePortfolioCommand command = request.toCommand(principal.getMemberId());
+        updatePortfolioUseCase.updatePortfolio(command);
+        return ResponseEntity.ok().body("포트폴리오 수정 완료");
+    }
 
-		FindPortfolioCommand command = new FindPortfolioCommand(
-			principal.getMemberId(),
-			Id.fromString(portfolioId));
-
-		PortfolioView portfolio = findPortfolioQuery.findPortfolio(command);
-
-		return ResponseEntity.ok().body(portfolio);
-	}
-
-	@GetMapping("/list")
-	public ResponseEntity<MemberPortfolioSummary> findPortfolios(
-		@AuthenticationPrincipal MemberPrincipal principal) {
-
-		MemberPortfolioSummary memberPortfolioSummary
-			= findMemberPortfoliosQuery.findMemberPortfolios(principal.getMemberId());
-
-		return ResponseEntity.ok().body(memberPortfolioSummary);
-	}
-
-	@PutMapping("/update")
-	public ResponseEntity<String> updateMemberPortfolio(
-		@AuthenticationPrincipal MemberPrincipal principal,
-		@Valid @RequestBody UpdatePortfolioWebRequest dto) {
-
-		UpdatePortfolioCommand command = toUpdateMemberPortfolioCommand(principal, dto);
-
-		updatePortfolioUseCase.updatePortfolio(command);
-
-		return ResponseEntity.ok().body("포트폴리오 수정 완료");
-	}
-
-	@DeleteMapping("/delete")
-	public ResponseEntity<String> delete(@AuthenticationPrincipal MemberPrincipal principal,
-		@RequestParam("id") String id) {
-
-		DeletePortfolioCommand command = new DeletePortfolioCommand(
-			principal.getMemberId(),
-			Id.fromString(id));
-
-		deletePortfolioUseCase.deletePortfolio(command);
-
-		return ResponseEntity.ok().body("포트폴리오 삭제 완료");
-	}
-
-	private RegisterPortfolioCommand toRegisterPortfolioCommand(MemberPrincipal principal, RegisterPortfolioWebRequest dto) {
-		return new RegisterPortfolioCommand(principal.getMemberId(),
-			dto.getStockCode(),
-			dto.getSharesCnt(),
-			dto.getProfit(),
-			dto.getAgents(),
-			dto.getMemo());
-	}
-
-	private UpdatePortfolioCommand toUpdateMemberPortfolioCommand(MemberPrincipal principal, UpdatePortfolioWebRequest dto) {
-		return new UpdatePortfolioCommand(Id.fromString(dto.getId()),
-			principal.getMemberId(),
-			dto.getStockCode(),
-			dto.getSharesCnt(),
-			dto.getProfit(),
-			dto.getAgents(),
-			dto.getMemo());
-	}
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> delete(
+        @AuthenticationPrincipal MemberPrincipal principal,
+        @RequestParam("id") String id
+    ) {
+        DeletePortfolioCommand command = new DeletePortfolioCommand(principal.getMemberId(), Id.fromString(id));
+        deletePortfolioUseCase.deletePortfolio(command);
+        return ResponseEntity.ok().body("포트폴리오 삭제 완료");
+    }
 }

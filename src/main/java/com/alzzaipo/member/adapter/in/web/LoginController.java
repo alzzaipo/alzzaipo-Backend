@@ -3,10 +3,9 @@ package com.alzzaipo.member.adapter.in.web;
 import com.alzzaipo.member.adapter.in.web.dto.LocalLoginWebRequest;
 import com.alzzaipo.member.adapter.in.web.dto.TokenResponse;
 import com.alzzaipo.member.application.port.in.account.local.LocalLoginUseCase;
-import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
-import com.alzzaipo.member.application.port.in.dto.LocalLoginCommand;
-import com.alzzaipo.member.application.port.in.dto.LoginResult;
 import com.alzzaipo.member.application.port.in.account.social.KakaoLoginUseCase;
+import com.alzzaipo.member.application.port.in.dto.AuthorizationCode;
+import com.alzzaipo.member.application.port.in.dto.LoginResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,12 +26,8 @@ public class LoginController {
     private final KakaoLoginUseCase kakaoLoginUseCase;
 
     @PostMapping("/local")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LocalLoginWebRequest dto) {
-        LocalLoginCommand localLoginCommand = new LocalLoginCommand(
-            dto.getAccountId(),
-            dto.getAccountPassword());
-
-        LoginResult loginResult = localLoginUseCase.handleLocalLogin(localLoginCommand);
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LocalLoginWebRequest request) {
+        LoginResult loginResult = localLoginUseCase.handleLocalLogin(request.toCommand());
 
         if (loginResult.isSuccess()) {
             TokenResponse tokenResponse = TokenResponse.build(loginResult.getTokenInfo());
@@ -43,9 +38,7 @@ public class LoginController {
 
     @GetMapping("/kakao")
     public ResponseEntity<TokenResponse> kakaoLogin(@RequestParam("code") String authCode) {
-        AuthorizationCode authorizationCode = new AuthorizationCode(authCode);
-
-        LoginResult loginResult = kakaoLoginUseCase.handleLogin(authorizationCode);
+        LoginResult loginResult = kakaoLoginUseCase.handleLogin(new AuthorizationCode(authCode));
 
         if (loginResult.isSuccess()) {
             TokenResponse tokenResponse = TokenResponse.build(loginResult.getTokenInfo());

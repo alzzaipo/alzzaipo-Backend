@@ -1,6 +1,7 @@
 package com.alzzaipo.notification.application.service.scheduled;
 
-import com.alzzaipo.common.email.port.out.smtp.SendCustomEmailPort;
+import com.alzzaipo.common.email.domain.Email;
+import com.alzzaipo.common.email.application.port.out.smtp.SendCustomEmailPort;
 import com.alzzaipo.ipo.application.port.out.FindNotListedIposPort;
 import com.alzzaipo.ipo.domain.Ipo;
 import com.alzzaipo.notification.application.port.out.criterion.FindAllNotificationCriterionPort;
@@ -59,13 +60,13 @@ public class SendEmailNotificationService {
 	private void sendEmailNotification(List<String> emails, Ipo ipo) {
 		String subject = "[알짜공모주] 공모주 청약 알림: " + ipo.getStockName();
 		String text = generateEmailText(ipo);
-		emails.parallelStream().forEach(email -> sendCustomEmailPort.send(email, subject, text));
+		emails.parallelStream().forEach(email -> sendCustomEmailPort.send(new Email(email), subject, text));
 	}
 
 	private String generateEmailText(Ipo ipo) {
-		StringBuilder builder = new StringBuilder();
+		StringBuilder stringBuilder = new StringBuilder();
 
-		builder.append("*새로운 공모주가 등장했어요!*\n")
+		stringBuilder.append("*새로운 공모주가 등장했어요!*\n")
 			.append("\n[공모주명] : ").append(ipo.getStockName())
 			.append("\n[기관경쟁률] : ").append(ipo.getCompetitionRate())
 			.append("\n[의무확약비율] : ").append(ipo.getLockupRate())
@@ -77,7 +78,7 @@ public class SendEmailNotificationService {
 			.append(formatDate(ipo.getSubscribeEndDate()))
 			.append("\n[상장일] : ").append(formatDate(ipo.getListedDate()));
 
-		return builder.toString();
+		return stringBuilder.toString();
 	}
 
 	private String formatDate(LocalDate date) {

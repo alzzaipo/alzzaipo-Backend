@@ -3,7 +3,7 @@ package com.alzzaipo.member.application.service.member;
 import com.alzzaipo.common.Id;
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
-import com.alzzaipo.common.email.port.out.verification.CheckEmailVerificationCodePort;
+import com.alzzaipo.common.email.application.port.out.verification.CheckEmailVerificationCodePort;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.in.dto.MemberProfile;
 import com.alzzaipo.member.application.port.in.dto.UpdateMemberProfileCommand;
@@ -91,13 +91,13 @@ public class MemberService implements FindMemberNicknameQuery,
     }
 
     private void checkChangeLocalAccountEmailPossible(UpdateMemberProfileCommand command) {
-        if (!checkLocalAccountEmailAvailablePort.checkEmailAvailable(command.getEmail().get())) {
+        if (!checkLocalAccountEmailAvailablePort.checkEmailAvailable(command.getEmail())) {
             throw new CustomException(HttpStatus.CONFLICT, "이메일 중복");
         }
 
         boolean isVerificationCodeValid = checkEmailVerificationCodePort.check(
-            command.getEmail().get(),
-            command.getEmailVerificationCode().get(),
+            command.getEmail(),
+            command.getEmailVerificationCode(),
             EmailVerificationPurpose.UPDATE);
 
         if (!isVerificationCodeValid) {

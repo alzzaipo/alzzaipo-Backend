@@ -44,8 +44,7 @@ public class MemberPersistenceAdapter implements RegisterMemberPort,
 
 	@Override
 	public Member findMember(Id id) throws CustomException {
-		MemberJpaEntity entity = memberRepository.findEntityById(id.get());
-		return toDomainEntity(entity);
+		return memberRepository.findEntityById(id.get()).toDomainEntity();
 	}
 
 	@Override
@@ -80,12 +79,6 @@ public class MemberPersistenceAdapter implements RegisterMemberPort,
 			return getLocalAccountProfile(member, currentLoginType);
 		}
 		return getSocialAccountProfile(member, currentLoginType);
-	}
-
-	private Member toDomainEntity(MemberJpaEntity memberJpaEntity) {
-		return new Member(new Id(memberJpaEntity.getId()),
-			memberJpaEntity.getNickname(),
-			memberJpaEntity.getRole());
 	}
 
 	private MemberProfile getLocalAccountProfile(MemberJpaEntity member, LoginType currentLoginType) {

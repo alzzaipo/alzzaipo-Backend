@@ -1,6 +1,7 @@
 package com.alzzaipo.notification.adapter.out.persistence.email;
 
 import com.alzzaipo.common.Id;
+import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberJpaEntity;
 import com.alzzaipo.member.adapter.out.persistence.member.MemberRepository;
@@ -21,53 +22,53 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class EmailNotificationPersistenceAdapter implements FindNotificationEmailPort,
-	RegisterEmailNotificationPort,
-	ChangeNotificationEmailPort,
-	DeleteEmailNotificationPort,
-	CheckNotificationEmailAvailablePort,
-	CheckMemberSubscriptionExistsPort {
+    RegisterEmailNotificationPort,
+    ChangeNotificationEmailPort,
+    DeleteEmailNotificationPort,
+    CheckNotificationEmailAvailablePort,
+    CheckMemberSubscriptionExistsPort {
 
-	private final MemberRepository memberRepository;
-	private final EmailNotificationRepository emailNotificationRepository;
+    private final MemberRepository memberRepository;
+    private final EmailNotificationRepository emailNotificationRepository;
 
-	@Override
-	public Optional<String> findNotificationEmail(Id memberId) {
-		return emailNotificationRepository.findByMemberJpaEntityId(memberId.get())
-			.map(EmailNotificationJpaEntity::getEmail);
-	}
+    @Override
+    public Optional<String> findNotificationEmail(Id memberId) {
+        return emailNotificationRepository.findByMemberJpaEntityId(memberId.get())
+            .map(EmailNotificationJpaEntity::getEmail);
+    }
 
-	@Override
-	public void register(EmailNotification emailNotification) {
-		MemberJpaEntity memberJpaEntity = memberRepository.findEntityById(emailNotification.getMemberId().get());
-		EmailNotificationJpaEntity emailNotificationJpaEntity = toJpaEntity(emailNotification, memberJpaEntity);
-		emailNotificationRepository.save(emailNotificationJpaEntity);
-	}
+    @Override
+    public void register(EmailNotification emailNotification) {
+        MemberJpaEntity memberJpaEntity = memberRepository.findEntityById(emailNotification.getMemberId().get());
 
-	@Override
-	public void changeEmail(Long memberId, String email) {
-		EmailNotificationJpaEntity entity = emailNotificationRepository.findByMemberJpaEntityId(memberId)
-			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "이메일 알림 조회 실패"));
-		entity.changeEmail(email);
-	}
+        EmailNotificationJpaEntity emailNotificationJpaEntity = EmailNotificationJpaEntity.build(
+            emailNotification,
+            memberJpaEntity);
 
-	@Override
-	public void delete(Id memberId) {
-		EmailNotificationJpaEntity entity = emailNotificationRepository.findByMemberJpaEntityId(memberId.get())
-			.orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "이메일 알림 조회 실패"));
-		emailNotificationRepository.delete(entity);
-	}
+        emailNotificationRepository.save(emailNotificationJpaEntity);
+    }
 
-	@Override
-	public boolean checkEmailAvailable(String email) {
-		return emailNotificationRepository.existsByEmail(email);
-	}
+    @Override
+    public void changeEmail(Id memberId, Email email) {
+        EmailNotificationJpaEntity entity = emailNotificationRepository.findByMemberJpaEntityId(memberId.get())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "이메일 알림 조회 실패"));
+        entity.changeEmail(email.get());
+    }
 
-	@Override
-	public boolean checkSubscription(Id memberId) {
-		return emailNotificationRepository.existsByMemberJpaEntityId(memberId.get());
-	}
+    @Override
+    public void delete(Id memberId) {
+        EmailNotificationJpaEntity entity = emailNotificationRepository.findByMemberJpaEntityId(memberId.get())
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "이메일 알림 조회 실패"));
+        emailNotificationRepository.delete(entity);
+    }
 
-	private EmailNotificationJpaEntity toJpaEntity(EmailNotification domainEntity, MemberJpaEntity memberJpaEntity) {
-		return new EmailNotificationJpaEntity(domainEntity.getEmail().get(), memberJpaEntity);
-	}
+    @Override
+    public boolean checkEmailAvailable(Email email) {
+        return emailNotificationRepository.existsByEmail(email.get());
+    }
+
+    @Override
+    public boolean checkSubscription(Id memberId) {
+        return emailNotificationRepository.existsByMemberJpaEntityId(memberId.get());
+    }
 }
