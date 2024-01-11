@@ -35,7 +35,7 @@ public class LocalAccountPersistenceAdapter implements FindLocalAccountByIdPort,
     private final LocalAccountRepository localAccountRepository;
 
     @Override
-    public Optional<SecureLocalAccount> findLocalAccountById(LocalAccountId localAccountId) {
+    public Optional<SecureLocalAccount> findById(LocalAccountId localAccountId) {
         return localAccountRepository.findByAccountId(localAccountId.get())
             .map(LocalAccountJpaEntity::toDomainEntity);
     }

@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface FindLocalAccountByIdPort {
 
-    Optional<SecureLocalAccount> findLocalAccountById(LocalAccountId localAccountId);
+    Optional<SecureLocalAccount> findById(LocalAccountId localAccountId);
 }

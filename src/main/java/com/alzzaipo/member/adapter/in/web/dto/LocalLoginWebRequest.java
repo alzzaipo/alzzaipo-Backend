@@ -22,9 +22,13 @@ public class LocalLoginWebRequest {
     @Size(min = 8, max = 16)
     private String accountPassword;
 
-    public LocalLoginCommand toCommand() {
+    private String captchaResponse;
+
+    public LocalLoginCommand toCommand(String clientIP) {
         return new LocalLoginCommand(
             new LocalAccountId(accountId),
-            new LocalAccountPassword(accountPassword));
+            new LocalAccountPassword(accountPassword),
+            captchaResponse,
+            clientIP);
     }
 }
