@@ -11,4 +11,6 @@ public class LocalLoginCommand {
 
     private final LocalAccountId localAccountId;
     private final LocalAccountPassword localAccountPassword;
+    private final String captchaResponse;
+    private final String clientIP;
 }

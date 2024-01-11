@@ -86,9 +86,9 @@ public class SocialAccountService implements LinkKakaoAccountUseCase,
 
             saveRefreshTokenPort.save(tokenInfo.getRefreshToken(), socialAccount.getMemberId());
 
-            return new LoginResult(true, tokenInfo);
+            return LoginResult.createSuccessResult(tokenInfo);
         } catch (Exception e) {
-            return LoginResult.getFailedResult();
+            return LoginResult.createInvalidCredentialsResult();
         }
     }
 

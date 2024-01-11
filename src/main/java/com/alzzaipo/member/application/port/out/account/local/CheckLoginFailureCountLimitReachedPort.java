@@ -1,6 +1,6 @@
 package com.alzzaipo.member.application.port.out.account.local;
 
-public interface CheckLoginFailureLimitReachedPort {
+public interface CheckLoginFailureCountLimitReachedPort {
 
     boolean checkLimitReached(String clientIP);
 }

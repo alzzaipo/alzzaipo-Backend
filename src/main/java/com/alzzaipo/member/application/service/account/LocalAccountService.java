@@ -2,12 +2,13 @@ package com.alzzaipo.member.application.service.account;
 
 import com.alzzaipo.common.Id;
 import com.alzzaipo.common.LoginType;
-import com.alzzaipo.common.email.domain.Email;
-import com.alzzaipo.common.email.domain.EmailVerificationCode;
-import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
+import com.alzzaipo.common.captcha.application.port.in.VerifyCaptchaResponseQuery;
 import com.alzzaipo.common.email.application.port.out.smtp.SendEmailVerificationCodePort;
 import com.alzzaipo.common.email.application.port.out.verification.CheckEmailVerificationCodePort;
 import com.alzzaipo.common.email.application.port.out.verification.SaveEmailVerificationCodePort;
+import com.alzzaipo.common.email.domain.Email;
+import com.alzzaipo.common.email.domain.EmailVerificationCode;
+import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.common.token.TokenUtil;
 import com.alzzaipo.common.token.application.port.out.SaveRefreshTokenPort;
@@ -29,9 +30,12 @@ import com.alzzaipo.member.application.port.in.dto.RegisterLocalAccountCommand;
 import com.alzzaipo.member.application.port.out.account.local.ChangeLocalAccountPasswordPort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountEmailAvailablePort;
 import com.alzzaipo.member.application.port.out.account.local.CheckLocalAccountIdAvailablePort;
+import com.alzzaipo.member.application.port.out.account.local.CheckLoginFailureCountLimitReachedPort;
 import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByIdPort;
 import com.alzzaipo.member.application.port.out.account.local.FindLocalAccountByMemberIdPort;
+import com.alzzaipo.member.application.port.out.account.local.IncrementLoginFailureCountPort;
 import com.alzzaipo.member.application.port.out.account.local.RegisterLocalAccountPort;
+import com.alzzaipo.member.application.port.out.account.local.ResetLoginFailureCountPort;
 import com.alzzaipo.member.application.port.out.dto.SecureLocalAccount;
 import com.alzzaipo.member.application.port.out.member.RegisterMemberPort;
 import com.alzzaipo.member.domain.account.local.LocalAccountId;
@@ -43,6 +47,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @Transactional
@@ -69,6 +74,10 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
     private final SaveRefreshTokenPort saveRefreshTokenPort;
     private final FindLocalAccountByIdPort findLocalAccountByIdPort;
     private final FindLocalAccountByMemberIdPort findLocalAccountByMemberIdPort;
+    private final CheckLoginFailureCountLimitReachedPort checkLoginFailureCountLimitReachedPort;
+    private final IncrementLoginFailureCountPort incrementLoginFailureCountPort;
+    private final ResetLoginFailureCountPort resetLoginFailureCountPort;
+    private final VerifyCaptchaResponseQuery verifyCaptchaResponseQuery;
 
     @Override
     public void sendSignUpEmailVerificationCode(Email email) {
@@ -163,19 +172,43 @@ public class LocalAccountService implements SendSignUpEmailVerificationCodeUseCa
 
     @Override
     public LoginResult handleLocalLogin(LocalLoginCommand command) {
-        Optional<SecureLocalAccount> localAccount = findLocalAccountByIdPort.findLocalAccountById(
-            command.getLocalAccountId());
+        // 로그인 실패 카운트 임계값 도달 시 Captcha 검증
+        if (!verifyLoginFailureCountAndCaptchaResponse(command)) {
+            return LoginResult.createInvalidCaptchaResponseResult();
+        }
 
-        if (localAccount.isPresent() && isPasswordValid(command, localAccount.get())) {
+        // 계정 조회
+        Optional<SecureLocalAccount> localAccount = findLocalAccountByIdPort.findById(command.getLocalAccountId());
+
+        // 로그인 성공 시
+        if (localAccount.isPresent() && verifyPassword(command, localAccount.get())) {
             Id memberId = localAccount.get().getMemberId();
+
+            // 로그인 실패 카운트 초기화
+            resetLoginFailureCountPort.reset(command.getClientIP());
+
+            // 토큰 생성 및 리프레시 토큰 저장
             TokenInfo tokenInfo = TokenUtil.createToken(memberId, LoginType.LOCAL);
             saveRefreshTokenPort.save(tokenInfo.getRefreshToken(), memberId);
-            return new LoginResult(true, tokenInfo);
+
+            // 로그인 성공 결과 반환
+            return LoginResult.createSuccessResult(tokenInfo);
         }
-        return LoginResult.getFailedResult();
+
+        // 검증 실패 시, 로그인 실패 카운트 증가 후 로그인 실패 결과 응답
+        incrementLoginFailureCountPort.increment(command.getClientIP());
+        return LoginResult.createInvalidCredentialsResult();
     }
 
-    private boolean isPasswordValid(LocalLoginCommand command, SecureLocalAccount secureLocalAccount) {
+    private boolean verifyLoginFailureCountAndCaptchaResponse(LocalLoginCommand command) {
+        if (!checkLoginFailureCountLimitReachedPort.checkLimitReached(command.getClientIP())) {
+            return true;
+        }
+        return StringUtils.hasLength(command.getCaptchaResponse()) &&
+            verifyCaptchaResponseQuery.verify(command.getClientIP(), command.getCaptchaResponse());
+    }
+
+    private boolean verifyPassword(LocalLoginCommand command, SecureLocalAccount secureLocalAccount) {
         String userProvidedPassword = command.getLocalAccountPassword().get();
         String validEncryptedPassword = secureLocalAccount.getEncryptedAccountPassword();
         return passwordEncoder.matches(userProvidedPassword, validEncryptedPassword);

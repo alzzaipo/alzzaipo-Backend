@@ -1,6 +1,6 @@
 package com.alzzaipo.member.adapter.out.persistence;
 
-import com.alzzaipo.member.application.port.out.account.local.CheckLoginFailureLimitReachedPort;
+import com.alzzaipo.member.application.port.out.account.local.CheckLoginFailureCountLimitReachedPort;
 import com.alzzaipo.member.application.port.out.account.local.IncrementLoginFailureCountPort;
 import com.alzzaipo.member.application.port.out.account.local.ResetLoginFailureCountPort;
 import java.util.concurrent.TimeUnit;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Component
 @Repository
 @RequiredArgsConstructor
-public class LoginFailureCountPersistenceAdapterPort implements CheckLoginFailureLimitReachedPort,
+public class LoginFailureCountPersistenceAdapter implements CheckLoginFailureCountLimitReachedPort,
     IncrementLoginFailureCountPort,
     ResetLoginFailureCountPort {
 
