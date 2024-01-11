@@ -3,7 +3,7 @@ package com.alzzaipo.member.application.service.member;
 import com.alzzaipo.common.Id;
 import com.alzzaipo.common.LoginType;
 import com.alzzaipo.common.email.domain.EmailVerificationPurpose;
-import com.alzzaipo.common.email.port.out.verification.CheckEmailVerificationCodePort;
+import com.alzzaipo.common.email.application.port.out.verification.CheckEmailVerificationCodePort;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.member.application.port.in.dto.MemberProfile;
 import com.alzzaipo.member.application.port.in.dto.UpdateMemberProfileCommand;

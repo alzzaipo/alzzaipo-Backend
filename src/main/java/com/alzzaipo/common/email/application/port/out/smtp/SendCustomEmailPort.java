@@ -1,4 +1,4 @@
-package com.alzzaipo.common.email.port.out.smtp;
+package com.alzzaipo.common.email.application.port.out.smtp;
 
 import com.alzzaipo.common.email.domain.Email;
 

@@ -2,8 +2,8 @@ package com.alzzaipo.common.email.adapter.out.smtp;
 
 import com.alzzaipo.common.email.domain.Email;
 import com.alzzaipo.common.email.domain.EmailVerificationCode;
-import com.alzzaipo.common.email.port.out.smtp.SendCustomEmailPort;
-import com.alzzaipo.common.email.port.out.smtp.SendEmailVerificationCodePort;
+import com.alzzaipo.common.email.application.port.out.smtp.SendCustomEmailPort;
+import com.alzzaipo.common.email.application.port.out.smtp.SendEmailVerificationCodePort;
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.common.util.EmailUtil;
 import java.util.Random;
