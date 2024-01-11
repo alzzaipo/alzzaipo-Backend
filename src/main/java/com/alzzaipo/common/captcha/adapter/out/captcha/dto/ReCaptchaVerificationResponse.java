@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,9 +30,5 @@ public class ReCaptchaVerificationResponse {
     private String hostname;
 
     @JsonProperty("error-codes")
-    private ErrorCode[] errorCodes;
-
-    enum ErrorCode {
-        MissingSecret, InvalidSecret, MissingResponse, InvalidResponse
-    }
+    private List<String> errorCodes;
 }
