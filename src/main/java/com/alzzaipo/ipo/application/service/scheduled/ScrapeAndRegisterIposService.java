@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class ScrapeAndRegisterIpoScheduledService {
+public class ScrapeAndRegisterIposService {
 
     private final ScrapeAndRegisterIposUseCase scrapeAndRegisterIposUseCase;
 

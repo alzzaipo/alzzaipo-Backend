@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class UpdateListedIpoInitialMarketPriceScheduledService {
+public class UpdateListedIpoInitialMarketPriceService {
 
     private final FindNotListedIposPort findNotListedIposPort;
     private final QueryInitialMarketPricePort queryInitialMarketPricePort;
