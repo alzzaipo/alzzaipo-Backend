@@ -1,5 +1,6 @@
 package com.alzzaipo.ipo.application.service;
 
+import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.ipo.adapter.out.persistence.IpoPersistenceAdapter;
 import com.alzzaipo.ipo.application.port.in.AnalyzeIpoProfitRateQuery;
 import com.alzzaipo.ipo.application.port.in.GetIpoAgentListQuery;
@@ -18,6 +19,7 @@ import com.alzzaipo.ipo.domain.Ipo;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +48,9 @@ public class IpoService implements
     @Override
     @Transactional(readOnly = true)
     public List<String> getIpoAgentList(int stockCode) {
+        if (stockCode <= 0) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "종목코드 범위 오류");
+        }
         Ipo ipo = findIpoByStockCodePort.findByStockCode(stockCode);
         return Arrays.asList(ipo.getAgents().split(","));
     }
