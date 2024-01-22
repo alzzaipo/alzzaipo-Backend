@@ -17,6 +17,6 @@ public class ScrapeAndRegisterIpoScheduledService {
     @Scheduled(cron = "0 0 2 ? * MON-FRI")
     public void scheduledTask() {
         ScrapeIposCommand command = new ScrapeIposCommand(1, 1);
-        scrapeAndRegisterIposUseCase.scrapeAndRegisterIposUseCase(command);
+        scrapeAndRegisterIposUseCase.scrapeAndRegister(command);
     }
 }

@@ -64,7 +64,7 @@ public class IpoService implements
     }
 
     @Override
-    public int scrapeAndRegisterIposUseCase(ScrapeIposCommand command) {
+    public int scrapeAndRegister(ScrapeIposCommand command) {
         List<Ipo> scrapedIpos = scrapeIposPort.scrape(command)
             .stream()
             .filter(ipoDto -> !checkIpoExistsPort.existsByStockCode(ipoDto.getStockCode()))
