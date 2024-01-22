@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 public class ScrapeIposFromIpo38Adapter implements ScrapeIposPort {
 
     @Override
-    public List<ScrapedIpoDto> scrapeIpos(ScrapeIposCommand scrapeIposCommand) {
+    public List<ScrapedIpoDto> scrape(ScrapeIposCommand scrapeIposCommand) {
         return IntStream.rangeClosed(
                 scrapeIposCommand.getPageFrom(),
                 scrapeIposCommand.getPageTo()

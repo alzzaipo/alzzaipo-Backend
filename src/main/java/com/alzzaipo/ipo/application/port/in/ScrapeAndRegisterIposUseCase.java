@@ -4,5 +4,5 @@ import com.alzzaipo.ipo.application.port.out.dto.ScrapeIposCommand;
 
 public interface ScrapeAndRegisterIposUseCase {
 
-    int scrapeAndRegisterIposUseCase(ScrapeIposCommand scrapeIposCommand);
+    int scrapeAndRegister(ScrapeIposCommand command);
 }

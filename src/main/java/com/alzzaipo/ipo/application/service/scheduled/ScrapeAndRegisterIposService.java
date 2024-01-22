@@ -10,13 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class ScrapeAndRegisterIpoScheduledService {
+public class ScrapeAndRegisterIposService {
 
     private final ScrapeAndRegisterIposUseCase scrapeAndRegisterIposUseCase;
 
     @Scheduled(cron = "0 0 2 ? * MON-FRI")
     public void scheduledTask() {
         ScrapeIposCommand command = new ScrapeIposCommand(1, 1);
-        scrapeAndRegisterIposUseCase.scrapeAndRegisterIposUseCase(command);
+        scrapeAndRegisterIposUseCase.scrapeAndRegister(command);
     }
 }

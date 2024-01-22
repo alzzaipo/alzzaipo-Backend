@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ScrapeIposPort {
 
-    List<ScrapedIpoDto> scrapeIpos(ScrapeIposCommand scrapeIposCommand);
+    List<ScrapedIpoDto> scrape(ScrapeIposCommand scrapeIposCommand);
 }

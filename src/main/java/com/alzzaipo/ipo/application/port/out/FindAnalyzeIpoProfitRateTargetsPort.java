@@ -5,7 +5,7 @@ import com.alzzaipo.ipo.domain.Ipo;
 
 import java.util.List;
 
-public interface FindAnalyzeIpoProfitRateTargetPort {
+public interface FindAnalyzeIpoProfitRateTargetsPort {
 
     List<Ipo> findTargets(AnalyzeIpoProfitRateCommand command);
 }

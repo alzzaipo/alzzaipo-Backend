@@ -17,7 +17,7 @@ public class IpoScrapingController {
 
 	@PostMapping("/scraper")
 	public ResponseEntity<String> scrapeAndRegisterIpos(@Valid @RequestBody ScrapeAndRegisterIposWebRequest request) {
-		int totalRegistrationCount = scrapeAndRegisterIposUseCase.scrapeAndRegisterIposUseCase(request.toCommand());
+		int totalRegistrationCount = scrapeAndRegisterIposUseCase.scrapeAndRegister(request.toCommand());
 		return ResponseEntity.ok("[성공] " + totalRegistrationCount + "건 업데이트 완료");
 	}
 }

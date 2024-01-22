@@ -1,10 +1,9 @@
 package com.alzzaipo.ipo.application.port.out;
 
-import com.alzzaipo.ipo.application.port.out.dto.QueryInitialMarketPriceResult;
-
 import java.time.LocalDate;
 
 public interface QueryInitialMarketPricePort {
 
-    QueryInitialMarketPriceResult queryInitialMarketPrice(int stockCode, LocalDate date);
+    // 조회 불가 시, -1 반환
+    int query(int stockCode, LocalDate date);
 }

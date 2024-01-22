@@ -16,3 +16,12 @@ spring:
             enable: true
           connectiontimeout: 5000
           timeout: 30000
+  datasource:
+    url: ${database.url}
+    username: ${database.username}
+    password: ${database.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: ${redis.host}
+      port: ${redis.port}

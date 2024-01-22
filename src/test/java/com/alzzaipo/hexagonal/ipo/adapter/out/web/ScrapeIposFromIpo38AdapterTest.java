@@ -22,7 +22,7 @@ public class ScrapeIposFromIpo38AdapterTest {
 
         //when
         List<ScrapedIpoDto> scrapedIpoDtos
-                = scrapeIposFromIpo38Adapter.scrapeIpos(scrapeIposCommand);
+                = scrapeIposFromIpo38Adapter.scrape(scrapeIposCommand);
 
         //then
         Assertions.assertThat(scrapedIpoDtos.size()).isEqualTo(20);

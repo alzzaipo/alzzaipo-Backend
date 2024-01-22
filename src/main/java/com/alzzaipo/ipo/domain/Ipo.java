@@ -10,40 +10,40 @@ import java.time.LocalDate;
 public class Ipo {
 
     // 종목명
-    private String stockName;
+    private final String stockName;
 
     // 종목 코드
-    private int stockCode;
+    private final int stockCode;
 
     // 희망공모가 하단(원)
-    private int expectedOfferingPriceMin;
+    private final int expectedOfferingPriceMin;
 
     // 희망공모가 상단(원)
-    private int expectedOfferingPriceMax;
+    private final int expectedOfferingPriceMax;
 
     // 최종공모가(원)
-    private int fixedOfferingPrice;
+    private final int fixedOfferingPrice;
 
     // 공모금액(원)
-    private int totalAmount;
+    private final int totalAmount;
 
     // 기관경쟁률
-    private int competitionRate;
+    private final int competitionRate;
 
     // 의무보유확약비율
-    private int lockupRate;
+    private final int lockupRate;
 
     // 청약 주관사
-    private String agents;
+    private final String agents;
 
     // 청약 시작일
-    private LocalDate subscribeStartDate;
+    private final LocalDate subscribeStartDate;
 
     // 청약 종료일
-    private LocalDate subscribeEndDate;
+    private final LocalDate subscribeEndDate;
 
     // 상장일
-    private LocalDate listedDate;
+    private final LocalDate listedDate;
 
     // 상장일 시초가
     private int initialMarketPrice;
@@ -51,4 +51,8 @@ public class Ipo {
     // 수익률
     private int profitRate;
 
+    public void updateInitialMarketPrice(int initialMarketPrice) {
+        this.initialMarketPrice = initialMarketPrice;
+        this.profitRate = (int) (((double) (initialMarketPrice - fixedOfferingPrice) / fixedOfferingPrice) * 100);
+    }
 }
