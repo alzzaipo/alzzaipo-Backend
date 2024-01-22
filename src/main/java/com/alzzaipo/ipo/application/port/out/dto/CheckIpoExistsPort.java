@@ -1,6 +1,6 @@
 package com.alzzaipo.ipo.application.port.out.dto;
 
-public interface CheckIpoRegisteredPort {
+public interface CheckIpoExistsPort {
 
     boolean existsByStockCode(int stockCode);
 }

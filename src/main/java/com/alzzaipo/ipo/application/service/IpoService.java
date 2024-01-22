@@ -7,11 +7,11 @@ import com.alzzaipo.ipo.application.port.in.GetIpoListQuery;
 import com.alzzaipo.ipo.application.port.in.ScrapeAndRegisterIposUseCase;
 import com.alzzaipo.ipo.application.port.in.dto.AnalyzeIpoProfitRateCommand;
 import com.alzzaipo.ipo.application.port.in.dto.AnalyzeIpoProfitRateResult;
-import com.alzzaipo.ipo.application.port.out.FindAnalyzeIpoProfitRateTargetPort;
+import com.alzzaipo.ipo.application.port.out.FindAnalyzeIpoProfitRateTargetsPort;
 import com.alzzaipo.ipo.application.port.out.FindIpoByStockCodePort;
 import com.alzzaipo.ipo.application.port.out.SaveIposPort;
 import com.alzzaipo.ipo.application.port.out.ScrapeIposPort;
-import com.alzzaipo.ipo.application.port.out.dto.CheckIpoRegisteredPort;
+import com.alzzaipo.ipo.application.port.out.dto.CheckIpoExistsPort;
 import com.alzzaipo.ipo.application.port.out.dto.ScrapeIposCommand;
 import com.alzzaipo.ipo.application.port.out.dto.ScrapedIpoDto;
 import com.alzzaipo.ipo.domain.Ipo;
@@ -24,17 +24,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class IpoService implements GetIpoListQuery,
+public class IpoService implements
+    GetIpoListQuery,
     GetIpoAgentListQuery,
     AnalyzeIpoProfitRateQuery,
     ScrapeAndRegisterIposUseCase {
 
+    private final SaveIposPort saveIposPort;
+    private final ScrapeIposPort scrapeIposPort;
+    private final CheckIpoExistsPort checkIpoExistsPort;
     private final IpoPersistenceAdapter ipoPersistenceAdapter;
     private final FindIpoByStockCodePort findIpoByStockCodePort;
-    private final FindAnalyzeIpoProfitRateTargetPort findAnalyzeIpoProfitRateTargetsPort;
-    private final ScrapeIposPort scrapeIposPort;
-    private final CheckIpoRegisteredPort checkIpoRegisteredPort;
-    private final SaveIposPort saveIposPort;
+    private final FindAnalyzeIpoProfitRateTargetsPort findAnalyzeIpoProfitRateTargetsPort;
 
     @Override
     @Transactional(readOnly = true)
@@ -45,29 +46,28 @@ public class IpoService implements GetIpoListQuery,
     @Override
     @Transactional(readOnly = true)
     public List<String> getIpoAgentList(int stockCode) {
-        String separator = ",";
         Ipo ipo = findIpoByStockCodePort.findByStockCode(stockCode);
-        return Arrays.asList(ipo.getAgents().split(separator));
+        return Arrays.asList(ipo.getAgents().split(","));
     }
 
     @Override
     @Transactional(readOnly = true)
     public AnalyzeIpoProfitRateResult analyze(AnalyzeIpoProfitRateCommand command) {
-        List<Ipo> targetIpos = findAnalyzeIpoProfitRateTargetsPort.findTargets(command);
+        List<Ipo> ipos = findAnalyzeIpoProfitRateTargetsPort.findTargets(command);
 
-        int averageProfitRate = (int) targetIpos.stream()
+        int averageProfitRate = (int) ipos.stream()
             .mapToInt(Ipo::getProfitRate)
             .average()
             .orElse(0.0);
 
-        return new AnalyzeIpoProfitRateResult(averageProfitRate, targetIpos);
+        return new AnalyzeIpoProfitRateResult(averageProfitRate, ipos);
     }
 
     @Override
-    public int scrapeAndRegisterIposUseCase(ScrapeIposCommand scrapeIposCommand) {
-        List<Ipo> scrapedIpos = scrapeIposPort.scrapeIpos(scrapeIposCommand)
+    public int scrapeAndRegisterIposUseCase(ScrapeIposCommand command) {
+        List<Ipo> scrapedIpos = scrapeIposPort.scrape(command)
             .stream()
-            .filter(ipoDto -> !checkIpoRegisteredPort.existsByStockCode(ipoDto.getStockCode()))
+            .filter(ipoDto -> !checkIpoExistsPort.existsByStockCode(ipoDto.getStockCode()))
             .map(ScrapedIpoDto::toDomainEntity)
             .toList();
 

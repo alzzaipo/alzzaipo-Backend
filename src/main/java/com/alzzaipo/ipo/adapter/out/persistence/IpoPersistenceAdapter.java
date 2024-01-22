@@ -2,13 +2,13 @@ package com.alzzaipo.ipo.adapter.out.persistence;
 
 import com.alzzaipo.common.exception.CustomException;
 import com.alzzaipo.ipo.application.port.in.dto.AnalyzeIpoProfitRateCommand;
-import com.alzzaipo.ipo.application.port.out.FindAnalyzeIpoProfitRateTargetPort;
+import com.alzzaipo.ipo.application.port.out.FindAnalyzeIpoProfitRateTargetsPort;
 import com.alzzaipo.ipo.application.port.out.FindIpoByStockCodePort;
 import com.alzzaipo.ipo.application.port.out.FindIpoListPort;
 import com.alzzaipo.ipo.application.port.out.FindNotListedIposPort;
 import com.alzzaipo.ipo.application.port.out.SaveIposPort;
 import com.alzzaipo.ipo.application.port.out.UpdateListedIpoPort;
-import com.alzzaipo.ipo.application.port.out.dto.CheckIpoRegisteredPort;
+import com.alzzaipo.ipo.application.port.out.dto.CheckIpoExistsPort;
 import com.alzzaipo.ipo.application.port.out.dto.UpdateListedIpoCommand;
 import com.alzzaipo.ipo.domain.Ipo;
 import java.util.List;
@@ -22,10 +22,10 @@ import org.springframework.stereotype.Repository;
 public class IpoPersistenceAdapter implements SaveIposPort,
     FindIpoByStockCodePort,
     FindIpoListPort,
-    FindAnalyzeIpoProfitRateTargetPort,
+    FindAnalyzeIpoProfitRateTargetsPort,
     FindNotListedIposPort,
     UpdateListedIpoPort,
-    CheckIpoRegisteredPort {
+    CheckIpoExistsPort {
 
     private final IpoRepository ipoRepository;
 
