@@ -11,7 +11,7 @@ import com.alzzaipo.ipo.application.port.out.FindAnalyzeIpoProfitRateTargetsPort
 import com.alzzaipo.ipo.application.port.out.FindIpoByStockCodePort;
 import com.alzzaipo.ipo.application.port.out.SaveIposPort;
 import com.alzzaipo.ipo.application.port.out.ScrapeIposPort;
-import com.alzzaipo.ipo.application.port.out.dto.CheckIpoExistsPort;
+import com.alzzaipo.ipo.application.port.out.CheckIpoExistsPort;
 import com.alzzaipo.ipo.application.port.out.dto.ScrapeIposCommand;
 import com.alzzaipo.ipo.application.port.out.dto.ScrapedIpoDto;
 import com.alzzaipo.ipo.domain.Ipo;

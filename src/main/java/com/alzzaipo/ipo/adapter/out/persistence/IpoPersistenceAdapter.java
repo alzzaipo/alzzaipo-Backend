@@ -8,7 +8,7 @@ import com.alzzaipo.ipo.application.port.out.FindIpoListPort;
 import com.alzzaipo.ipo.application.port.out.FindNotListedIposPort;
 import com.alzzaipo.ipo.application.port.out.SaveIposPort;
 import com.alzzaipo.ipo.application.port.out.UpdateListedIpoPort;
-import com.alzzaipo.ipo.application.port.out.dto.CheckIpoExistsPort;
+import com.alzzaipo.ipo.application.port.out.CheckIpoExistsPort;
 import com.alzzaipo.ipo.application.port.out.dto.UpdateListedIpoCommand;
 import com.alzzaipo.ipo.domain.Ipo;
 import java.util.List;

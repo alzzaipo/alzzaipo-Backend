@@ -1,4 +1,4 @@
-package com.alzzaipo.ipo.application.port.out.dto;
+package com.alzzaipo.ipo.application.port.out;
 
 public interface CheckIpoExistsPort {
 
