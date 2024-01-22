@@ -1,7 +1,6 @@
 package com.alzzaipo.ipo.adapter.out.web;
 
 import com.alzzaipo.ipo.application.port.out.QueryInitialMarketPricePort;
-import com.alzzaipo.ipo.application.port.out.dto.QueryInitialMarketPriceResult;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -12,14 +11,12 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class QueryInitialMarketPriceAdapter implements QueryInitialMarketPricePort {
@@ -31,9 +28,10 @@ public class QueryInitialMarketPriceAdapter implements QueryInitialMarketPricePo
     private String endpoint;
 
     @Override
-    public QueryInitialMarketPriceResult queryInitialMarketPrice(int stockCode, LocalDate listedDate) {
+    public int query(int stockCode, LocalDate listedDate) {
+        // 상장일 전에는 조회 불가
         if (LocalDate.now().isBefore(listedDate)) {
-            return new QueryInitialMarketPriceResult(false, 0);
+            return -1;
         }
 
         try {
@@ -49,27 +47,22 @@ public class QueryInitialMarketPriceAdapter implements QueryInitialMarketPricePo
             String response = readApiResponse(conn);
             conn.disconnect();
 
-            int initialMarketPrice = parseInitialMarketPrice(response);
-            return new QueryInitialMarketPriceResult(true, initialMarketPrice);
+            return parseInitialMarketPrice(response);
         } catch (Exception e) {
-            log.error("Query Initial Market Price Error: {}", e.getMessage());
-            return new QueryInitialMarketPriceResult(false, 0);
+            return -1;
         }
     }
 
     private URL buildURL(LocalDate date, int stockCode) throws MalformedURLException {
-        String strDate = date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-
         String queryString = String.format("?%s=%s&%s=%s&%s=%s&%s=%s",
             URLEncoder.encode("serviceKey", StandardCharsets.UTF_8),
             URLEncoder.encode(serviceKey, StandardCharsets.UTF_8),
             URLEncoder.encode("resultType", StandardCharsets.UTF_8),
             URLEncoder.encode("json", StandardCharsets.UTF_8),
             URLEncoder.encode("basDt", StandardCharsets.UTF_8),
-            URLEncoder.encode(strDate, StandardCharsets.UTF_8),
+            URLEncoder.encode(date.format(DateTimeFormatter.ofPattern("yyyyMMdd")), StandardCharsets.UTF_8),
             URLEncoder.encode("likeSrtnCd", StandardCharsets.UTF_8),
             URLEncoder.encode(String.valueOf(stockCode), StandardCharsets.UTF_8));
-
         return new URL(endpoint + queryString);
     }
 
@@ -81,14 +74,12 @@ public class QueryInitialMarketPriceAdapter implements QueryInitialMarketPricePo
 
     private int parseInitialMarketPrice(String response) throws Exception {
         JSONParser jsonParser = new JSONParser();
-
         JSONObject jsonObject = (JSONObject) jsonParser.parse(response);
         JSONObject jsonResponse = (JSONObject) jsonObject.get("response");
         JSONObject jsonBody = (JSONObject) jsonResponse.get("body");
         JSONObject jsonItems = (JSONObject) jsonBody.get("items");
         JSONArray jsonItem = (JSONArray) jsonItems.get("item");
         JSONObject stockInfo = (JSONObject) jsonItem.get(0);
-
         return Integer.parseInt((String) stockInfo.get("mkp"));
     }
 }
