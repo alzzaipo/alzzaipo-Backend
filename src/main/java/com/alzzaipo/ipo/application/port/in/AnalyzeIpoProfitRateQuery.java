@@ -5,5 +5,5 @@ import com.alzzaipo.ipo.application.port.in.dto.AnalyzeIpoProfitRateResult;
 
 public interface AnalyzeIpoProfitRateQuery {
 
-    AnalyzeIpoProfitRateResult analyzeIpoProfitRate(AnalyzeIpoProfitRateCommand command);
+    AnalyzeIpoProfitRateResult analyze(AnalyzeIpoProfitRateCommand command);
 }

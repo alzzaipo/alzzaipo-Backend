@@ -52,7 +52,7 @@ public class IpoService implements GetIpoListQuery,
 
     @Override
     @Transactional(readOnly = true)
-    public AnalyzeIpoProfitRateResult analyzeIpoProfitRate(AnalyzeIpoProfitRateCommand command) {
+    public AnalyzeIpoProfitRateResult analyze(AnalyzeIpoProfitRateCommand command) {
         List<Ipo> targetIpos = findAnalyzeIpoProfitRateTargetsPort.findTargets(command);
 
         int averageProfitRate = (int) targetIpos.stream()
