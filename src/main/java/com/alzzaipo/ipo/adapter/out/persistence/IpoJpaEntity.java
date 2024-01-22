@@ -85,15 +85,9 @@ public class IpoJpaEntity extends BaseTimeEntity {
         this.profitRate = profitRate;
     }
 
-    public void changeProfitRate(int profitRate) {
-        this.profitRate = profitRate;
-    }
-
-    public void changeInitialMarketPrice(int initialMarketPrice) {
-        this.initialMarketPrice = initialMarketPrice;
-    }
-
-    public void setListed() {
+    public void updateListedWithIpo(Ipo ipo) {
+        this.initialMarketPrice = ipo.getInitialMarketPrice();
+        this.profitRate = ipo.getProfitRate();
         this.listed = true;
     }
 
