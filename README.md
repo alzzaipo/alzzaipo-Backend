@@ -42,28 +42,32 @@ _알짜공모주는 공모주 투자의 진입장벽을 낮추고자, 개인적�
 - [구현 기능](https://github.com/alzzaipo/backend/wiki/%EA%B5%AC%ED%98%84-%EA%B8%B0%EB%8A%A5)
 - [유스케이스 다이어그램](https://github.com/alzzaipo/alzzaipo-Backend/wiki/%EC%9C%A0%EC%8A%A4%EC%BC%80%EC%9D%B4%EC%8A%A4-%EB%8B%A4%EC%9D%B4%EC%96%B4%EA%B7%B8%EB%9E%A8)
 
+<br>
+
 ## 개선 노력
-- [이메일 인증 로직 개선](https://github.com/alzzaipo/backend/wiki/%EC%9D%B4%EB%A9%94%EC%9D%BC-%EC%9D%B8%EC%A6%9D-%EB%B0%A9%EB%B2%95-%EA%B0%9C%EC%84%A0)
+- [이메일 인증 로직 개선](https://github.com/alzzaipo/backend/wiki/%EC%9D%B4%EB%A9%94%EC%9D%BC-%EC%9D%B8%EC%A6%9D-%EB%A1%9C%EC%A7%81-%EA%B0%9C%EC%84%A0)
 - [헥사고날 아키텍처 전환](https://github.com/alzzaipo/alzzaipo-Backend/pulls?q=is%3Apr+is%3Aclosed+label%3AHexagonal)
-- [서비스 로직 성능 개선](https://github.com/alzzaipo/backend/wiki/%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%A1%9C%EC%A7%81-%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0)
-- [로그인 취약점 개선 - 무차별 대입 공격](https://github.com/alzzaipo/backend/wiki/%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EB%AC%B4%EC%B0%A8%EB%B3%84-%EB%8C%80%EC%9E%85-%EA%B3%B5%EA%B2%A9-%EC%B7%A8%EC%95%BD%EC%A0%90-%EA%B0%9C%EC%84%A0)
+- [공모주 로직 성능 개선](https://github.com/alzzaipo/backend/wiki/%EA%B3%B5%EB%AA%A8%EC%A3%BC-%EB%A1%9C%EC%A7%81-%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0)
+- [로그인 취약점 개선 - 무차별 대입 공격](https://github.com/alzzaipo/backend/wiki/%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EC%B7%A8%EC%95%BD%EC%A0%90-%EA%B0%9C%EC%84%A0-%E2%80%90-%EB%AC%B4%EC%B0%A8%EB%B3%84-%EB%8C%80%EC%9E%85-%EA%B3%B5%EA%B2%A9)
 
 <br>
 
 ## 다이어그램
 
-### Infrastructure
+### [Infrastructure]
 <img width="600" alt="인프라 구조" src="https://github.com/alzzaipo/alzzaipo-Backend/assets/107951175/0c3d5b8d-68e5-4c7c-b55c-e8790bc0321f">
 <br>
 
-### Deployment
+### [Deployment]
 <img width="600" alt="CI/CD 파이프라인" src="https://github.com/alzzaipo/alzzaipo-Backend/assets/107951175/5e590e81-ec80-42da-955a-7bea8da9c2fa">
 <br>
 
-### Database
+### [Database]
 <img width="600" alt="DB 스키마" src="https://github.com/alzzaipo/alzzaipo-Backend/assets/107951175/6a7486bb-e2f4-42b2-a76d-30c8dc2a32da">
 
-<br> 
+<br>
+<br>
+<br>
 
 ## 팀원 구성
 <table>
