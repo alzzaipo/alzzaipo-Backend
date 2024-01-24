@@ -20,9 +20,9 @@
   <img alt="ACM" src="https://img.shields.io/badge/ACM-DC382D"/>
 </p>
 
-## 프로젝트 개요
+## 프로젝트 주제
 
-**알짜공모주는 공모주 투자의 진입장벽을 낮추고자, 경험적인 투자 노하우를 바탕으로 기획한 웹 서비스입니다.**
+_알짜공모주는 공모주 투자의 진입장벽을 낮추고자, 개인적인 투자 경험을 바탕으로 기획한 웹 서비스입니다._
 
 <br>
 
@@ -62,4 +62,33 @@
 
 ### Database
 <img width="600" alt="DB 스키마" src="https://github.com/alzzaipo/alzzaipo-Backend/assets/107951175/6a7486bb-e2f4-42b2-a76d-30c8dc2a32da">
+
+<br> 
+
+## 팀원 구성
+<table>
+  <tbody>
+    <tr>
+      <td align=center>FE</td>
+      <td align=center>FE</td>
+      <td align=center>BE</td>
+    </tr>
+    <tr>
+      <td>
+        <img src="https://avatars.githubusercontent.com/YooSeonHo" width="120px" alt="유선호"/>
+      </td>
+      <td>
+        <img src="https://avatars.githubusercontent.com/stakbucks" width="120px" alt="장태환"/>
+      </td>
+      <td>
+        <img src="https://avatars.githubusercontent.com/csct3434" width="120px" alt="김동철"/>
+      </td>
+    </tr>
+    <tr>
+      <td align=center><a href="https://github.com/YooSeonHo">유선호</a></td>
+      <td align=center><a href="https://github.com/stakbucks">장태환</a></td>
+      <td align=center><a href="https://github.com/csct3434">김동철</a></td>
+    </tr>
+  </tbody>
+</table>
 
